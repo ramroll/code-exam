@@ -11,7 +11,7 @@ const send = (to, title, body) => {
       auth: {
         user: 'art@weavinghorse.com',
         //这里密码不是qq密码，是你设置的smtp密码
-        pass: '9oaGO015'
+        pass: process.env.EMAIL_PASSWD
       }
     })
 

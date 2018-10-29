@@ -18,7 +18,25 @@
 ### 依赖
 
 nomnon - 命令行参数处理
+
 pm2 - 进程管理
+
 mysql - mysql连接
+
 sql-formatter - sql语句格式化（美观)
+
 nodemailer - 发送邮件
+
+md5 - 签名
+
+ramda - 数值操作
+
+
+
+### 启动需要配置的环境变量
+
+-EMAIL_PASSED 邮箱密码
+-DB_HOST 数据库HOST
+-DB_USER 数据用户
+-DB_PASSWD 数据库密码
+-DB_NAME 数据库名称

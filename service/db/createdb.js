@@ -1,4 +1,4 @@
-const Database = require('../db/database')
+const Database = require('./database')
 
 const db = new Database()
 
@@ -14,6 +14,8 @@ db.addColumn('account', 'created', 'timestamp', {
 
 /* 验证码 */
 db.addColumn('vcode', 'code', 'varchar(30)')
+db.addColumn('vcode', 'user_id', 'bigint(20)')
+db.addColumn('vcode', 'type', 'varchar(20)')
 db.addColumn('vcode', 'created', 'timestamp', {
   default : 'CURRENT_TIMESTAMP'
 })

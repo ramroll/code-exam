@@ -1,13 +1,15 @@
 const mysql = require('mysql')
 
 function get_connection(){
-    return mysql.createPool({
-      connectionLimit: 10,
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PWD,
-      port : 3306
-    })
+  console.log(process.env)
+  return mysql.createPool({
+    connectionLimit: 10,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PWD,
+    port: 3306,
+    database: process.env.DB_NAME
+  })
 }
 
 
@@ -19,19 +21,8 @@ class Db{
   }
 
   insert(tbl, data) {
-    const flds = Object.keys(data)
-      .filter( fld => {
-        return typeof data[fld] !== 'undefined' &&
-          data[fld] !== null
-      })
-
-    const sql = `insert into ${tbl}
-      (${flds.map(x => '`' + x + '`').join(',')}) values (
-        ${flds.map(x => `'${data[x]}'`).join(',')}
-      )
-    `
-    console.log(sql)
-    return this.query(sql)
+    const sql = `insert into ${tbl} set ?`
+    return this.query(sql, data)
   }
 
   update(tbl, data) {
@@ -40,8 +31,6 @@ class Db{
       throw '需要ID'
     }
 
-
-
     const flds = Object.keys(others)
       .filter( fld => {
         return typeof others[fld] !== 'undefined' &&
@@ -49,12 +38,13 @@ class Db{
       })
 
     const sql = `update ${tbl}
-      SET ${flds.map(fld => `\`${fld}\`='${others[fld]}'`)}
-      where id=${id}
+      SET ${flds.map(fld => `\`${fld}=?`).join(',')}
+      where id=?
     `
 
-    return this.query(sql)
-
+    const fldValues = flds.map(fld => data[fld])
+    fldValues.push(id)
+    return this.query(sql, fldValues)
   }
 
   delete(tbl, id) {
@@ -62,11 +52,31 @@ class Db{
     return this.query(sql)
   }
 
-  query(sql){
+  async queryById(tbl, id) {
+    const sql = `select * from ${tbl} where id=?`
+    const list = this.query(sql, [id])
+    if(list.length > 0)  {
+      return list[0]
+    }
+    return null
+  }
+
+  async queryOne(sql, params) {
+    const list = this.query(sql, params)
+    if(list.length > 0) {return list[0]}
+    return null
+  }
+
+
+
+  query(sql, params){
     return new Promise( (resolve, reject) => {
 
       Db.pool.getConnection(function (err, connection) {
-        connection.query(sql, (error, results, fields) => {
+        if(err) {
+          throw err
+        }
+        connection.query(sql, params, (error, results, fields) => {
           connection.release()
           if (error) {
             console.log(sqlFormatter.format(sql))

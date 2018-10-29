@@ -12,7 +12,11 @@
   "dependencies": {
     "chalk": "^2.4.1",
     "commander": "^2.19.0",
+    "md5": "^2.2.1",
+    "mysql": "^2.16.0",
+    "nodemailer": "^4.6.8",
     "pm2": "^3.2.2",
+    "ramda": "^0.25.0",
     "sql-formatter": "^2.3.2"
   }
 }
