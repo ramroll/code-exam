@@ -21,7 +21,7 @@ class Validator{
 
     const groupByName = R.groupBy( rule => rule.name )
     const groups = groupByName(this.rules)
-    console.log(groups)
+    // console.log(groups)
 
 
     const errors = Object.keys(groups).map(key => {
@@ -40,6 +40,15 @@ class Validator{
         if(!requiredRule && value === undefined) {
           return ''
         }
+
+        /* 验证正则表达式 */
+        if(rule.type instanceof RegExp) {
+          if(!rule.type.test(value)) {
+            return rule.errorMessage
+          }
+        }
+
+        /* 验证其他规则 */
         switch (rule.type) {
           case 'email':
             if( !/^[a-z0-9_-]+@[a-z0-9-]+\.com$/.test(value) ) {

@@ -31,6 +31,12 @@ md5 - 签名
 
 ramda - 数值操作
 
+react,react-dom - react
+
+antd - 组件库
+
+classnames - 类名解析
+
 
 
 ### 启动需要配置的环境变量

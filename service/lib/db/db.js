@@ -1,4 +1,5 @@
 const mysql = require('mysql')
+const sqlFormatter = require('sql-formatter')
 
 function get_connection(){
   console.log(process.env)
@@ -6,7 +7,7 @@ function get_connection(){
     connectionLimit: 10,
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
-    password: process.env.DB_PWD,
+    password: process.env.DB_PASSWD,
     port: 3306,
     database: process.env.DB_NAME
   })
