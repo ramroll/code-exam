@@ -6,7 +6,6 @@ function api_wrapper(func){
       await func(req, res)
     } catch(ex) {
 
-      console.error(ex)
       if(ex instanceof LogicException) {
         res.status(400).send({
           error : ex.message

@@ -2,13 +2,19 @@ import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Exam from './Exam'
+import Login from './Login'
+import Register from './Register'
 import './styl/index.styl'
 
 class App extends Component {
   render(){
     return (
       <Router>
-        <Route path='/exam' component={Exam} />
+        <div className='router-wrapper'>
+          <Route path='/exam' component={Exam} />
+          <Route path='/login' component={Login} />
+          <Route path='/register' component={Register} />
+        </div>
       </Router>
     )
   }

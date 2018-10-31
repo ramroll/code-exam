@@ -3,13 +3,14 @@ const api_wrapper = require('../lib/util/api_wrapper')
 
 const bodyParser = require('body-parser')
 const Exam = require('./dao/exam')
+const token = require('../lib/util/token.middleware')
 /**
  * 服务注册函数
  * 向express中注册路由
  */
 function register(app){
 
-  app.get('/paper', api_wrapper( async (req, res) => {
+  app.get('/paper', token, api_wrapper( async (req, res) => {
     const validator = new Validator(req.query)
     validator.check('name', 'required', '需要传入试题名称')
     validator.check('name', /[a-z-]{3,20}/, '试题格式不正确')

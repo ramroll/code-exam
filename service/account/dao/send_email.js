@@ -41,8 +41,8 @@ const send = (to, title, body) => {
 const TPL_REG = (activation_code) => {
   return `
         <p>您好！</p>
-        <p>&nbsp;&nbsp;您的在（<a http://www.weavinghorse.com>Weaving Horse程序之路</a>)注册的帐号需要激活。</p>
-        <p>&nbsp;&nbsp;请去Weaving Horse激活您的帐号:<a href="http://www.weavinghorse.com/activation?code=${activation_code}">点击此处激活</a></p>
+        <p>&nbsp;&nbsp;您的算法课程帐号需要激活。</p>
+        <p>&nbsp;&nbsp;请去<a href="http://www.weavinghorse.test/activation?code=${activation_code}">点击此处激活</a></p>
         <p>谢谢！</p>
 `
 }

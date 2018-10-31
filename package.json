@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "service": "node scripts/server/runner.js",
     "exam": "webpack-dev-server --config ./app/exam/webpack.config.js",
-    "build-exam": "webpack --config ./app/exam/webpack.config.js"
+    "build-exam": "webpack --config ./app/exam/webpack.config.js",
+    "user": "webpack-dev-server --config ./app/user/webpack.config.js",
+    "build-user": "webpack --config ./app/user/webpack.config.js"
+
   },
   "author": "",
   "license": "ISC",

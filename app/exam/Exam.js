@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom'
 
 import { Button } from 'antd'
 
+import request from '../lib/request'
+
 
 @withExam()
 export default class Exam extends Component {
@@ -87,20 +89,3 @@ function withExam() {
   }
 }
 
-
-function request(url, options = {}) {
-  options.headers = {
-    'Content-Type': 'application/json; charset=utf-8'
-  }
-  if(options && options.body) {
-    options.body = JSON.stringify(options.body)
-
-  }
-  return fetch(url, options)
-    .then(resp => {
-      return resp.json()
-    })
-    .then(jsonData => {
-      return jsonData
-    })
-}

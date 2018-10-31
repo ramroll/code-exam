@@ -5,6 +5,7 @@ const sqlFormatter = require('sql-formatter')
 class Database{
 
   constructor(){
+    this.indexes = []
     this.columns = []
   }
 
@@ -18,6 +19,14 @@ class Database{
       name : col,
       type,
       ...options
+    })
+  }
+
+  addIndex(table, columns, type='index') {
+    this.indexes.push({
+      table,
+      type,
+      columns : typeof columns === 'string'  ? [columns] : columns
     })
   }
 
@@ -59,7 +68,18 @@ class Database{
       + sqlFormatter.format( sql ) //.replace('PRIMARY KEY', '\n  PRIMARY KEY')
     })
 
-    return sqls.join('\n\n')
+    const indexSql = this.indexes.map( ({table, columns, type}) => {
+      const name = columns.join('-')
+      const expr = columns.map(column => {
+        return `\`${column}\``
+      }).join(',')
+      if (type === 'index') {
+        return `ALTER TABLE ${table} ADD INDEX ${name} (${expr});`
+      } else {
+        return `ALTER TABLE ${table} ADD CONSTRAINT ${name} UNIQUE KEY (${expr});`
+      }
+    }).join('\n')
+    return sqls.join('\n\n') + '\n\n' + indexSql
   }
 }
 
