@@ -11,7 +11,7 @@ export default class Exam extends Component {
     return <div className='paper'>
       <h1>{this.props.title}</h1>
       {this.props.questions.map( (question, i) => {
-        return <Question {...question} key={i} index={i} />
+        return <Question exam={this.props.name} {...question} key={i} index={i} />
       })}
     </div>
   }
@@ -22,16 +22,31 @@ class Question extends Component{
 
   componentDidMount(){
     const domNode = ReactDOM.findDOMNode(this.r)
-    CodeMirror.fromTextArea(domNode, {
+    this.cm = CodeMirror.fromTextArea(domNode, {
       mode : 'javascript'
     })
   }
+
+  submit = () => {
+    const code = this.cm.getValue()
+
+    console.log(this.props)
+    request('/api/exam/submit', {
+      method : 'POST',
+      body : {
+        exam : this.props.exam,
+        index : this.props.index,
+        code
+      }
+    })
+  }
+
   render(){
     const md = new MarkdownIt()
     return <div className='question'>
       <div dangerouslySetInnerHTML={{__html : md.render( this.props.md )}}></div>
       <textarea ref={r => this.r = r} defaultValue={this.props.sample}></textarea>
-      <Button>提交</Button>
+      <Button style={{marginTop : 10}} onClick={this.submit}>提交</Button>
     </div>
   }
 }
@@ -53,15 +68,10 @@ function withExam() {
 
       componentWillMount() {
 
-        fetch('/api/exam/paper?name=' + this.name)
-          .then(resp => {
-            return resp.json()
+        request('/api/exam/paper?name=' + this.name)
+          .then(data => {
+            this.setState({ exam: data})
           })
-          .then(jsonData => {
-            this.setState({exam : jsonData})
-          })
-
-
       }
 
       render() {
@@ -75,4 +85,22 @@ function withExam() {
     return ExamProxy
 
   }
+}
+
+
+function request(url, options = {}) {
+  options.headers = {
+    'Content-Type': 'application/json; charset=utf-8'
+  }
+  if(options && options.body) {
+    options.body = JSON.stringify(options.body)
+
+  }
+  return fetch(url, options)
+    .then(resp => {
+      return resp.json()
+    })
+    .then(jsonData => {
+      return jsonData
+    })
 }

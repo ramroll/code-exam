@@ -26,13 +26,22 @@ module.exports = {
             '@babel/react'
           ],
           plugins : [
-            ['@babel/plugin-proposal-decorators', {"legacy" : true}]
+            ['@babel/plugin-proposal-decorators', {"legacy" : true}],
+            'babel-plugin-transform-class-properties',
+            ['babel-plugin-import', {
+              "libraryName": "antd",
+              style : true
+            }]
           ]
         }
       },
       {
         test : /\.styl$/,
         loader : 'style-loader!css-loader!stylus-loader'
+      },
+      {
+        test : /\.less$/,
+        loader : 'style-loader!css-loader!less-loader?javascriptEnabled=true'
       }
     ]
   },
