@@ -25,7 +25,7 @@ function register(app){
       return
     }
     const account = new Account()
-    const user = await account.login(query)
+    const user = await account.login(query, req.headers.token)
     res.send(account)
   }))
 

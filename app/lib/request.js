@@ -1,5 +1,11 @@
 
 export default function request(url, options = {}) {
+  const def = {
+    method : 'GET'
+  }
+
+  options = {...def, ...options}
+
   options.headers = {
     'Content-Type': 'application/json; charset=utf-8',
     TOKEN : localStorage['XTOKEN']
@@ -11,6 +17,11 @@ export default function request(url, options = {}) {
     .then(resp => {
       if(resp.status === 404) {
         throw {error : '网络错误'}
+      }
+      if(resp.status === 401 && options.method === 'GET') {
+        debugger
+        window.location.href = '/login?next=' + encodeURIComponent(location.href)
+        return
       }
       const token = resp.headers.get('TOKEN')
       localStorage['XTOKEN'] = token

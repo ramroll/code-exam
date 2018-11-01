@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
-import { Form, Icon, Input, Button, Checkbox } from 'antd'
+import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
+import request from '../lib/request'
+import qs from 'qs'
 const FormItem = Form.Item
 export default class Login extends Component{
   render(){
@@ -18,9 +20,20 @@ class NormalLoginForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        request(`/api/account/login?email=${values.email}&password=${values.password}`)
+        .then(data => {
+          message.success('登录成功')
+
+          setTimeout( () => {
+            const query = qs.parse(location.search.substr(1))
+            window.location.href = decodeURIComponent(query.next)
+          })
+        })
+        .catch(ex => {
+
+        })
       }
-    });
+    })
   }
 
   render() {

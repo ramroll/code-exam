@@ -1,4 +1,5 @@
 const LogicException = require('../exception/LogicException')
+const LoginException = require('../exception/LoginException')
 function api_wrapper(func){
 
   return async (req, res) => {
@@ -11,6 +12,12 @@ function api_wrapper(func){
           error : ex.message
         })
         return
+      }
+
+      if(ex instanceof LoginException) {
+        res.status(401).send({
+          error : "尚未登录"
+        })
       }
 
       console.error(ex)

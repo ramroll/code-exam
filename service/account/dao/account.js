@@ -69,30 +69,23 @@ class Account {
     }
 
     await this.db.update('account', {status : 1, id : account_id})
-    // this.db.update('vcode', {status : 1})
-    // this.db.update('account', {status : 1})
 
   }
 
-  async login(verify) {
-    const sql = `select * from account where name=?`
-    const account = await this.db.queryOne(sql, [verify.name])
+  async login(verify, token_code) {
+    const sql = `select * from account where email=?`
+    const account = await this.db.queryOne(sql, [verify.email])
     if (!account) {
       throw new LogicException('用户不存在')
     }
 
     const verify_pass = md5(account.passwd + account.salt)
-    if (verify_pass) {
-      return true
+    if (!verify_pass) {
+      throw new LogicException('用户名或密码错误')
     }
-    throw new LogicException('用户名或密码错误')
 
-    const sql1 = `select * from student where account_id=${account.id}`
-    const student = await this.db.queryOne(sql1)
-
-    return {
-
-    }
+    const token = await this.db.queryOne(`select * from token where code=?`, [token_code])
+    await this.db.update('token', {id : token.id, account_id : account.id})
   }
 
   async get_token(code) {
@@ -114,10 +107,10 @@ class Account {
       return {}
     }
 
-    const sql_user = `select A.id,A.name from student as A
+    const sql_user = `select A.id as student_id, B.id as account_id,A.name from student as A
       left join account as B
       on A.account_id = B.id
-      where B.id = ${token.account_id}
+      where B.id = ${token.account_id} && B.status=1
     `
 
     const student = await this.db.queryOne(sql_user)

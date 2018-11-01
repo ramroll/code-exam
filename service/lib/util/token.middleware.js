@@ -10,6 +10,7 @@ const token_middleware = async function(req, res, next) {
     if(!token) {
       const code = await account.create_token()
       res.set('TOKEN', code)
+      req.headers.token = code
     } else {
       res.set('TOKEN', token.code)
     }
