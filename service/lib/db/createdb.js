@@ -6,6 +6,9 @@ const db = new Database()
 db.addColumn('account', 'password', 'varchar(32)')
 db.addColumn('account', 'salt', 'varchar(30)')
 db.addColumn('account', 'email', 'varchar(50)')
+db.addColumn('account', 'status', 'smallint', {
+  default : 0
+})
 db.addColumn('account', 'created', 'timestamp', {
   default : 'CURRENT_TIMESTAMP'
 })
@@ -23,6 +26,9 @@ db.addColumn('token', 'created', 'timestamp', {
 db.addColumn('vcode', 'code', 'varchar(30)')
 db.addColumn('vcode', 'account_id', 'bigint(20)', {
   nullable : true
+})
+db.addColumn('vcode', 'status', 'smallint', {
+  default : 0
 })
 db.addColumn('vcode', 'type', 'varchar(20)')
 db.addColumn('vcode', 'created', 'timestamp', {

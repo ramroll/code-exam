@@ -11,6 +11,8 @@ module.exports = {
       "DB_USER" : "root",
       "DB_NAME" : "codeexam",
       "NODE_ENV": "development",
+      "EMAIL_PASSWD" : "XQe3s2piwR0R"
+
     },
     env_production : {
        "NODE_ENV": "production"

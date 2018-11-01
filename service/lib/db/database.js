@@ -55,7 +55,7 @@ class Database{
         .map(col => {
           const nul = col.nullable ? 'NULL' : 'NOT NULL'
           const incre = col.auto_increment ? 'AUTO_INCREMENT' : ''
-          const def = col.default ? 'default ' + col.default : ''
+          const def = col.default !== undefined ? 'default ' + col.default : ''
           return `\`${col.name}\` ${col.type} ${nul} ${def} ${incre}`
         })
       const sql = `

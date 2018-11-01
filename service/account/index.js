@@ -29,6 +29,26 @@ function register(app){
     res.send(account)
   }))
 
+  app.get('/activation', token, api_wrapper( async (req, res) => {
+    const validator = new Validator(req.query)
+    validator.check('code', 'required', '不完整的激活链接（请重试）')
+    validator.check('code', 'len', '不完整的激活链接（请重试）', {
+      min : 21,
+      max : 21
+    })
+    const errors = validator.validate()
+    if(errors.length > 0) {
+      res.status(400).send({
+        error : errors[0]
+      })
+      return
+    }
+
+    const account = new Account()
+    await account.activation(req.query.code)
+    res.send({success : 1})
+  }))
+
   app.post('/register', token, bodyParser.json(), api_wrapper( async (req, res) => {
     console.log(req.body)
     const validator = new Validator(req.body)
@@ -48,10 +68,7 @@ function register(app){
 
     const account = new Account()
     await account.register(req.body)
-
     res.send({success : 1})
-
-
   }))
 
   app.post('/validate', () => {

@@ -12,6 +12,8 @@ function api_wrapper(func){
         })
         return
       }
+
+      console.error(ex)
       res.status(500).send({
         error : 'Internal Server Error'
       })

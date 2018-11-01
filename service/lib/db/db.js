@@ -40,7 +40,7 @@ class Db{
       })
 
     const sql = `update ${tbl}
-      SET ${flds.map(fld => `\`${fld}=?`).join(',')}
+      SET ${flds.map(fld => `\`${fld}\`=?`).join(',')}
       where id=?
     `
 
@@ -80,6 +80,11 @@ class Db{
         resolve(connection)
       })
     })
+  }
+
+  async getById(table, id) {
+    const sql = `select * from ${table} where id = ?`
+    return this.queryOne(sql, [id])
   }
 
   async beginTransaction(connection) {

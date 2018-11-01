@@ -31,8 +31,9 @@ class Account {
         name: account.name
       }
       await this.db.insert('student', studentObj)
-      await this.create_vcode(id)
+      const code = await this.create_vcode(id)
       await this.db.commitTransation(connection)
+      await send(account.email, '「算法训练」激活邮件', TPL_REG(code))
 
     }catch(ex) {
       await this.db.rollback(connection)
@@ -41,6 +42,36 @@ class Account {
       }
       throw ex
     }
+  }
+
+  async activation(code){
+
+
+    const sql = `select * from vcode where code=? && status=0 order by id desc`
+    const vcode = await this.db.queryOne(sql, [code])
+    if(!vcode) {
+      throw new LogicException('激活码不存在')
+    }
+    const now = new Date().getTime()
+    const vcodetime = new Date(vcode.created).getTime()
+    if(now - vcodetime > 3600 * 24 * 1000 * 7) {
+      throw new LogicException('激活码已过期')
+    }
+
+    const account_id = vcode.account_id
+    const account = await this.db.getById('account', account_id)
+    if(!account) {
+      throw new LogicException('账户不存在')
+    }
+    if(account.status === 1) {
+
+      throw new LogicException('账户已激活')
+    }
+
+    await this.db.update('account', {status : 1, id : account_id})
+    // this.db.update('vcode', {status : 1})
+    // this.db.update('account', {status : 1})
+
   }
 
   async login(verify) {
@@ -77,7 +108,7 @@ class Account {
     const now = new Date().getTime()
     const created = new Date(token.created).getTime()
 
-    if(now - created > 3600 * 24 * 3) { // 保留3天
+    if(now - created > 3600 * 24 * 3 * 1000) { // 保留3天
     // if(now - created > 1) { // 保留3天
       console.log('token renew')
       return {}
@@ -102,12 +133,14 @@ class Account {
     return code
   }
 
-  create_vcode(id) {
-    return this.db.insert('vcode', {
-      code: (rint(9) + 1) + ''.padStart(20, '' + rint(1000000000000000)),
+  async create_vcode(id) {
+    const code =  (rint(9) + 1) + ''.padStart(20, '' + rint(1000000000000000))
+    await this.db.insert('vcode', {
+      code,
       account_id : id,
       type: 'send-email'
     })
+    return code
   }
 
   send_email() {
