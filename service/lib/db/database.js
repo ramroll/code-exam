@@ -7,6 +7,7 @@ class Database{
   constructor(){
     this.indexes = []
     this.columns = []
+    this.data = []
   }
 
   addColumn(table, col, type, options = {}){
@@ -27,6 +28,13 @@ class Database{
       table,
       type,
       columns : typeof columns === 'string'  ? [columns] : columns
+    })
+  }
+
+  addData(table, row){
+    this.data.push({
+      table,
+      row
     })
   }
 
@@ -69,17 +77,31 @@ class Database{
     })
 
     const indexSql = this.indexes.map( ({table, columns, type}) => {
-      const name = columns.join('-')
+      const name = columns.join('_')
       const expr = columns.map(column => {
         return `\`${column}\``
       }).join(',')
       if (type === 'index') {
-        return `ALTER TABLE ${table} ADD INDEX ${name} (${expr});`
+        return `ALTER TABLE ${table} ADD INDEX \`idx_${name}\` (${expr});`
       } else {
-        return `ALTER TABLE ${table} ADD CONSTRAINT ${name} UNIQUE KEY (${expr});`
+        return `ALTER TABLE ${table} ADD CONSTRAINT \`cst_${name}\` UNIQUE KEY (${expr});`
       }
     }).join('\n')
-    return sqls.join('\n\n') + '\n\n' + indexSql
+
+    const dataSql = this.data.map ( ({table, row}) => {
+      const columns = Object.keys(row).map(col => {
+        return `\`${col}\``
+      }).join(',')
+      const values = Object.keys(row).map(col => {
+        const val = row[col]
+        if(typeof val === 'string') {
+          return `'${val}'`
+        }
+        return val
+      }).join(',')
+      return `insert into ${table} (${columns}) values (${values})`
+    }).join('\n')
+    return sqls.join('\n\n') + '\n\n' + indexSql + '\n\n' + dataSql
   }
 }
 

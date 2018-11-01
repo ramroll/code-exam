@@ -27,19 +27,25 @@ function register(app){
       return
     }
     const exam = new Exam()
-    const result = await exam.load(req.query.name)
+    const result = await exam.load(req.query.name, req.student.student_id)
     res.send(result)
   }))
 
 
-  app.post('/submit', bodyParser.json(), api_wrapper(async (req, res) => {
+  app.post('/submit', token, bodyParser.json(), api_wrapper(async (req, res) => {
 
+    if(!req.student) {
+      throw new LoginException()
+    }
     const validator = new Validator(req.body)
     validator.check('exam', 'required', '需要传入试题名称')
     validator.check('exam', /[a-z-]{3,20}/, '试题格式不正确')
     validator.check('index', 'required', '需要题目序号')
     validator.check('index', /\d+/, '题目需要格式不正确')
     validator.check('code', 'required', '需要代码')
+    validator.check('code', 'len', '答案不能超过2000个字符', {
+      max : 2000
+    })
 
    const errors = validator.validate()
     if(errors.length > 0) {
@@ -47,8 +53,7 @@ function register(app){
       return
     }
 
-    const {code, exam, index} = req.body
-
+    const {code} = req.body
     const notAllowed = [
       'global',
       'require',
@@ -64,10 +69,9 @@ function register(app){
       }
     }
 
-
-
-    res.send('ok')
-
+    const exam = new Exam()
+    await exam.submit(req.body, req.student.student_id)
+    res.send({success : 1})
   }))
 }
 

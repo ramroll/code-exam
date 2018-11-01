@@ -54,6 +54,14 @@ class Db{
     return this.query(sql)
   }
 
+  async lock(table){
+    await this.query(`lock table ${table} write`)
+  }
+
+  async unlock() {
+    await this.query(`unlock tables`)
+  }
+
   async queryById(tbl, id) {
     const sql = `select * from ${tbl} where id=?`
     const list = this.query(sql, [id])

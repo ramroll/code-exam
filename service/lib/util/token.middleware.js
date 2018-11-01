@@ -4,7 +4,6 @@ const token_middleware = async function(req, res, next) {
   const code = req.headers.token
   try{
     const account = new Account()
-    console.log('code', code)
     const {token, student} = await account.get_token(code)
 
     if(!token) {
