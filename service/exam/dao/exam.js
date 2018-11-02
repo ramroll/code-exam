@@ -10,6 +10,27 @@ class Exam{
     this.db = new Db()
   }
 
+  async rank(name){
+    const dir = path.resolve(__dirname, '../../../exams', name)
+    if(!fs.existsSync(dir)) {
+      throw new LogicException('试卷不存在')
+    }
+    const files = fs.readdirSync(dir)
+    const count = files.filter(x => x.match(/\.md$/)).length
+    const scores = require(path.resolve(dir, 'scores.config.js'))
+
+    const sql = `
+      select question,exe_time from submit where exam=? and status=2
+    `
+
+    let users = {}
+    for(let i = 0; i < count; i++) {
+
+
+    }
+
+  }
+
 
   async load(name, student_id){
 
