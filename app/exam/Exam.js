@@ -3,8 +3,11 @@ import MarkdownIt from 'markdown-it'
 import ReactDOM from 'react-dom'
 
 import { Button, message } from 'antd'
-
 import request from '../lib/request'
+import CodeMirror from 'codemirror'
+import 'codemirror/lib/codemirror.css'
+import 'codemirror/mode/javascript/javascript'
+
 
 
 @withExam()

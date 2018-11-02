@@ -6,11 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "service": "node scripts/server/runner.js",
-    "exam": "webpack-dev-server --config ./app/exam/webpack.config.js",
+    "exam": "NODE_ENV=development webpack-dev-server --config ./app/exam/webpack.config.js",
     "build-exam": "webpack --config ./app/exam/webpack.config.js",
     "user": "webpack-dev-server --config ./app/user/webpack.config.js",
     "build-user": "webpack --config ./app/user/webpack.config.js"
-
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +20,7 @@
     "babel-plugin-import": "^1.11.0",
     "body-parser": "^1.18.3",
     "chalk": "^2.4.1",
+    "codemirror": "^5.41.0",
     "commander": "^2.19.0",
     "markdown-it": "^8.4.2",
     "md5": "^2.2.1",

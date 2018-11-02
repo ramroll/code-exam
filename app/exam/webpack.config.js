@@ -1,14 +1,19 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
-module.exports = {
-  mode: 'development',
+const express = require('express')
+
+const PUBLIC_PATH = (process.env.NODE_ENV === 'production') ?
+  '//s.weavinghorse.com/' : '/'
+
+const config = {
+  mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
   entry: path.resolve(__dirname, './index.js'),
-  watch : true,
+  watch : process.env.NODE_ENV === 'development',
   output: {
     path: path.resolve(__dirname, '../../dist/exam'),
     filename: process.env.NODE_ENV === 'production' ? 'exam.bundle.[hash].js' : 'example.bundle.js',
-    publicPath: '/assets/'
+    publicPath: PUBLIC_PATH
   },
   module: {
     rules: [
@@ -42,6 +47,10 @@ module.exports = {
       {
         test : /\.less$/,
         loader : 'style-loader!css-loader!less-loader?javascriptEnabled=true'
+      },
+      {
+        test : /\.css$/,
+        loader : 'style-loader!css-loader'
       }
     ]
   },
@@ -52,19 +61,24 @@ module.exports = {
     hot: true,
     https: false,
     noInfo: true,
-    port : 8000
+    port : 8000,
+    // before : function(app, server) {
+    //   app.use('/static/',express.static(path.resolve(__dirname, '../../static')))
+    // }
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       title: '测试系统',
       template: path.resolve(__dirname, './index.html'),
-      alwaysWriteToDisk : true,
-      files : {
-        css : ['/assets/codemirror.css'],
-        js : ['/assets/codemirror.js']
-      }
+      alwaysWriteToDisk : true
     }),
   ]
 
 }
+
+if(process.env.NODE_ENV === 'production') {
+  config.plugins.shift()
+}
+
+module.exports = config
