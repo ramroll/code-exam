@@ -1,7 +1,7 @@
 function tester(testutil, code) {
   eval(code)
   if(typeof sum !== 'function') {
-    testutil.error(`没有找到函数sum`)
+    testutil.undef(`sum`)
   }
 
   testutil.begin()

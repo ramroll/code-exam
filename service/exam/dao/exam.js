@@ -30,7 +30,6 @@ class Exam{
 
     const submits = await this.db.query('select * from submit where exam_id=? and student_id=? order by id desc ', [exam.id, student_id])
 
-
     for(let i = 1; i <= count; i++) {
 
       const lastSubmit = submits.find(x => x.question === i - 1)
@@ -40,17 +39,16 @@ class Exam{
       const md = fs.readFileSync(path.resolve(dir, i + '.md'), 'utf-8')
       const sample = fs.readFileSync(path.resolve(dir, i + '.sample.js'), 'utf-8')
       question.md = md
+      question.message = lastSubmit ? lastSubmit.message : ''
       question.last_submit_status = lastSubmit ? lastSubmit.status : -1
-      question.sample = sample
+      question.sample = lastSubmit ? lastSubmit.code : sample
       question.correct = !!fastestSubmit
       question.exe_time = fastestSubmit ? fastestSubmit.exe_time : 0
       questions.push(question)
     }
 
-    console.log(exam)
     const created_time = new Date(exam.created).getTime()
     const diff = created_time + exam.time * 1000 - new Date().getTime()
-    console.log(created_time)
 
     return {
       name,

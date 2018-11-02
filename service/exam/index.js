@@ -6,6 +6,8 @@ const Exam = require('./dao/exam')
 const token = require('../lib/util/token.middleware')
 const LogicException = require('../lib/exception/LogicException')
 const LoginException = require('../lib/exception/LoginException')
+
+const request_lock = require('../lib/util/request_lock')
 /**
  * 服务注册函数
  * 向express中注册路由
@@ -37,6 +39,8 @@ function register(app){
     if(!req.student) {
       throw new LoginException()
     }
+
+    request_lock(req.student.student_id + '-submit', 10000)
     const validator = new Validator(req.body)
     validator.check('exam', 'required', '需要传入试题名称')
     validator.check('exam', /[a-z-]{3,20}/, '试题格式不正确')

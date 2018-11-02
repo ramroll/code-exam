@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const Testutil = require('./testutil')
 const ValueNotMatchException = require('./ValueNotMatchException')
+const UndefException = require('./UndefException')
 process.on('message', submit => {
   if(submit.type === 'exit') {process.exit(submit.code)}
   const {code, exam, question} = submit
@@ -30,6 +31,12 @@ process.on('message', submit => {
         return
       }
     }
+    else if(ex instanceof UndefException) {
+
+      sendError(104, ex.entity + '未定义')
+      return
+    }
+    console.error(ex)
   }
 
 })
