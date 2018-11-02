@@ -2,16 +2,21 @@
 
 ### 目录结构
 ```
---app 前端项目
-|----exam 考试系统
--- scripts 脚本和工具
-|----server web服务工具
-|----webpack webpack配置
--- service 服务端项目
-|----account 账户服务(注册/邮件发送/验证/找回)
-|----submitter 代码提交和验证服务
-|----stat 数据统计服务
---db 数据库工具
+├── app
+│   ├── exam 考试系统前端
+│   └── lib  通用工具
+├── dist -- 静态资源上线发布
+│   └── exam
+├── exams 测试试卷
+│   └── test
+├── scripts 脚本和工具
+│   ├── server 服务相关脚本
+└── service 服务
+    ├── account 账户服务
+    ├── exam 考试服务
+    ├── executor 执行器和验证器
+    ├── lib 公用库
+    └── server web服务
 ```
 
 
@@ -39,6 +44,9 @@ classnames - 类名解析
 
 
 
+
+
+
 ### 启动需要配置的环境变量
 
 -EMAIL_PASSED 邮箱密码
@@ -46,3 +54,4 @@ classnames - 类名解析
 -DB_USER 数据用户
 -DB_PASSWD 数据库密码
 -DB_NAME 数据库名称
+
