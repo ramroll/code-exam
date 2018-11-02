@@ -38,6 +38,14 @@ ramda - 数值操作
 
 react,react-dom - react
 
+codemirror - 代码编辑器
+
+stylus - css预编译
+
+markdown-it - mardown 解析
+
+antd - 表单组件库(注册、登录）
+
 antd - 组件库
 
 classnames - 类名解析
@@ -49,9 +57,9 @@ classnames - 类名解析
 
 ### 启动需要配置的环境变量
 
--EMAIL_PASSED 邮箱密码
--DB_HOST 数据库HOST
--DB_USER 数据用户
--DB_PASSWD 数据库密码
--DB_NAME 数据库名称
+- EMAIL_PASSED 邮箱密码
+- DB_HOST 数据库HOST
+- DB_USER 数据用户
+- DB_PASSWD 数据库密码
+- DB_NAME 数据库名称
 
