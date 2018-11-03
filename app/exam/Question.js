@@ -30,7 +30,6 @@ export default class Question extends Component{
   }
 
   wait = () => {
-
     this.setState({
       loading : true
     })

@@ -32,6 +32,7 @@ const config = {
             '@babel/react'
           ],
           plugins : [
+            ['@babel/plugin-syntax-dynamic-import'],
             ['@babel/plugin-proposal-decorators', {"legacy" : true}],
             'babel-plugin-transform-class-properties',
             ['babel-plugin-import', {

@@ -2,20 +2,35 @@ import React, { Component } from 'react'
 
 import { Button, message } from 'antd'
 import request from '../lib/request'
-import Question from './Question'
 import Timer from './Timer'
 import Rank from './Rank'
 import {tract_submit, tract_view_paper} from '../lib/tract'
 
 @withExam()
 export default class Exam extends Component {
+
+  constructor(){
+    super()
+    this.state = {
+      QuestionComponent : null
+    }
+  }
+  componentDidMount(){
+
+    import('./Question').then(Question => {
+      this.setState({
+        QuestionComponent : Question.default
+      })
+    })
+  }
   render() {
     return <div className='paper'>
       <Rank exam={this.props.name} />
       <h1>{this.props.title}<Timer left={this.props.left} /></h1>
 
-      {this.props.questions.map( (question, i) => {
-        return <Question
+      {this.state.QuestionComponent && this.props.questions.map( (question, i) => {
+        const { QuestionComponent } = this.state
+        return <QuestionComponent
           exam={this.props.name} question={question} key={i} index={i} />
       })}
 
@@ -33,7 +48,6 @@ function withExam() {
       constructor(props) {
         super()
         this.name = location.pathname.split('/').pop()
-
         this.state = {
           exam : null,
           error : null
