@@ -6,8 +6,9 @@ import CodeMirror from 'codemirror'
 import { Button, message } from 'antd'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/javascript/javascript'
-
 import request from '../lib/request'
+import {tract_submit, tract_view_paper} from '../lib/tract'
+
 /**
  * 试题
  */
@@ -58,6 +59,7 @@ export default class Question extends Component{
       return
     }
 
+    tract_submit(this.props.exam, this.props.index)
     request('/api/exam/submit', {
       method : 'POST',
       body : {

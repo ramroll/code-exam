@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
 import request from '../lib/request'
+import { tract_register } from '../lib/tract'
 const FormItem = Form.Item
 export default class Register extends Component{
   render(){
@@ -25,6 +26,7 @@ class NormalLoginForm extends React.Component {
         }
 
         delete values.retype
+        tract_register()
         request('/api/account/register', {method : 'POST', body : values})
           .then(() => {
             message.success('注册成功，邮件已发送至您的邮箱')

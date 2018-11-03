@@ -5,6 +5,7 @@ import request from '../lib/request'
 import Question from './Question'
 import Timer from './Timer'
 import Rank from './Rank'
+import {tract_submit, tract_view_paper} from '../lib/tract'
 
 @withExam()
 export default class Exam extends Component {
@@ -42,6 +43,7 @@ function withExam() {
       componentWillMount() {
         request('/api/exam/paper?name=' + this.name)
           .then(data => {
+            tract_view_paper(data.name)
             this.setState({ exam: data})
           })
           .catch(ex => {
