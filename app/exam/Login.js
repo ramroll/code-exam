@@ -26,7 +26,12 @@ class NormalLoginForm extends React.Component {
 
           setTimeout( () => {
             const query = qs.parse(location.search.substr(1))
-            window.location.href = decodeURIComponent(query.next)
+            if(query.next) {
+              window.location.href = decodeURIComponent(query.next)
+            }
+            else {
+              window.location.href = '/'
+            }
           })
         })
         .catch(ex => {

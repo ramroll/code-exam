@@ -6,15 +6,16 @@ import Login from './Login'
 import Register from './Register'
 import Activation from './Activation'
 import RegisterSuccess from './RegisterSuccess'
+import Home from './Home'
 import './styl/index.styl'
 
 class App extends Component {
-
 
   render(){
     return (
       <Router>
         <div className='router-wrapper'>
+          <Route path='/' exact component={Home} />
           <Route path='/exam' component={Exam} />
           <Route path='/login' component={Login} />
           <Route path='/register' component={Register} />
