@@ -78,6 +78,7 @@ async function fetchOne(db) {
     await db.lock('submit')
     const sql = `select * from submit order by status,id limit 1`
     const submit = await db.queryOne(sql)
+    if(!submit) {return null}
     if(submit.status === 0) {
       await db.update('submit', {
         id : submit.id,
