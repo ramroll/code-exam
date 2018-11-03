@@ -39,6 +39,7 @@ function withRank(){
           })
       }
       componentDidMount(){
+        this.load()
         this.I = setInterval( () => {
           this.load()
         }, 5000)
