@@ -8,7 +8,7 @@ export default class Rank extends Component {
       <h2>Ranking</h2>
       {this.props.list.map( (rank, i) => {
         return <div className='rank-item' key={i}>
-          <div className='name'>{rank.name}<span className='score'>({rank.score})</span></div>
+          <div className='name'>{rank.name}<span className='score'>({rank.score ? rank.score.toFixed(2) : 0})</span></div>
           <div className='email'>{rank.email}</div>
         </div>
       })}

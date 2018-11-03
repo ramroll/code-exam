@@ -53,6 +53,10 @@ export default class Question extends Component{
 
   submit = () => {
     const code = this.cm.getValue()
+    if(this.state.loading) {
+      message.warning('正在执行,请稍后')
+      return
+    }
 
     request('/api/exam/submit', {
       method : 'POST',
