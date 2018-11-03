@@ -77,7 +77,7 @@ class NormalLoginForm extends React.Component {
           {getFieldDecorator('nickname', {
             rules: [{ required: true, message: '请输入昵称!' }],
           })(
-            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="请输入昵称" />
+            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="昵称" />
           )}
         </FormItem>
 
