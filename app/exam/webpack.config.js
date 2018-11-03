@@ -70,7 +70,7 @@ const config = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      title: '测试系统',
+      title: '算法训练',
       template: path.resolve(__dirname, './index.html'),
       alwaysWriteToDisk : true
     }),

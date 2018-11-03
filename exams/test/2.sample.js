@@ -1,3 +1,3 @@
-function add(x, y) {
+function permutation(str) {
 
 }
