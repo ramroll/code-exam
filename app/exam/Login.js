@@ -30,7 +30,7 @@ class NormalLoginForm extends React.Component {
           })
         })
         .catch(ex => {
-
+          message.error(ex.error)
         })
       }
     })
@@ -66,7 +66,7 @@ class NormalLoginForm extends React.Component {
 
 
           <div>
-            <a href="">注册</a>
+            <a href="/register">注册</a>
           </div>
 
         </FormItem>

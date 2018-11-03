@@ -27,7 +27,8 @@ class NormalLoginForm extends React.Component {
         delete values.retype
         request('/api/account/register', {method : 'POST', body : values})
           .then(() => {
-            message.success('注册成功')
+            message.success('注册成功，邮件已发送至您的邮箱')
+            window.location = '/regsucc'
           })
           .catch( ({error}) => {
             message.error(error)
@@ -72,6 +73,14 @@ class NormalLoginForm extends React.Component {
             <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="请输入真实姓名" />
           )}
         </FormItem>
+        <FormItem>
+          {getFieldDecorator('nickname', {
+            rules: [{ required: true, message: '请输入昵称!' }],
+          })(
+            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="请输入昵称" />
+          )}
+        </FormItem>
+
         <FormItem>
           <div>
             <Button style={{ width: '100%' }} type="primary" htmlType="submit" className="login-form-button">

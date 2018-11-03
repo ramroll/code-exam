@@ -38,6 +38,8 @@ db.addColumn('vcode', 'created', 'timestamp', {
 
 /* 学生 */
 db.addColumn('student', 'name', 'varchar(20)')
+db.addColumn('student', 'email', 'varchar(50)')
+db.addColumn('student', 'nickname', 'varchar(50)')
 db.addColumn('student', 'account_id', 'bigint(20)')
 
 

@@ -23,11 +23,8 @@ function register(app){
     const validator = new Validator(req.query)
     validator.check('name', 'required', '需要传入试题名称')
     validator.check('name', /[a-z-]{3,20}/, '试题格式不正确')
-    const errors = validator.validate()
-    if(errors.length > 0) {
-      res.status(400).send({error : errors[0]})
-      return
-    }
+    validator.validate()
+
     const exam = new Exam()
     const result = await exam.load(req.query.name, req.student.student_id)
     res.send(result)
@@ -51,12 +48,7 @@ function register(app){
       max : 2000
     })
 
-   const errors = validator.validate()
-    if(errors.length > 0) {
-      res.status(400).send({error : errors[0]})
-      return
-    }
-
+    validator.validate()
     const {code} = req.body
     const notAllowed = [
       'global',

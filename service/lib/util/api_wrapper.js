@@ -18,6 +18,7 @@ function api_wrapper(func){
         res.status(401).send({
           error : "尚未登录"
         })
+        return
       }
 
       console.error(ex)

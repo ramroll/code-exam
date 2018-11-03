@@ -8,6 +8,7 @@ const PUBLIC_PATH = (process.env.NODE_ENV === 'production') ?
 
 const config = {
   mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
+  devtool : process.env.NODE_ENV === 'development' ? 'eval-source-map' : 'none',
   entry: path.resolve(__dirname, './index.js'),
   watch : process.env.NODE_ENV === 'development',
   output: {

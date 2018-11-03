@@ -6,32 +6,15 @@ const LogicException = require('../../lib/exception/LogicException')
 class Exam{
 
   constructor(){
-
     this.db = new Db()
   }
 
-  async rank(name){
-    const dir = path.resolve(__dirname, '../../../exams', name)
-    if(!fs.existsSync(dir)) {
-      throw new LogicException('试卷不存在')
-    }
-    const files = fs.readdirSync(dir)
-    const count = files.filter(x => x.match(/\.md$/)).length
-    const scores = require(path.resolve(dir, 'scores.config.js'))
 
-    const sql = `
-      select question,exe_time from submit where exam=? and status=2
-    `
-
-    let users = {}
-    for(let i = 0; i < count; i++) {
-
-
-    }
-
-  }
-
-
+  /**
+   * 加载一份试卷 
+   * @param {*} name 
+   * @param {*} student_id 
+   */
   async load(name, student_id){
 
     const dir = path.resolve(__dirname, '../../../exams', name)
@@ -79,6 +62,11 @@ class Exam{
     }
   }
 
+  /**
+   * 提交代码进行验证 
+   * @param {*} obj 
+   * @param {*} student_id 
+   */
   async submit(obj, student_id) {
     const exam = await this.db.queryOne('select * from exam where name=?', [obj.exam])
     const diff = new Date().getTime() - ( new Date(exam.created).getTime() + exam.time*1000)

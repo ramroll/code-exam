@@ -28,7 +28,9 @@ class Account {
       const id = await this.db.insert('account', accountObj)
       const studentObj = {
         account_id: id,
-        name: account.name
+        name: account.name,
+        nickname : account.nickname,
+        email : account.email
       }
       await this.db.insert('student', studentObj)
       const code = await this.create_vcode(id)
@@ -94,13 +96,14 @@ class Account {
     const token = await this.db.queryOne(sql, [code])
 
     if(!token) {
-      console.log('token not found')
+      console.log('token not found', code)
       return {}
     }
 
     const now = new Date().getTime()
     const created = new Date(token.created).getTime()
 
+    console.log('token diff', now - created, now, created)
     if(now - created > 3600 * 24 * 3 * 1000) { // 保留3天
     // if(now - created > 1) { // 保留3天
       console.log('token renew')

@@ -5,6 +5,7 @@ import Exam from './Exam'
 import Login from './Login'
 import Register from './Register'
 import Activation from './Activation'
+import RegisterSuccess from './RegisterSuccess'
 import './styl/index.styl'
 
 class App extends Component {
@@ -17,6 +18,7 @@ class App extends Component {
           <Route path='/exam' component={Exam} />
           <Route path='/login' component={Login} />
           <Route path='/register' component={Register} />
+          <Route path='/regsucc' component={RegisterSuccess} />
           <Route path='/activation' component={Activation} />
         </div>
       </Router>

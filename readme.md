@@ -63,3 +63,36 @@ classnames - 类名解析
 - DB_PASSWD 数据库密码
 - DB_NAME 数据库名称
 
+
+### 开发配置
+
+```
+# 安装依赖
+yarn
+
+# 生成建表语句
+node service/lib/db/createdb.js
+
+# 安装mysql然后创建数据库
+# create database codeexam default charset utf8;
+# user codeexam;
+# ...
+
+
+# 开发nginx配置
+server {
+  localhost / {
+    proxy_pass localhost:8000;
+  }
+  location /api/account/ {
+    proxy_pass localhost:8001/;
+  }
+  location /api/exam/ {
+    proxy_pass localhost:8002/;
+  }
+  location /api/rank/ {
+    proxy_pass localhost:8004/;
+  }
+}
+
+```

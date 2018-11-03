@@ -17,13 +17,7 @@ function register(app){
     validator.check('email', 'email', '邮箱格式不正确')
     validator.check('password', 'required', '请填写密码', {min : 6, max : 20})
     validator.check('password', 'len', '密码长度为6-12位', {min : 6, max : 20})
-    const errors = validator.validate()
-    if(errors.length > 0) {
-      res.status(400).send({
-        error : errors[0]
-      })
-      return
-    }
+    validator.validate()
     const account = new Account()
     const user = await account.login(query, req.headers.token)
     res.send(account)
@@ -36,14 +30,7 @@ function register(app){
       min : 21,
       max : 21
     })
-    const errors = validator.validate()
-    if(errors.length > 0) {
-      res.status(400).send({
-        error : errors[0]
-      })
-      return
-    }
-
+    validator.validate()
     const account = new Account()
     await account.activation(req.query.code)
     res.send({success : 1})
@@ -58,22 +45,16 @@ function register(app){
     validator.check('password', 'len', '密码长度为6-12位', {min : 6, max : 20})
     validator.check('name', 'required', '请输入姓名')
     validator.check('name', /^[\u4e00-\u9fa5]{2,4}$/, '请输入2-4个字中文姓名')
-    const errors = validator.validate()
-    if(errors.length > 0) {
-      res.status(400).send({
-        error : errors[0]
-      })
-      return
-    }
+    validator.check('nickname', 'required', '请输入昵称')
+    validator.check('nickname', /^[A-Za-z0-9\u4e00-\u9fa5]{2,20}$/, '昵称应当为2-20个字符（不包含特殊字符）')
+
+    validator.validate()
 
     const account = new Account()
     await account.register(req.body)
     res.send({success : 1})
   }))
 
-  app.post('/validate', () => {
-
-  })
 }
 
 

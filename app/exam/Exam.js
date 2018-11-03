@@ -1,180 +1,27 @@
 import React, { Component } from 'react'
-import MarkdownIt from 'markdown-it'
-import ReactDOM from 'react-dom'
 
 import { Button, message } from 'antd'
 import request from '../lib/request'
-import CodeMirror from 'codemirror'
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/javascript/javascript'
-
-
+import Question from './Question'
+import Timer from './Timer'
+import Rank from './Rank'
 
 @withExam()
 export default class Exam extends Component {
   render() {
     return <div className='paper'>
+      <Rank exam={this.props.name} />
       <h1>{this.props.title}<Timer left={this.props.left} /></h1>
+
       {this.props.questions.map( (question, i) => {
         return <Question
           exam={this.props.name} question={question} key={i} index={i} />
       })}
+
     </div>
   }
 }
 
-
-class Timer extends Component{
-
-  constructor(props){
-    super()
-    this.state = {
-      left : props.left
-    }
-  }
-  componentWillMount(){
-    let t = new Date().getTime()
-    this.I = setInterval( () => {
-      const d = new Date().getTime() - t
-      const left = this.props.left - d
-      if(left > 0) {
-        this.setState({
-          left
-        })
-      } else {
-        this.setState({
-          left : 0
-        })
-      }
-    }, 1000)
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.I)
-  }
-
-  render(){
-    if(!this.state.left) {
-      return <span>已结束</span>
-    }
-
-    return <span className='timer'>{toTime(this.state.left)}</span>
-  }
-}
-
-
-function toTime(left){
-  const d = Math.floor( left / (3600*1000*24) )
-  left -= d * 3600*1000*24
-  const h = Math.floor ( left / (3600*1000) )
-  left -= h * 3600 * 1000
-  const min = Math.floor( left / (60 * 1000))
-  left -= min * 60 * 1000
-  const second = Math.floor(left / 1000)
-
-  let str = ''
-  if(d) {str += d + '天'}
-  if(d||h) {str += h + '时'}
-  if(d||h||min) { str += min + '分'}
-  str += second+'秒'
-  return str
-}
-
-
-class Question extends Component{
-
-  constructor(props){
-    super()
-
-    this.state = {
-      question : props.question
-    }
-  }
-
-  componentDidMount(){
-    const domNode = ReactDOM.findDOMNode(this.r)
-    this.cm = CodeMirror.fromTextArea(domNode, {
-      mode : 'javascript'
-    })
-  }
-
-  wait = () => {
-
-    this.setState({
-      loading : true
-    })
-    this.I = setInterval( () => {
-      request(`/api/exam/paper?name=${this.props.exam}`)
-        .then(paper => {
-          const question = paper.questions[this.props.index]
-          const state = {question }
-          if(question.last_submit_status > 1) {
-            clearInterval(this.I)
-            state.loading = false
-          }
-          this.setState(state)
-        })
-    }, 2000)
-  }
-
-  componentWillUnmount(){
-    this.I && clearInterval(this.I)
-  }
-
-  submit = () => {
-    const code = this.cm.getValue()
-
-    request('/api/exam/submit', {
-      method : 'POST',
-      body : {
-        exam : this.props.exam,
-        index : this.props.index,
-        code
-      }
-    })
-    .then(() => {
-      message.success('开始执行')
-      this.wait()
-    })
-    .catch(ex => {
-      message.error(ex.error)
-    })
-  }
-
-  renderLastStatus = (status, message) => {
-
-    if(this.state.loading) {return ''}
-    switch(status) {
-      case -1 :
-        return ''
-      case 0 :
-      case 1 :
-        return <span>上一次提交执行中...</span>
-      case 2 :
-        return <span className='f-success'>上一次提交成功</span>
-      case 100 :
-        return <span className='f-error'>上一次提交执行超时</span>
-      case 101 :
-        return <span className='f-error'>上一次提交执行结果不正确</span>
-      default :
-        return <span className='f-error'>{message}</span>
-    }
-
-  }
-
-  render(){
-    const md = new MarkdownIt()
-
-    return <div className='question'>
-      <div dangerouslySetInnerHTML={{__html : md.render( this.state.question.md )}}></div>
-      <textarea ref={r => this.r = r} defaultValue={this.state.question.sample}></textarea>
-      <div>{this.renderLastStatus(this.state.question.last_submit_status,
-        this.state.question.message)}</div>
-      {this.state.question.correct && <div className='answer'>最优正确答案（执行时间:{this.state.question.exe_time / 1000000}ms)</div>}
-      <Button style={{marginTop : 10}} onClick={this.submit}>{this.state.loading ? '执行...' : '提交'}</Button>
-    </div>
-  }
-}
 
 
 function withExam() {
@@ -193,7 +40,6 @@ function withExam() {
       }
 
       componentWillMount() {
-
         request('/api/exam/paper?name=' + this.name)
           .then(data => {
             this.setState({ exam: data})
@@ -212,13 +58,10 @@ function withExam() {
         if(!this.state.exam) {
           return null
         }
-
         return <Target {...this.state.exam} />
       }
     }
-
     return ExamProxy
-
   }
 }
 

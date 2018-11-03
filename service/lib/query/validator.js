@@ -1,4 +1,5 @@
 const R = require('ramda')
+const LogicException = require('../exception/LogicException')
 class Validator{
 
   constructor(query){
@@ -31,7 +32,7 @@ class Validator{
       const value = this.query[key]
       if(requiredRule) {
         if(value === undefined) {
-          return requiredRule.errorMessage
+          throw new LogicException(requiredRule.errorMessage)
         }
       }
 
@@ -44,7 +45,7 @@ class Validator{
         /* 验证正则表达式 */
         if(rule.type instanceof RegExp) {
           if(!rule.type.test(value)) {
-            return rule.errorMessage
+            throw new LogicException(rule.errorMessage)
           }
         }
 
@@ -52,21 +53,21 @@ class Validator{
         switch (rule.type) {
           case 'email':
             if( !/^[a-z0-9_-]+@[a-z0-9-]+\.com$/.test(value) ) {
-              return rule.errorMessage
+              throw new LogicException(rule.errorMessage)
             }
             break;
           case 'chinese' :
             if ( /^[\u4e00-\u9fa5]+$/.test(value) ){
-              return rule.errorMessage
+              throw new LogicException(rule.errorMessage)
             }
             break;
           case 'len' :
             const {min, max} = rule.params
             if(min && value.length < min) {
-              return rule.errorMessage
+              throw new LogicException(rule.errorMessage)
             }
             if(max && value.length > max) {
-              return rule.errorMessage
+              throw new LogicException(rule.errorMessage)
             }
             break
           default:
@@ -74,9 +75,8 @@ class Validator{
         }
       }
       return ''
-    }).filter(x => x)
+    })
 
-    return errors
 
   }
 
