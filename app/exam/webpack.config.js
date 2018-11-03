@@ -2,6 +2,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const express = require('express')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 const PUBLIC_PATH = (process.env.NODE_ENV === 'production') ?
   '//s.weavinghorse.com/' : '/'
@@ -64,9 +65,6 @@ const config = {
     https: false,
     noInfo: true,
     port : 8000,
-    // before : function(app, server) {
-    //   app.use('/static/',express.static(path.resolve(__dirname, '../../static')))
-    // }
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
@@ -75,8 +73,17 @@ const config = {
       template: path.resolve(__dirname, './index.html'),
       alwaysWriteToDisk : true
     }),
-  ]
+  ],
+  resolve : {
+    alias : {
+      '@ant-design/icons/lib/dist' : path.resolve(__dirname, '../icons')
+    }
+  }
 
+}
+
+if(process.env.BUNDLE_ANALYZE) {
+  config.plugins.push(new BundleAnalyzerPlugin())
 }
 
 if(process.env.NODE_ENV === 'production') {

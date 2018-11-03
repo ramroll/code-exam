@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "service": "node scripts/server/runner.js",
     "start": "NODE_ENV=development webpack-dev-server --config ./app/exam/webpack.config.js",
-    "build": "NODE_ENV=production webpack --config ./app/exam/webpack.config.js"
+    "build": "NODE_ENV=production webpack --config ./app/exam/webpack.config.js",
+    "bz" : "BUNDLE_ANALYZE=1 NODE_ENV=production  webpack --config ./app/exam/webpack.config.js"
   },
   "author": "",
   "license": "ISC",
@@ -46,6 +47,7 @@
     "style-loader": "^0.23.1",
     "stylus-loader": "^3.0.2",
     "webpack": "^4.23.1",
+    "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
   }

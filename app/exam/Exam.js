@@ -17,6 +17,8 @@ export default class Exam extends Component {
   }
   componentDidMount(){
 
+    // Question比较大，包括markdown-it和codemirror两个大库
+    // 使用Dynamic import访问 
     import('./Question').then(Question => {
       this.setState({
         QuestionComponent : Question.default

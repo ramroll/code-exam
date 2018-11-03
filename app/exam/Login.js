@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
+import { Form, Input,Button, Checkbox, message } from 'antd'
 import request from '../lib/request'
 import qs from 'qs'
 const FormItem = Form.Item
@@ -52,14 +52,14 @@ class NormalLoginForm extends React.Component {
               message : '邮箱格式不正确'
             }],
           })(
-            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="邮箱" />
+            <Input  placeholder="邮箱" />
           )}
         </FormItem>
         <FormItem>
           {getFieldDecorator('password', {
             rules: [{ required: true, message: '请输入密码!' }],
           })(
-            <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" />
+            <Input type="password" placeholder="密码" />
           )}
         </FormItem>
         <FormItem>

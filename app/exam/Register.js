@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
+import { Form, Input, Button, Checkbox, message } from 'antd'
 import request from '../lib/request'
 import { tract_register } from '../lib/tract'
 const FormItem = Form.Item
@@ -50,21 +50,21 @@ class NormalLoginForm extends React.Component {
               message : '邮箱格式不正确'
             }],
           })(
-            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="邮箱" />
+            <Input placeholder="邮箱" />
           )}
         </FormItem>
         <FormItem>
           {getFieldDecorator('password', {
             rules: [{ required: true, message: '请输入密码!' }],
           })(
-            <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" />
+            <Input type="password" placeholder="密码" />
           )}
         </FormItem>
         <FormItem>
           {getFieldDecorator('retype', {
             rules: [{ required: true, message: '请再次输入密码!' }],
           })(
-            <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="重复输入密码" />
+            <Input type="password" placeholder="重复输入密码" />
           )}
         </FormItem>
 
@@ -72,14 +72,14 @@ class NormalLoginForm extends React.Component {
           {getFieldDecorator('name', {
             rules: [{ required: true, message: '请输入真实姓名!' }],
           })(
-            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="请输入真实姓名" />
+            <Input placeholder="请输入真实姓名" />
           )}
         </FormItem>
         <FormItem>
           {getFieldDecorator('nickname', {
             rules: [{ required: true, message: '请输入昵称!' }],
           })(
-            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="昵称" />
+            <Input placeholder="昵称" />
           )}
         </FormItem>
 
