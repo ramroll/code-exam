@@ -14,7 +14,6 @@ export default class Register extends Component{
   }
 }
 
-
 class NormalLoginForm extends React.Component {
   handleSubmit = (e) => {
     e.preventDefault();

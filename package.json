@@ -8,7 +8,7 @@
     "service": "node scripts/server/runner.js",
     "start": "NODE_ENV=development webpack-dev-server --config ./app/exam/webpack.config.js",
     "build": "NODE_ENV=production webpack --config ./app/exam/webpack.config.js",
-    "bz" : "BUNDLE_ANALYZE=1 NODE_ENV=production  webpack --config ./app/exam/webpack.config.js"
+    "bz": "BUNDLE_ANALYZE=1 NODE_ENV=production  webpack --config ./app/exam/webpack.config.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +21,7 @@
     "chalk": "^2.4.1",
     "codemirror": "^5.41.0",
     "commander": "^2.19.0",
+    "happypack": "^5.0.0",
     "markdown-it": "^8.4.2",
     "md5": "^2.2.1",
     "mysql": "^2.16.0",

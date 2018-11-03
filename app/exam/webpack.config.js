@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const express = require('express')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
-
+const HappyPack = require('happypack')
 const PUBLIC_PATH = (process.env.NODE_ENV === 'production') ?
   '//s.weavinghorse.com/' : '/'
 
@@ -24,24 +24,8 @@ const config = {
         include: [
           path.resolve(__dirname),
         ],
-        loader: 'babel-loader',
-        options: {
-          presets: [
-            [
-              '@babel/env'
-            ],
-            '@babel/react'
-          ],
-          plugins : [
-            ['@babel/plugin-syntax-dynamic-import'],
-            ['@babel/plugin-proposal-decorators', {"legacy" : true}],
-            'babel-plugin-transform-class-properties',
-            ['babel-plugin-import', {
-              "libraryName": "antd",
-              style : true
-            }]
-          ]
-        }
+        loader: 'happypack/loader'
+
       },
       {
         test : /\.styl$/,
@@ -73,10 +57,36 @@ const config = {
       template: path.resolve(__dirname, './index.html'),
       alwaysWriteToDisk : true
     }),
+    new HappyPack({
+      threads : 4,
+      loaders : [
+        {
+          loader : 'babel-loader',
+          options: {
+            presets: [
+              [
+                '@babel/env'
+              ],
+              '@babel/react'
+            ],
+            plugins : [
+              ['@babel/plugin-syntax-dynamic-import'],
+              ['@babel/plugin-proposal-decorators', {"legacy" : true}],
+              'babel-plugin-transform-class-properties',
+              ['babel-plugin-import', {
+                "libraryName": "antd",
+                style : true
+              }]
+            ]
+          }
+        }
+      ]
+
+    })
   ],
   resolve : {
     alias : {
-      '@ant-design/icons/lib/dist' : path.resolve(__dirname, '../icons')
+      '@ant-design/icons/lib/dist' : path.resolve(__dirname, '../icons/index.js')
     }
   }
 
