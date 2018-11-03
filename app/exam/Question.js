@@ -87,11 +87,11 @@ export default class Question extends Component{
       case 2 :
         return <span className='f-success'>上一次提交成功</span>
       case 100 :
-        return <span className='f-error'>上一次提交执行超时</span>
+        return <span className='f-error'>执行超时</span>
       case 101 :
-        return <span className='f-error'>上一次提交执行结果不正确</span>
+        return <span className='f-error'>错误：{message}</span>
       default :
-        return <span className='f-error'>{message}</span>
+        return <span className='f-error'>执行错误:{message}</span>
     }
 
   }

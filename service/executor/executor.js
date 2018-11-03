@@ -32,11 +32,18 @@ process.on('message', submit => {
       }
     }
     else if(ex instanceof UndefException) {
-
       sendError(104, ex.entity + '未定义')
       return
     }
-    console.error(ex)
+    else {
+      if(typeof ex !== 'object') {
+        sendError(1000, ex)
+      } else {
+
+        sendError(1000, ex.message)
+      }
+      return
+    }
   }
 
 })
