@@ -8,6 +8,7 @@ const DB_CONFIG = {
 module.exports = {
   apps: [{
     name: "account",
+    // node ./scripts/server/runner.js -s account -p 8001
     script: "./scripts/server/runner.js",
     args: "-s account -p 8001",
     watch: true,

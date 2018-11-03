@@ -4,6 +4,7 @@ export default function request(url, options = {}) {
     method : 'GET'
   }
 
+
   options = {...def, ...options}
 
   options.headers = {
@@ -16,9 +17,11 @@ export default function request(url, options = {}) {
   try {
     return fetch(url, options)
       .then(resp => {
+        /// TODO 不是很合理
         if (resp.status === 404) {
           throw { error: '网络错误' }
         }
+
         if (resp.status === 401 && options.method === 'GET') {
           window.location.href = '/login?next=' + encodeURIComponent(location.href)
           return

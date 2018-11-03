@@ -4,7 +4,7 @@ const webpack = require('webpack')
 const express = require('express')
 
 const PUBLIC_PATH = (process.env.NODE_ENV === 'production') ?
-  '//s.weavinghorse.com/' : '/'
+  '//t.weavinghorse.com/' : '/'
 
 const config = {
   mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
