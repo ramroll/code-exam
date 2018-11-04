@@ -35,6 +35,7 @@ function register(app){
 
   /* 每过5000ms 更新一次排名 */
   const rank = new Rank()
+  let last_id = 0 
   setInterval( async () => {
 
     for(let key in ranks) {
