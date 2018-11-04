@@ -111,7 +111,7 @@ server {
 pm2 start process.config.js
 
 # 程序验证器开启
-# sh ./run_executor.s
+# sh ./run_executor.sh
 
 # web端
 npm start
