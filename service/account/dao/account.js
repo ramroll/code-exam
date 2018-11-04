@@ -116,7 +116,7 @@ class Account {
       where B.id = ${token.account_id} 
     `
     const student = await this.db.queryOne(sql_user)
-    if(student.status !== 1) {
+    if(student && student.status !== 1) {
       console.log(student)
       throw 'not-activation' 
     }

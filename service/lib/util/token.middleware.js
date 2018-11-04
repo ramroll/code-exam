@@ -20,6 +20,7 @@ const token_middleware = async function(req, res, next) {
       res.status(403).send({error : '没有激活'})
       return
     }
+    console.error(ex)
     res.status(500).send('Internal server error')
   }
 }
