@@ -9,6 +9,7 @@
 │   └── exam
 ├── exams 测试试卷
 │   └── test
+│── sql 数据库维护
 ├── scripts 脚本和工具
 │   ├── server 服务相关脚本
 └── service 服务
@@ -17,6 +18,7 @@
     ├── executor 执行器和验证器
     ├── lib 公用库
     └── server web服务
+    └── rank 排名服务
 ```
 
 
@@ -74,9 +76,8 @@ yarn
 node service/lib/db/createdb.js
 
 # 安装mysql然后创建数据库
-# create database codeexam default charset utf8;
-# user codeexam;
-# ...
+# 按照 sql目录下文件字典顺序执行sql，比如先执行 0000001.sql
+cat sql/000001.sql | mysql -uuser -p 
 
 
 # /etc/hosts
@@ -84,18 +85,33 @@ node service/lib/db/createdb.js
 
 # 开发nginx配置
 server {
-  localhost / {
-    proxy_pass localhost:8000;
+  server_name www.weavinghorse.test;
+  listen 80;
+
+  location / {
+    proxy_pass http://localhost:8000;
   }
+
   location /api/account/ {
-    proxy_pass localhost:8001/;
+    proxy_pass http://localhost:8001/;
   }
+
   location /api/exam/ {
-    proxy_pass localhost:8002/;
+    proxy_pass http://localhost:8002/;
   }
+
   location /api/rank/ {
-    proxy_pass localhost:8004/;
+    proxy_pass http://localhost:8004/;
   }
+
 }
 
-```
+# 执行
+# 执行4个服务
+pm2 start process.config.js
+
+# 程序验证器开启
+# sh ./run_executor.s
+
+# web端
+npm start

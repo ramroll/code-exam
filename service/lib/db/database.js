@@ -10,13 +10,14 @@ class Database{
     this.data = []
   }
 
-  addColumn(table, col, type, options = {}){
+  addColumn(table, col, type, comment, options = {}){
     const def = {
       nullable : false
     }
     options = {...def, ...options}
     this.columns.push({
       table,
+      comment,
       name : col,
       type,
       ...options
@@ -64,7 +65,8 @@ class Database{
           const nul = col.nullable ? 'NULL' : 'NOT NULL'
           const incre = col.auto_increment ? 'AUTO_INCREMENT' : ''
           const def = col.default !== undefined ? 'default ' + col.default : ''
-          return `\`${col.name}\` ${col.type} ${nul} ${def} ${incre}`
+          const comment = col.comment ? `COMMENT '${col.comment}'` : ''
+          return `\`${col.name}\` ${col.type} ${nul} ${def} ${incre} ${comment}`
         })
       const sql = `
         CREATE TABLE \`${tbl.name}\` (
@@ -99,7 +101,7 @@ class Database{
         }
         return val
       }).join(',')
-      return `insert into ${table} (${columns}) values (${values})`
+      return `insert into ${table} (${columns}) values (${values});\n`
     }).join('\n')
     return sqls.join('\n\n') + '\n\n' + indexSql + '\n\n' + dataSql
   }

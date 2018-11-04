@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import { Form, Input,Button, Checkbox, message } from 'antd'
 import request from '../lib/request'
 import qs from 'qs'
+import md5 from 'md5'
 const FormItem = Form.Item
 export default class Login extends Component{
   render(){
@@ -20,10 +21,9 @@ class NormalLoginForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        request(`/api/account/login?email=${values.email}&password=${values.password}`)
+        request(`/api/account/login?email=${values.email}&password=${md5(values.password)}`)
         .then(data => {
           message.success('登录成功')
-
           setTimeout( () => {
             const query = qs.parse(location.search.substr(1))
             if(query.next) {
