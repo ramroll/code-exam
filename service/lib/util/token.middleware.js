@@ -16,8 +16,10 @@ const token_middleware = async function(req, res, next) {
     req.student = student
     next()
   } catch(ex) {
-
-    console.error(ex)
+    if(ex === 'not-activation') {
+      res.status(403).send({error : '没有激活'})
+      return
+    }
     res.status(500).send('Internal server error')
   }
 }

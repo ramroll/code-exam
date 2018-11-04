@@ -110,13 +110,16 @@ class Account {
       return {}
     }
 
-    const sql_user = `select A.id as student_id, B.id as account_id,A.name from student as A
+    const sql_user = `select A.id as student_id, B.id as account_id,A.name, B.status from student as A
       left join account as B
       on A.account_id = B.id
-      where B.id = ${token.account_id} && B.status=1
+      where B.id = ${token.account_id} 
     `
-
     const student = await this.db.queryOne(sql_user)
+    if(student.status !== 1) {
+      console.log(student)
+      throw 'not-activation' 
+    }
     return {student,token}
   }
 

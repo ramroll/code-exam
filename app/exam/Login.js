@@ -21,7 +21,7 @@ class NormalLoginForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        request(`/api/account/login?email=${values.email}&password=${md5(values.password)}`)
+        request(`/api/account/login?email=${values.email}&password=${values.password}`)
         .then(data => {
           message.success('登录成功')
           setTimeout( () => {

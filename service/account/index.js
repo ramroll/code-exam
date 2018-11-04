@@ -20,7 +20,7 @@ function register(app){
     validator.validate()
     const account = new Account()
     const user = await account.login(query, req.headers.token)
-    res.send(account)
+    res.send({success : 1})
   }))
 
   app.get('/activation', token, api_wrapper( async (req, res) => {
