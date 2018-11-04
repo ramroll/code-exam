@@ -81,7 +81,7 @@ class Account {
       throw new LogicException('用户不存在')
     }
 
-    const verify_pass = md5(account.passwd + account.salt)
+    const verify_pass = md5(verify.password + account.salt) === account.password
     if (!verify_pass) {
       throw new LogicException('用户名或密码错误')
     }

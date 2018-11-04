@@ -79,6 +79,9 @@ node service/lib/db/createdb.js
 # ...
 
 
+# /etc/hosts
+127.0.0.1 www.weavinghorse.test 
+
 # 开发nginx配置
 server {
   localhost / {
