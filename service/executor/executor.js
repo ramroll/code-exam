@@ -29,6 +29,9 @@ process.on('message', submit => {
       if(typeof ex.val1 !== 'object' && typeof ex.val2 !== 'object') {
         sendError(101,  `${ex.val1}!==${ex.val2} 结果不正确`)
         return
+      }else {
+        sendError(101, `结果不正确`)
+        return
       }
     }
     else if(ex instanceof UndefException) {

@@ -6,7 +6,7 @@ function tester(testutil, code) {
   }
 
   testutil.begin()
-  testutil.deepEqual(permutation('xyz'), [ 'xyz', 'xzy', 'yxz', 'yzx', 'zxy', 'zyx' ])
+  testutil.deepEqual(permutation('xyz').sort(), [ 'xyz', 'xzy', 'yxz', 'yzx', 'zxy', 'zyx' ].sort())
   const n7 = permutation('abcdefgh').length
   const n8 = permutation('abcdefghi').length
   testutil.equal(n7, 40320)
