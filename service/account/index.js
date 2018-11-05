@@ -10,8 +10,8 @@ const bodyParser = require('body-parser')
 function register(app){
 
 
-  app.get('/login', token, api_wrapper( async (req, res) => {
-    const query = req.query
+  app.post('/login', token, api_wrapper( async (req, res) => {
+    const query = req.body
     const validator = new Validator(query)
     validator.check('email', 'required', '请填写邮箱')
     validator.check('email', 'email', '邮箱格式不正确')
