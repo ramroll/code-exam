@@ -137,10 +137,6 @@ class Account {
     });
     return code;
   }
-
-  async userlist() {
-    await this.db.queryById("account", 1);
-  }
   send_email() {}
 }
 

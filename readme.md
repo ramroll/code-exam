@@ -73,6 +73,8 @@ node service/lib/db/createdb.js
 
 # 安装 mysql 然后创建数据库
 
+> 注意端口不要和本地已有的 mysql 重复
+
 1. [docker 安装](http://www.runoob.com/docker/ubuntu-docker-install.html)
 
 2. [docker 改源](https://www.jianshu.com/p/34d3b4568059)

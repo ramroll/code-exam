@@ -1,6 +1,5 @@
 const mysql = require("mysql");
 const sqlFormatter = require("sql-formatter");
-console.log(90909090);
 function get_connection() {
   return mysql.createPool({
     connectionLimit: 10,
