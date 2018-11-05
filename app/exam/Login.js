@@ -21,14 +21,20 @@ class NormalLoginForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        request(`/api/account/login?email=${values.email}&password=${values.password}`)
-        .then(data => {
-          message.success('登录成功')
-          setTimeout( () => {
-            const query = qs.parse(location.search.substr(1))
-            if(query.next) {
-              window.location.href = decodeURIComponent(query.next)
-            }
+        request(`/api/account/login`, {
+          method: 'POST',
+          body: {
+            email: values.email,
+            password: values.password
+          }
+        })
+          .then(data => {
+            message.success('登录成功')
+            setTimeout(() => {
+              const query = qs.parse(location.search.substr(1))
+              if (query.next) {
+                window.location.href = decodeURIComponent(query.next)
+              }
             else {
               window.location.href = '/'
             }
