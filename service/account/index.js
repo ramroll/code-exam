@@ -10,7 +10,7 @@ const bodyParser = require('body-parser')
 function register(app){
 
 
-  app.post('/login', token, api_wrapper( async (req, res) => {
+  app.post('/login', token, bodyParser.json(),api_wrapper( async (req, res) => {
     const query = req.body
     const validator = new Validator(query)
     validator.check('email', 'required', '请填写邮箱')
