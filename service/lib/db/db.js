@@ -1,16 +1,13 @@
 const mysql = require('mysql')
 const sqlFormatter = require('sql-formatter')
-const ConnectionException = require('../exception/ConnectionException')
 
 function get_connection(){
   return mysql.createPool({
-    connectionLimit: 100,
+    connectionLimit: 10,
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWD,
     port: 3306,
-    connectTimeout : process.env.DB_CONN_TIMEOUT || 500,
-    waitForConnections : false,
     database: process.env.DB_NAME
   })
 }
@@ -140,7 +137,6 @@ class Db{
     return new Promise((resolve, reject) => {
       function __query(connection, sql, params) {
         connection.query(sql, params, (error, results, fields) => {
-          console.log('release-a-connection')
           connection.release()
           if (error) {
             console.log(sqlFormatter.format(sql))
@@ -152,12 +148,9 @@ class Db{
       if (conn) {
         __query(connection, sql, params)
       } else {
-        console.log('get-a-connection')
         Db.pool.getConnection(function (err, connection) {
           if (err) {
-            console.error(err)
-            reject(new ConnectionException(err))
-            return
+            throw err
           }
           __query(connection, sql, params)
         })

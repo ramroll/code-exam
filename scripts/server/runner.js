@@ -20,11 +20,6 @@ if( !( port && service) ) {
 
 function run_service(service, port) {
   const app = require('express')()
-
-  app.use((req,res, next) => {
-    console.log('request:', req.path)
-    next()
-  })
   const base = path.resolve(__dirname, '../../service/', service)
   const register = require(path.resolve(base, 'index.js'))
   register(app)

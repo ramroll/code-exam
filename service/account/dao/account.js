@@ -81,10 +81,6 @@ class Account {
       throw new LogicException('用户不存在')
     }
 
-    if(account.status !== 1) {
-      throw new LogicException('请先激活')
-    }
-
     const verify_pass = md5(verify.password + account.salt) === account.password
     if (!verify_pass) {
       throw new LogicException('用户名或密码错误')
