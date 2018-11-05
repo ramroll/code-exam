@@ -1,6 +1,7 @@
-## coding考试系统
+## coding 考试系统
 
 ### 目录结构
+
 ```
 ├── app
 │   ├── exam 考试系统前端
@@ -22,16 +23,15 @@
     └── rank 排名服务
 ```
 
-
 ### 依赖
 
 nomnon - 命令行参数处理
 
 pm2 - 进程管理
 
-mysql - mysql连接
+mysql - mysql 连接
 
-sql-formatter - sql语句格式化（美观)
+sql-formatter - sql 语句格式化（美观)
 
 nodemailer - 发送邮件
 
@@ -43,7 +43,7 @@ react,react-dom - react
 
 codemirror - 代码编辑器
 
-stylus - css预编译
+stylus - css 预编译
 
 markdown-it - mardown 解析
 
@@ -53,66 +53,96 @@ antd - 组件库
 
 classnames - 类名解析
 
-
-
-
-
-
 ### 启动需要配置的环境变量
 
 - EMAIL_PASSED 邮箱密码
-- DB_HOST 数据库HOST
+- DB_HOST 数据库 HOST
 - DB_USER 数据用户
 - DB_PASSWD 数据库密码
 - DB_NAME 数据库名称
 
-
 ### 开发配置
 
-```
 # 安装依赖
+
 yarn
 
 # 生成建表语句
+
 node service/lib/db/createdb.js
 
-# 安装mysql然后创建数据库
-# 按照 sql目录下文件字典顺序执行sql，比如先执行 0000001.sql
-cat sql/000001.sql | mysql -uuser -p 
+# 安装 mysql 然后创建数据库
 
+1. [docker 安装](http://www.runoob.com/docker/ubuntu-docker-install.html)
+
+2. [docker 改源](https://www.jianshu.com/p/34d3b4568059)
+
+3. 下载 mysql 镜像
+
+```
+docker pull mysql:5.7(开发使用 5.7,8 有点坑)
+```
+
+4.  制作镜像
+
+    - 可以根据建表语句自动创建表，保证数据统一
+
+    * **数据的备份和恢复 暂时做不到，关机数据库数据可能会丢失**
+
+    - 进入 sql 目录，执行命令
+
+```
+    docker image build -t code_exam_db .
+```
+
+5.  启动 mysql 容器
+
+```
+    docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=以上数据库密码 --name=db1 code_exam_db
+```
 
 # /etc/hosts
-127.0.0.1 www.weavinghorse.test 
 
-# 开发nginx配置
+127.0.0.1 www.weavinghorse.test
+
+# 开发 nginx 配置
+
 server {
-  server_name www.weavinghorse.test;
-  listen 80;
+server_name www.weavinghorse.test;
+listen 80;
 
-  location / {
-    proxy_pass http://localhost:8000;
-  }
+location / {
+proxy_pass http://localhost:8000;
+}
 
-  location /api/account/ {
-    proxy_pass http://localhost:8001/;
-  }
+location /api/account/ {
+proxy_pass http://localhost:8001/;
+}
 
-  location /api/exam/ {
-    proxy_pass http://localhost:8002/;
-  }
+location /api/exam/ {
+proxy_pass http://localhost:8002/;
+}
 
-  location /api/rank/ {
-    proxy_pass http://localhost:8004/;
-  }
+location /api/rank/ {
+proxy_pass http://localhost:8004/;
+}
 
 }
 
 # 执行
-# 执行4个服务
+
+# 执行 4 个服务
+
 pm2 start process.config.js
 
 # 程序验证器开启
+
 # sh ./run_executor.sh
 
-# web端
+# web 端
+
 npm start
+
+```
+
+```
