@@ -7,27 +7,28 @@ const bodyParser = require("body-parser");
  * 服务注册函数
  * 向express中注册路由
  */
-function register(app) {
-  app.get(
-    "/login",
-    token,
-    api_wrapper(async (req, res) => {
-      const query = req.query;
-      const validator = new Validator(query);
-      validator.check("email", "required", "请填写邮箱");
-      validator.check("email", "email", "邮箱格式不正确");
-      validator.check("password", "required", "请填写密码", {
-        min: 6,
-        max: 20
-      });
-      validator.check("password", "len", "密码长度为6-12位", {
-        min: 6,
-        max: 20
-      });
-      validator.validate();
-      const account = new Account();
-      const user = await account.login(query, req.headers.token);
-      res.send({ success: 1 });
+function register(app){
+
+
+  app.post('/login', token, bodyParser.json(),api_wrapper( async (req, res) => {
+    const query = req.body
+    const validator = new Validator(query)
+    validator.check('email', 'required', '请填写邮箱')
+    validator.check('email', 'email', '邮箱格式不正确')
+    validator.check('password', 'required', '请填写密码', {min : 6, max : 20})
+    validator.check('password', 'len', '密码长度为6-12位', {min : 6, max : 20})
+    validator.validate()
+    const account = new Account()
+    const user = await account.login(query, req.headers.token)
+    res.send({success : 1})
+  }))
+
+  app.get('/activation', token, api_wrapper( async (req, res) => {
+    const validator = new Validator(req.query)
+    validator.check('code', 'required', '不完整的激活链接（请重试）')
+    validator.check('code', 'len', '不完整的激活链接（请重试）', {
+      min : 21,
+      max : 21
     })
   );
 

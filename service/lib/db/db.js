@@ -1,14 +1,18 @@
-const mysql = require("mysql");
-const sqlFormatter = require("sql-formatter");
-function get_connection() {
+const mysql = require('mysql')
+const sqlFormatter = require('sql-formatter')
+const ConnectionException = require('../exception/ConnectionException')
+
+function get_connection(){
   return mysql.createPool({
-    connectionLimit: 10,
-    host: "127.0.0.1",
-    user: "root",
-    password: "123qweasd",
+    connectionLimit: 100,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWD,
     port: 3306,
-    database: "codeexam"
-  });
+    connectTimeout : process.env.DB_CONN_TIMEOUT || 500,
+    waitForConnections : false,
+    database: process.env.DB_NAME
+  })
 }
 
 class Db {
@@ -134,7 +138,12 @@ class Db {
     return new Promise((resolve, reject) => {
       function __query(connection, sql, params) {
         connection.query(sql, params, (error, results, fields) => {
+<<<<<<< HEAD
           connection.release();
+=======
+          console.log('release-a-connection')
+          connection.release()
+>>>>>>> code/master
           if (error) {
             console.log(sqlFormatter.format(sql));
             reject(error);
@@ -145,9 +154,18 @@ class Db {
       if (conn) {
         __query(connection, sql, params);
       } else {
+<<<<<<< HEAD
         Db.pool.getConnection(function(err, connection) {
           if (err) {
             throw err;
+=======
+        console.log('get-a-connection')
+        Db.pool.getConnection(function (err, connection) {
+          if (err) {
+            console.error(err)
+            reject(new ConnectionException(err))
+            return
+>>>>>>> code/master
           }
           __query(connection, sql, params);
         });

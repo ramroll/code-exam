@@ -74,6 +74,10 @@ class Account {
       throw new LogicException("用户不存在");
     }
 
+    if (account.status !== 1) {
+      throw new LogicException("请先激活");
+    }
+
     const verify_pass =
       md5(verify.password + account.salt) === account.password;
     if (!verify_pass) {
@@ -109,7 +113,7 @@ class Account {
     const sql_user = `select A.id as student_id, B.id as account_id,A.name, B.status from student as A
       left join account as B
       on A.account_id = B.id
-      where B.id = ${token.account_id} 
+      where B.id = ${token.account_id}
     `;
     const student = await this.db.queryOne(sql_user);
     if (student && student.status !== 1) {
