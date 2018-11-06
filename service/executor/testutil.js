@@ -1,7 +1,10 @@
 const ValueNotMatchException = require('./ValueNotMatchException')
 const UndefException = require('./UndefException')
 const deepEqual = require('deep-equal')
+
+
 class Testutil {
+
 
   begin(){
     this.begin = process.hrtime()
@@ -14,11 +17,12 @@ class Testutil {
   end(){
     this.end = process.hrtime()
   }
-  equal(val1, val2){
+  equal(val1, val2, message){
     if(val1 !== val2) {
-      throw new ValueNotMatchException(val1, val2)
+      throw new ValueNotMatchException(val1, val2, message)
     }
   }
+
 
   deepEqual(val1, val2) {
     if(!deepEqual(val1, val2)) {
