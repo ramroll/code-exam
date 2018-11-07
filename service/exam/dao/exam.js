@@ -57,7 +57,7 @@ class Exam{
 
     return {
       name,
-      title : '测试卷1',
+      title : exam.title,
       left :  diff > 0 ? diff : 0,
       questions
     }
