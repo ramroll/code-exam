@@ -5,6 +5,7 @@ const DB_CONFIG = {
   "DB_USER": "root",
   "DB_NAME": "codeexam"
 }
+const path = require('path')
 module.exports = {
   apps: [{
     name: "account",
@@ -16,7 +17,7 @@ module.exports = {
       ...DB_CONFIG,
       "NODE_ENV": "development",
       "EMAIL_PASSWD": "XQe3s2piwR0R"
-    },
+      },
     env_production: {
       "NODE_ENV": "production"
     }
@@ -29,6 +30,7 @@ module.exports = {
     env: {
       ...DB_CONFIG,
       "NODE_ENV": "development",
+      'EXAM_DIR' : path.resolve(__dirname, 'exams'),
     },
     env_production: {
       "NODE_ENV": "production"
@@ -42,6 +44,7 @@ module.exports = {
     env: {
       ...DB_CONFIG,
       "NODE_ENV": "development",
+      'EXAM_DIR' : path.resolve(__dirname, 'exams')
     },
     env_production: {
       "NODE_ENV": "production"

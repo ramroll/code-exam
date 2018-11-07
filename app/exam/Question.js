@@ -101,7 +101,7 @@ export default class Question extends Component{
     const md = new MarkdownIt()
 
     return <div className='question'>
-      <div dangerouslySetInnerHTML={{__html : md.render( this.state.question.md )}}></div>
+      <div className='md' dangerouslySetInnerHTML={{__html : md.render( this.state.question.md )}}></div>
       <textarea ref={r => this.r = r} defaultValue={this.state.question.sample}></textarea>
       <div>{this.renderLastStatus(this.state.question.last_submit_status,
         this.state.question.message)}</div>

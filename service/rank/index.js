@@ -4,19 +4,28 @@ const token = require('../lib/util/token.middleware')
 const bodyParser = require('body-parser')
 const Rank = require('./dao/rank')
 
+const rank = new Rank()
 /**
  * 每个试卷的排名
- * ranks : 
- *  [exam] : MaxHeap 
+ * ranks :
+ *  [exam] : MaxHeap
  */
-const ranks = {}
+let ranks = {}
 
 /**
  * 服务注册函数
  * 向express中注册路由
  */
-function register(app){
-  app.get('/top100', token, api_wrapper( async (req, res) => {
+async function register(app){
+
+  /** 进行一次rank build */
+  ranks = await rank.buildRank(ranks)
+  /** 每过5s钟再build一次 */
+  setInterval( async () => {
+    ranks = await rank.buildRank(ranks)
+  }, 5000)
+
+  app.get('/top100', api_wrapper( async (req, res) => {
     const query = req.query
     const validator = new Validator(query)
     validator.check('name', 'required', '需要试卷名称')
@@ -31,22 +40,6 @@ function register(app){
       res.send([])
     }
   }))
-
-
-  /* 每过5000ms 更新一次排名 */
-  const rank = new Rank()
-  let last_id = 0 
-  setInterval( async () => {
-
-    for(let key in ranks) {
-      console.log('ranking', key)
-      try{
-        ranks[key] = await rank.buildRank(key)
-      } catch(ex) {
-        console.error(ex)
-      }
-    }
-  }, 5000)
 }
 
 

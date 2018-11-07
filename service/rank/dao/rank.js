@@ -21,6 +21,8 @@ function hide(email) {
 class Rank {
   constructor(){
     this.db = new Db()
+    this.max_id = -1
+    this.exams = {}
   }
 
   /**
@@ -28,53 +30,96 @@ class Rank {
    */
   score(real_exe_time, refer_exe_time, min_score, correct, weight){
     if(!correct) {return 0}
+    const lg_real = Math.log2(real_exe_time)
+    const lg_refer = Math.log2(refer_exe_time)
+
+    const diff = lg_refer - lg_real
+
+
+    console.log('diff', diff, 'ref=', refer_exe_time)
+    let score = 50 + (diff > 0 ? diff * (50 / 2) : diff * (50 / 5))
+    if(score > 100) {score = 100}
+    if(score < min_score) {score = min_score}
+
     weight = weight / 100
-    const s = 100 * ( real_exe_time < refer_exe_time ? 1 : refer_exe_time / real_exe_time )
-    const score = Math.max(s, min_score) * weight
-    return score
+    console.log('score', real_exe_time, refer_exe_time, score, weight)
+    return score * weight
   }
 
 
-  /**
-   * 给试卷进行排名和打分 
-   * @param {*} name 
-   */
-  async buildRank(name){
-    const maxHeap = new MaxHeap(
-      (a, key) => a.score = key,
-      a => a.score
-    )
-    const dir = path.resolve(__dirname, '../../../exams', name)
+  loadExamConfs() {
+    const dir = path.resolve(process.env.EXAM_DIR)
     if(!fs.existsSync(dir)) {
       throw new LogicException('试卷不存在')
     }
-    const files = fs.readdirSync(dir)
-    const count = files.filter(x => x.match(/\.md$/)).length
+    const exams = fs.readdirSync(dir)
+    let conf = {}
+    for(let i = 0; i < exams.length; i++) {
+      const exam = exams[i]
+      const scores = require(path.resolve(dir, exam, 'scores.config.js'))
+      // console.log('files', fs.readdirSync(path.resolve(dir, exam)))
+      const count = fs.readdirSync(path.resolve(dir, exam)).filter(x => x.match(/\.md$/)).length
+      conf[exam] = {
+        scores,
+        count
+      }
+    }
+    return conf
+  }
+
+  loadExamConf(name) {
+    const dir = path.resolve(process.env.EXAM_DIR, name)
+    if(!fs.existsSync(dir)) {
+      throw new LogicException('试卷不存在')
+    }
     const scores = require(path.resolve(dir, 'scores.config.js'))
+    const count = fs.readdirSync(path.resolve(dir)).filter(x => x.match(/\.md$/)).length
+    return {scores,count}
+  }
+
+  async buildRank() {
+    const exam_names = ( await this.db.query(`select distinct(exam) from submit`) ).map(x => x.exam)
+    this.conf = this.loadExamConfs()
 
     const sql = `
-      select A.student_id, A.status, A.question, A.exe_time,B.email, B.nickname
+      select A.id, A.exam, A.student_id, A.status, A.question, A.exe_time,B.email, B.nickname
       from submit A
       left join student B
       on A.student_id = B.id
-      where exam=? and status>=2
+      where status>=2 and A.id > ${this.max_id}
     `
-    const submits = await this.db.query(sql, [name])
-    console.log(`${submits.length} submit found`)
-    let users = {}
+    const submits = await this.db.query(sql)
 
-    // 计算所有学生的总分
-    for(let i = 0; i < submits.length ; i++) {
-      const {student_id, question , status, exe_time, nickname, email}= submits[i]
+
+    for(let i = 0; i < submits.length; i++) {
+      const {id, exam, student_id, question , status, exe_time, nickname, email}= submits[i]
+
+      if(this.max_id < id) {
+        this.max_id = id
+      }
+      if(!this.conf[exam]) {
+        this.conf[exam] = this.loadExamConf(exam)
+      }
+
+      if(!this.exams[exam]) {
+        this.exams[exam] = {
+          users : {}
+        }
+      }
+      const {scores,count} = this.conf[exam]
+      // console.log('count', count)
+
       // 初始化为0分
-      if(!users[student_id]) {
-        users[student_id] = {
+      if(!this.exams[exam].users[student_id]) {
+        this.exams[exam].users[student_id] = {
           nickname,
           email : hide(email),
           scores : Array(count).fill(0),
           total : 0
         }
       }
+      const users = this.exams[exam].users
+
       // 对当前submit打分
       const index = question
       const score = this.score(
@@ -86,23 +131,35 @@ class Rank {
       )
       if (users[student_id].scores[index] < score) {
         users[student_id].scores[index] = score
-        users[student_id].total = sum(users[student_id].scores) 
+        users[student_id].total = sum(users[student_id].scores)
       }
-
     }
 
     // 数据放到maxHeap中
-    Object.keys(users).forEach(student_id => {
-      const user = users[student_id]
-      maxHeap.add({
-        name : user.nickname,
-        email : user.email,
-        score : user.total
+    const ranks = {}
+    for (let exam in this.exams) {
+      if(!ranks[exam]) {
+        ranks[exam] = new MaxHeap(
+          (a, key) => a.score = key,
+          a => a.score
+        )
+      }
+
+      const maxHeap = ranks[exam]
+      const users = this.exams[exam].users
+      Object.keys(users).forEach(student_id => {
+        const user = users[student_id]
+        maxHeap.add({
+          name: user.nickname,
+          email: user.email,
+          score: user.total
+        })
       })
-    })
-    return maxHeap
+
+    }
+    return ranks
   }
 
 }
 
-module.exports = Rank 
+module.exports = Rank
