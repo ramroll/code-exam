@@ -69,44 +69,17 @@ classnames - 类名解析
 
 ### 开发配置
 
-
+```
 # 安装依赖
 yarn
 
 # 生成建表语句
 node service/lib/db/createdb.js
 
-# 安装 mysql 然后创建数据库
+# 安装mysql然后创建数据库
+# 按照 sql目录下文件字典顺序执行sql，比如先执行 0000001.sql
+cat sql/000001.sql | mysql -uuser -p 
 
-> 注意端口不要和本地已有的 mysql 重复
-
-1. [docker 安装](http://www.runoob.com/docker/ubuntu-docker-install.html)
-
-2. [docker 改源](https://www.jianshu.com/p/34d3b4568059)
-
-3. 下载 mysql 镜像
-
-```
-docker pull mysql:5.7(开发使用 5.7,8 有点坑)
-```
-
-4.  制作镜像
-
-    - 可以根据建表语句自动创建表，保证数据统一
-
-    * **数据的备份和恢复 暂时做不到，关机数据库数据可能会丢失**
-
-    - 进入 sql 目录，执行命令
-
-```
-    docker image build -t code_exam_db .
-```
-
-5.  启动 mysql 容器
-
-```
-    docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=以上数据库密码 --name=db1 code_exam_db
-```
 
 # /etc/hosts
 127.0.0.1 www.weavinghorse.test 

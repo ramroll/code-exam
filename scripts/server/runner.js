@@ -1,6 +1,8 @@
 const path = require('path')
 const express = require('express')
 const chalk = require('chalk')
+const IsPC = require(path.resolve(__dirname, '../lib/util/checkua.js'))
+const godRegister = require(path.resolve(__dirname, '../../service/god/index.js'))
 const opts = require('commander')
   .version('1.0.0')
   .usage('[options] <service ...>')
@@ -16,12 +18,14 @@ if( !( port && service) ) {
   process.exit(1)
 }
 
-
-
 function run_service(service, port) {
   const app = require('express')()
-
+  godRegister(app);
   app.use((req,res, next) => {
+    let ispc = IsPC(req.headers['user-agent']);
+    if (!ispc) {
+      res.redirect('/supportm');
+    }
     console.log('request:', req.path)
     next()
   })
