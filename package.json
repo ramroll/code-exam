@@ -25,6 +25,7 @@
     "happypack": "^5.0.0",
     "markdown-it": "^8.4.2",
     "md5": "^2.2.1",
+    "mockjs": "^1.0.1-beta3",
     "mysql": "^2.16.0",
     "nodemailer": "^4.6.8",
     "ramda": "^0.25.0",

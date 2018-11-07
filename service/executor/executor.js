@@ -15,11 +15,20 @@ process.on('message', submit => {
 
 
   const tester_path = path.resolve( process.env.EXAM_DIR, exam, (question+1) + '.test.js')
-  const tester = require(tester_path)
+  const testerCode = fs.readFileSync(tester_path, 'utf-8')
+
+  let testerFunction = null
+  try {
+    testerFunction = eval(testerCode)
+  } catch(ex) {
+    console.error(ex)
+    sendError(1001, '执行试卷出错')
+  }
+  // const tester = require(tester_path)
 
   const testutil = new Testutil()
   try{
-    tester(testutil, code)
+    testerFunction(testutil, code)
     process.send({
       code : 2,
       exe_time : testutil.exe_time()
@@ -30,7 +39,7 @@ process.on('message', submit => {
         sendError(101,  `${ex.val1}!==${ex.val2} 结果不正确`)
         return
       }else {
-        sendError(101, `结果不正确`)
+        sendError(101, `结果不正确:` + ex.message)
         return
       }
     }

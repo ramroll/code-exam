@@ -11,13 +11,14 @@ class Exam{
 
 
   /**
-   * 加载一份试卷 
-   * @param {*} name 
-   * @param {*} student_id 
+   * 加载一份试卷
+   * @param {*} name
+   * @param {*} student_id
    */
   async load(name, student_id){
 
-    const dir = path.resolve(__dirname, '../../../exams', name)
+    const dir = path.resolve(process.env.EXAM_DIR, name)
+    console.log('dir', dir)
     if(!fs.existsSync(dir)) {
       throw new LogicException('试卷不存在')
     }
@@ -63,9 +64,9 @@ class Exam{
   }
 
   /**
-   * 提交代码进行验证 
-   * @param {*} obj 
-   * @param {*} student_id 
+   * 提交代码进行验证
+   * @param {*} obj
+   * @param {*} student_id
    */
   async submit(obj, student_id) {
     const exam = await this.db.queryOne('select * from exam where name=?', [obj.exam])
