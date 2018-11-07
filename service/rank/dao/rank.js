@@ -36,7 +36,7 @@ class Rank {
     const diff = lg_refer - lg_real
 
 
-    console.log(diff)
+    console.log('diff', diff, 'ref=', refer_exe_time)
     let score = 50 + (diff > 0 ? diff * (50 / 2) : diff * (50 / 5))
     if(score > 100) {score = 100}
     if(score < min_score) {score = min_score}
@@ -55,9 +55,14 @@ class Rank {
     const exams = fs.readdirSync(dir)
     let conf = {}
     for(let i = 0; i < exams.length; i++) {
-      const exam = exams
+      const exam = exams[i]
       const scores = require(path.resolve(dir, exam, 'scores.config.js'))
-      conf[exam] = scores
+      // console.log('files', fs.readdirSync(path.resolve(dir, exam)))
+      const count = fs.readdirSync(path.resolve(dir, exam)).filter(x => x.match(/\.md$/)).length
+      conf[exam] = {
+        scores,
+        count
+      }
     }
     return conf
   }
@@ -68,12 +73,13 @@ class Rank {
       throw new LogicException('试卷不存在')
     }
     const scores = require(path.resolve(dir, 'scores.config.js'))
-    return scores
+    const count = fs.readdirSync(path.resolve(dir)).filter(x => x.match(/\.md$/)).length
+    return {scores,count}
   }
 
-  async buildRank(ranks) {
-    const exam_names = ( await this.query(`select distinct(exam) from submit`) ).map(x => x.exam)
-    const conf = this.loadExamConfs()
+  async buildRank() {
+    const exam_names = ( await this.db.query(`select distinct(exam) from submit`) ).map(x => x.exam)
+    this.conf = this.loadExamConfs()
 
     const sql = `
       select A.id, A.exam, A.student_id, A.status, A.question, A.exe_time,B.email, B.nickname
@@ -82,7 +88,7 @@ class Rank {
       on A.student_id = B.id
       where status>=2 and A.id > ${this.max_id}
     `
-    const submits = await this.query(sql)
+    const submits = await this.db.query(sql)
 
 
     for(let i = 0; i < submits.length; i++) {
@@ -91,8 +97,8 @@ class Rank {
       if(this.max_id < id) {
         this.max_id = id
       }
-      if(!conf[exam]) {
-        conf[exam] = this.loadExamConf(exam)
+      if(!this.conf[exam]) {
+        this.conf[exam] = this.loadExamConf(exam)
       }
 
       if(!this.exams[exam]) {
@@ -100,18 +106,19 @@ class Rank {
           users : {}
         }
       }
-      const scores = conf[exam]
+      const {scores,count} = this.conf[exam]
+      // console.log('count', count)
 
       // 初始化为0分
-      const users = this.exams[exam].users
-      if(!users[student_id]) {
-        users[student_id] = {
+      if(!this.exams[exam].users[student_id]) {
+        this.exams[exam].users[student_id] = {
           nickname,
           email : hide(email),
           scores : Array(count).fill(0),
           total : 0
         }
       }
+      const users = this.exams[exam].users
 
       // 对当前submit打分
       const index = question
@@ -129,8 +136,9 @@ class Rank {
     }
 
     // 数据放到maxHeap中
-    for (let exam in exams) {
-      if(!rank[exam]) {
+    const ranks = {}
+    for (let exam in this.exams) {
+      if(!ranks[exam]) {
         ranks[exam] = new MaxHeap(
           (a, key) => a.score = key,
           a => a.score
@@ -138,6 +146,7 @@ class Rank {
       }
 
       const maxHeap = ranks[exam]
+      const users = this.exams[exam].users
       Object.keys(users).forEach(student_id => {
         const user = users[student_id]
         maxHeap.add({

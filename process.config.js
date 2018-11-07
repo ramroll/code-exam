@@ -30,8 +30,7 @@ module.exports = {
     env: {
       ...DB_CONFIG,
       "NODE_ENV": "development",
-      // 'EXAM_DIR' : path.resolve(__dirname, 'exams'),
-      'EXAM_DIR' : '/Users/ramrollwei/dev/exams/js'
+      'EXAM_DIR' : path.resolve(__dirname, 'exams'),
     },
     env_production: {
       "NODE_ENV": "production"
@@ -45,7 +44,7 @@ module.exports = {
     env: {
       ...DB_CONFIG,
       "NODE_ENV": "development",
-      'EXAM_DIR' : '/Users/ramrollwei/dev/exams/js'
+      'EXAM_DIR' : path.resolve(__dirname, 'exams')
     },
     env_production: {
       "NODE_ENV": "production"

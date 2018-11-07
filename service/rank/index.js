@@ -4,6 +4,7 @@ const token = require('../lib/util/token.middleware')
 const bodyParser = require('body-parser')
 const Rank = require('./dao/rank')
 
+const rank = new Rank()
 /**
  * 每个试卷的排名
  * ranks :
@@ -19,11 +20,10 @@ async function register(app){
 
   /** 进行一次rank build */
   ranks = await rank.buildRank(ranks)
-  console.log(ranks)
   /** 每过5s钟再build一次 */
-  // setInterval( async () => {
-  //   ranks = await rank.buildRank(ranks)
-  // }, 5000)
+  setInterval( async () => {
+    ranks = await rank.buildRank(ranks)
+  }, 5000)
 
   app.get('/top100', api_wrapper( async (req, res) => {
     const query = req.query
