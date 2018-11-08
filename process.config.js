@@ -5,6 +5,7 @@ const DB_CONFIG = {
   "DB_USER": "root",
   "DB_NAME": "codeexam"
 }
+console.log(process.env.A)
 const path = require('path')
 module.exports = {
   apps: [{
