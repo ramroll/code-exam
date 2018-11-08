@@ -101,7 +101,7 @@ async function sleep(ms) {
     }, ms)
 
   })
-  }
+}
 
 async function start(){
 

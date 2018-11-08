@@ -6,8 +6,7 @@ import Timer from './Timer'
 import Rank from './Rank'
 import {tract_submit, tract_view_paper} from '../lib/tract'
 
-@withExam()
-export default class Exam extends Component {
+export default @withExam() class Exam extends Component {
 
   constructor(){
     super()
@@ -18,7 +17,7 @@ export default class Exam extends Component {
   componentDidMount(){
 
     // Question比较大，包括markdown-it和codemirror两个大库
-    // 使用Dynamic import访问 
+    // 使用Dynamic import访问
     import('./Question').then(Question => {
       this.setState({
         QuestionComponent : Question.default

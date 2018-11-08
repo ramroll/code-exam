@@ -18,7 +18,7 @@ export default class Login extends Component{
 
 class NormalLoginForm extends React.Component {
   handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
         request(`/api/account/login`, {
@@ -35,20 +35,20 @@ class NormalLoginForm extends React.Component {
               if (query.next) {
                 window.location.href = decodeURIComponent(query.next)
               }
-            else {
-              window.location.href = '/'
-            }
+              else {
+                window.location.href = '/'
+              }
+            })
           })
-        })
-        .catch(ex => {
-          message.error(ex.error)
-        })
+          .catch(ex => {
+            message.error(ex.error)
+          })
       }
     })
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator } = this.props.form
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">
         <FormItem>
@@ -72,7 +72,7 @@ class NormalLoginForm extends React.Component {
           <div>
             <Button style={{width : '100%'}} type="primary" htmlType="submit" className="login-form-button">
               Log in
-          </Button>
+            </Button>
           </div>
 
 
@@ -82,8 +82,8 @@ class NormalLoginForm extends React.Component {
 
         </FormItem>
       </Form>
-    );
+    )
   }
 }
 
-const WrappedNormalLoginForm = Form.create()(NormalLoginForm);
+const WrappedNormalLoginForm = Form.create()(NormalLoginForm)

@@ -51,27 +51,27 @@ class Validator{
 
         /* 验证其他规则 */
         switch (rule.type) {
-          case 'email':
-            if( !/^[a-z0-9_-]+@[a-z0-9-]+\.com$/.test(value) ) {
-              throw new LogicException(rule.errorMessage)
-            }
-            break;
-          case 'chinese' :
-            if ( /^[\u4e00-\u9fa5]+$/.test(value) ){
-              throw new LogicException(rule.errorMessage)
-            }
-            break;
-          case 'len' :
-            const {min, max} = rule.params
-            if(min && value.length < min) {
-              throw new LogicException(rule.errorMessage)
-            }
-            if(max && value.length > max) {
-              throw new LogicException(rule.errorMessage)
-            }
-            break
-          default:
-            break;
+        case 'email':
+          if( !/^[a-z0-9_-]+@[a-z0-9-]+\.com$/.test(value) ) {
+            throw new LogicException(rule.errorMessage)
+          }
+          break
+        case 'chinese' :
+          if ( /^[\u4e00-\u9fa5]+$/.test(value) ){
+            throw new LogicException(rule.errorMessage)
+          }
+          break
+        case 'len' :
+          const {min, max} = rule.params
+          if(min && value.length < min) {
+            throw new LogicException(rule.errorMessage)
+          }
+          if(max && value.length > max) {
+            throw new LogicException(rule.errorMessage)
+          }
+          break
+        default:
+          break
         }
       }
       return ''
