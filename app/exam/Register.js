@@ -16,7 +16,7 @@ export default class Register extends Component{
 
 class NormalLoginForm extends React.Component {
   handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
         if(values.password !== values.retype) {
@@ -35,11 +35,11 @@ class NormalLoginForm extends React.Component {
             message.error(error)
           })
       }
-    });
+    })
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator } = this.props.form
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">
         <FormItem>
@@ -86,7 +86,7 @@ class NormalLoginForm extends React.Component {
           <div>
             <Button style={{ width: '100%' }} type="primary" htmlType="submit" className="login-form-button">
               注册账号
-          </Button>
+            </Button>
           </div>
 
 
@@ -96,8 +96,8 @@ class NormalLoginForm extends React.Component {
 
         </FormItem>
       </Form>
-    );
+    )
   }
 }
 
-const WrappedNormalLoginForm = Form.create()(NormalLoginForm);
+const WrappedNormalLoginForm = Form.create()(NormalLoginForm)

@@ -67,32 +67,32 @@ export default class Question extends Component{
         code
       }
     })
-    .then(() => {
-      message.success('开始执行')
-      this.wait()
-    })
-    .catch(ex => {
-      message.error(ex.error)
-    })
+      .then(() => {
+        message.success('开始执行')
+        this.wait()
+      })
+      .catch(ex => {
+        message.error(ex.error)
+      })
   }
 
   renderLastStatus = (status, message) => {
 
     if(this.state.loading) {return ''}
     switch(status) {
-      case -1 :
-        return ''
-      case 0 :
-      case 1 :
-        return <span>上一次提交执行中...</span>
-      case 2 :
-        return <span className='f-success'>上一次提交成功</span>
-      case 100 :
-        return <span className='f-error'>执行超时</span>
-      case 101 :
-        return <span className='f-error'>错误：{message}</span>
-      default :
-        return <span className='f-error'>执行错误:{message}</span>
+    case -1 :
+      return ''
+    case 0 :
+    case 1 :
+      return <span>上一次提交执行中...</span>
+    case 2 :
+      return <span className='f-success'>上一次提交成功</span>
+    case 100 :
+      return <span className='f-error'>执行超时</span>
+    case 101 :
+      return <span className='f-error'>错误：{message}</span>
+    default :
+      return <span className='f-error'>执行错误:{message}</span>
     }
 
   }

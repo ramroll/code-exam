@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer')
 
 const send = (to, title, body) => {
 
@@ -22,18 +22,18 @@ const send = (to, title, body) => {
       //text和html两者只支持一种
       text: title, // 标题
       html: body // html 内容
-    };
+    }
 
     transporter.sendMail(mailOptions, function(error, response){
       if(error){
         console.log("main send fail")
         reject(error)
       }else{
-        console.log("Message sent: " + response.message);
+        console.log("Message sent: " + response.message)
         resolve(true)
       }
-      transporter.close(); // 如果没用，关闭连接池
-    });
+      transporter.close() // 如果没用，关闭连接池
+    })
   })
 
 }
