@@ -1,6 +1,8 @@
 node_modules
 .DS_STORE
 yarn*
+.idea
+.idea/
 package-lock*
 dist/
 !exams/test

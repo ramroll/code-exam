@@ -7,6 +7,7 @@ import Register from './Register'
 import Activation from './Activation'
 import RegisterSuccess from './RegisterSuccess'
 import Home from './Home'
+import Supportm from './Supportm'
 import './styl/index.styl'
 
 class App extends Component {
@@ -21,6 +22,7 @@ class App extends Component {
           <Route path='/register' component={Register} />
           <Route path='/regsucc' component={RegisterSuccess} />
           <Route path='/activation' component={Activation} />
+          <Route path='/supportm' component={Supportm} />
         </div>
       </Router>
     )
