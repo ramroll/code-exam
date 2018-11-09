@@ -75,7 +75,7 @@ class Exam{
       throw new LogicException('已经超出考试时间')
     }
 
-    const lastSubmit = await this.db.queryOne('select * from submit where question=? and exam_id = ? and status=0', [obj.index, exam.id])
+    const lastSubmit = await this.db.queryOne('select * from submit where question=? and exam_id = ? and (status=0 or status=1)', [obj.index, exam.id])
     if(lastSubmit) {
       throw new LogicException('您上次提交的代码正在验证')
     }

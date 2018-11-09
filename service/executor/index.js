@@ -62,7 +62,7 @@ async function success_handler(db, submit, time) {
     status : 2,
     exe_time : time
   })
-  
+
 }
 
 async function error_handler(db, submit, code, message) {
@@ -75,7 +75,7 @@ async function error_handler(db, submit, code, message) {
 
 async function fetchOne(db) {
   try {
-    await db.lock('submit')
+    // await db.lock('submit')
     const sql = `select * from submit order by status,id limit 1`
     const submit = await db.queryOne(sql)
     if(!submit) {return null}
@@ -88,7 +88,7 @@ async function fetchOne(db) {
     }
     return null
   } finally {
-    await db.unlock()
+    // await db.unlock()
   }
 }
 
