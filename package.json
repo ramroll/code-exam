@@ -6,7 +6,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "service": "node scripts/server/runner.js",
-    "start1": "cross-env NODE_ENV=development webpack-dev-server --config ./app/exam/webpack.config.js",
     "start": "cross-env NODE_ENV=development pm2 start process.config.js",
     "lint": "eslint ./app ./service --fix",
     "build": "cross-env NODE_ENV=production webpack --config ./app/exam/webpack.config.js",
