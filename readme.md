@@ -69,26 +69,28 @@ classnames - 类名解析
 
 ### 开发配置
 
+#### 安装依赖
 ```
-# 安装依赖
 yarn
+```
 
-# 生成建表语句
-node service/lib/db/createdb.js
+#### 数据库安装和建表
+```
+# 安装mysql过程（略）
 
-# 安装mysql然后创建数据库
-# 按照 sql目录下文件字典顺序执行sql，比如先执行 0000001.sql
+# 建表:按照 sql目录下文件字典顺序执行sql，比如先执行 0000001.sql
 cat sql/000001.sql | mysql -uuser -p
+```
 
-
-# /etc/hosts
+#### HOST配置
 127.0.0.1 www.weavinghorse.test
 
-# 开发nginx配置
+#### nginx配置
 见[/scripts/nginx/www.weavinghorse.test.conf](nginx配置)
 
 # 执行
 # 执行4个服务
 # 执行2个前端系统的dev-server
+```
 pm2 start process.config.js
-
+```
