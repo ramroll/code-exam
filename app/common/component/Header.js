@@ -7,7 +7,7 @@ export default @withMe() class Header extends Component {
   render(){
     return <div className='header'>
       <div className='logo'>
-        <img src={require('../../../static/img/weavinghorse.png')} />
+        <img src={require('../../../static/img/alg.png')} />
         <h2>专注算法学习，提高编码效率</h2>
       </div>
 
