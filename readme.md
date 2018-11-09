@@ -86,7 +86,7 @@ cat sql/000001.sql | mysql -uuser -p
 127.0.0.1 www.weavinghorse.test
 
 #### nginx配置
-见[/scripts/nginx/www.weavinghorse.test.conf](nginx配置)
+见[nginx配置](/scripts/nginx/www.weavinghorse.test.conf)
 
 
 #### 启动任务
