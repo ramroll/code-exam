@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Form, Input, Button, Checkbox, message } from 'antd'
-import request from '../lib/request'
-import { tract_register } from '../lib/tract'
+import request from '../common/util/request'
+import { tract_register } from '../common/util/tract'
 const FormItem = Form.Item
 export default class Register extends Component{
   render(){

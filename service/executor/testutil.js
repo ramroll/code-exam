@@ -13,6 +13,9 @@ function psedo_random() {
 let rnd = null
 class Testutil {
 
+  constructor(){
+    this.logs = []
+  }
   /**
    * 使用伪随机数替代随机数
    * 让测试更加稳定
@@ -47,6 +50,7 @@ class Testutil {
   end(){
     this.end = process.hrtime()
   }
+
   equal(val1, val2, message){
     if(val1 !== val2) {
       throw new ValueNotMatchException(val1, val2, message)
@@ -62,6 +66,25 @@ class Testutil {
 
   exe_time(){
     return (this.end[0] - this.begin[0]) * 1000000 + (this.end[1] - this.begin[1]) / 1000
+  }
+
+  /**
+   * Hook console log
+   */
+  hook_console_start() {
+    this._clog = console.log
+
+    console.log = (...args) => {
+      this.log.push(args)
+      this._clog(...args)
+    }
+  }
+
+  /**
+   * Hook console end
+   */
+  hook_console_end() {
+    console.log = this._clog
   }
 }
 

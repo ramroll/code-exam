@@ -9,12 +9,15 @@ import RegisterSuccess from './RegisterSuccess'
 import Home from './Home'
 import './styl/index.styl'
 
+import Header from '../common/component/Header'
+
 class App extends Component {
 
   render(){
     return (
       <Router>
         <div className='router-wrapper'>
+          <Header />
           <Route path='/' exact component={Home} />
           <Route path='/exam' component={Exam} />
           <Route path='/login' component={Login} />
@@ -26,5 +29,9 @@ class App extends Component {
     )
   }
 }
-
+if (module.hot) {
+  module.hot.accept(function(...args) {
+    console.log('here', args)
+  })
+}
 ReactDOM.render(<App />, document.getElementById('app'))

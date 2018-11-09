@@ -5,5 +5,5 @@ module.exports = [{
 }, {
   exe_time: 200000,
   weight : 90,
-  min_score : 30 
+  min_score : 30
 }]

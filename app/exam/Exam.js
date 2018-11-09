@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 
 import { Button, message } from 'antd'
-import request from '../lib/request'
+import request from '../common/util/request'
 import Timer from './Timer'
 import Rank from './Rank'
-import {tract_submit, tract_view_paper} from '../lib/tract'
+import {tract_submit, tract_view_paper} from '../common/util/tract'
 
 export default @withExam() class Exam extends Component {
 

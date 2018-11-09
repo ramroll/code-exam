@@ -6,8 +6,8 @@ import CodeMirror from 'codemirror'
 import { Button, message } from 'antd'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/javascript/javascript'
-import request from '../lib/request'
-import {tract_submit, tract_view_paper} from '../lib/tract'
+import request from '../common/util/request'
+import {tract_submit, tract_view_paper} from '../common/util/tract'
 
 /**
  * 试题

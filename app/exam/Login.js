@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Form, Input,Button, Checkbox, message } from 'antd'
-import request from '../lib/request'
+import request from '../common/util/request'
 import qs from 'qs'
 import md5 from 'md5'
 const FormItem = Form.Item

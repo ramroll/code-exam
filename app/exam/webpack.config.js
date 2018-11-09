@@ -7,6 +7,24 @@ const HappyPack = require('happypack')
 const PUBLIC_PATH = (process.env.NODE_ENV === 'production') ?
   '//s.weavinghorse.com/' : '/'
 
+
+const babelLoaderOptions = {
+  presets: [
+    [
+      '@babel/env'
+    ],
+    '@babel/react'
+  ],
+  plugins : [
+    ['@babel/plugin-syntax-dynamic-import'],
+    ['@babel/plugin-proposal-decorators', {"legacy" : true}],
+    'babel-plugin-transform-class-properties',
+    ['babel-plugin-import', {
+      "libraryName": "antd",
+      style : true
+    }]
+  ]
+}
 const config = {
   mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
   devtool : process.env.NODE_ENV === 'development' ? 'eval-source-map' : 'none',
@@ -14,18 +32,16 @@ const config = {
   watch : process.env.NODE_ENV === 'development',
   output: {
     path: path.resolve(__dirname, '../../dist/exam'),
-    filename: process.env.NODE_ENV === 'production' ? 'exam.bundle.[hash].js' : 'example.bundle.js',
+    filename: process.env.NODE_ENV === 'production' ? 'exam.bundle.[hash].js' : 'exam.bundle.js',
     publicPath: PUBLIC_PATH
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        include: [
-          path.resolve(__dirname),
-        ],
-        loader: 'happypack/loader'
-
+        exclude : /node_modules/,
+        loader: process.env.NODE_ENV === 'development' ? 'babel-loader' : 'happypack/loader',
+        options : process.env.NODE_ENV === 'development' ? babelLoaderOptions : {}
       },
       {
         test : /\.styl$/,
@@ -38,6 +54,10 @@ const config = {
       {
         test : /\.css$/,
         loader : 'style-loader!css-loader'
+      },
+      {
+        test : /\.(jpg|jpeg|gif|svg|png)$/,
+        loader : 'file-loader'
       }
     ]
   },
@@ -48,41 +68,15 @@ const config = {
     hot: true,
     https: false,
     noInfo: true,
-    port : 8000,
+    port : process.env.PORT,
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       title: '算法训练',
       template: path.resolve(__dirname, './index.html'),
       alwaysWriteToDisk : true
     }),
-    new HappyPack({
-      threads : 4,
-      loaders : [
-        {
-          loader : 'babel-loader',
-          options: {
-            presets: [
-              [
-                '@babel/env'
-              ],
-              '@babel/react'
-            ],
-            plugins : [
-              ['@babel/plugin-syntax-dynamic-import'],
-              ['@babel/plugin-proposal-decorators', {"legacy" : true}],
-              'babel-plugin-transform-class-properties',
-              ['babel-plugin-import', {
-                "libraryName": "antd",
-                style : true
-              }]
-            ]
-          }
-        }
-      ]
 
-    })
   ],
   resolve : {
     alias : {
@@ -96,8 +90,21 @@ if(process.env.BUNDLE_ANALYZE) {
   config.plugins.push(new BundleAnalyzerPlugin())
 }
 
-if(process.env.NODE_ENV === 'production') {
-  config.plugins.shift()
+if(process.env.NODE_ENV === 'development') {
+  config.plugins.unshift(new webpack.HotModuleReplacementPlugin())
+  console.log(config)
+} else {
+  config.plugins.push(new HappyPack({
+    threads: 4,
+    loaders: [
+      {
+        loader: 'babel-loader',
+        options: babelLoaderOptions
+      }
+    ]
+
+  }))
+
 }
 
 module.exports = config

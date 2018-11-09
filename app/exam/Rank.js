@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import request from '../lib/request'
+import request from '../common/util/request'
 export default @withRank() class Rank extends Component {
   render() {
     return <div className='rank'>

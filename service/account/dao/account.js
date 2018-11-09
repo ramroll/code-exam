@@ -71,7 +71,6 @@ class Account {
     }
 
     await this.db.update('account', {status : 1, id : account_id})
-
   }
 
   async login(verify, token_code) {
@@ -114,16 +113,12 @@ class Account {
       return {}
     }
 
-    const sql_user = `select A.id as student_id, B.id as account_id,A.name, B.status from student as A
+    const sql_user = `select A.id as student_id, A.nickname, A.email, B.id as account_id,A.name, B.status from student as A
       left join account as B
       on A.account_id = B.id
       where B.id = ${token.account_id}
     `
     const student = await this.db.queryOne(sql_user)
-    // if(student && student.status !== 1) {
-    //   console.log(student)
-    //   throw 'not-activation'
-    // }
     return {student,token}
   }
 
