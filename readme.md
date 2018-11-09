@@ -66,6 +66,7 @@ classnames - 类名解析
 - DB_USER 数据用户
 - DB_PASSWD 数据库密码
 - DB_NAME 数据库名称
+- EXAM_DIR 考试服务地址
 
 
 ### 开发配置
