@@ -88,9 +88,10 @@ cat sql/000001.sql | mysql -uuser -p
 #### nginx配置
 见[/scripts/nginx/www.weavinghorse.test.conf](nginx配置)
 
-# 执行
-# 执行4个服务
-# 执行2个前端系统的dev-server
+
+#### 启动任务
+- 执行4个服务
+- 执行2个前端系统的dev-server
 ```
 pm2 start process.config.js
 ```
