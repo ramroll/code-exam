@@ -38,6 +38,10 @@ export default function request(url, options = {}) {
         }
         return jsonData
       })
+      .catch(ex => {
+        return {error : '网络错误'}
+      })
+
   }catch(ex) {
     console.error(ex)
     return Promise.reject({

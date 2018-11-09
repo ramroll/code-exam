@@ -1,12 +1,12 @@
 const DB_CONFIG = {
-  "DB_HOST": 'localhost',
-  "DB_PORT": '3306',
-  "DB_PASSWD": "AB123456",
-  "DB_USER": "root",
-  "DB_NAME": "codeexam"
+  "DB_HOST": process.env.DB_HOST || 'localhost',
+  "DB_PORT": process.env.DB_PORT || '3306',
+  "DB_PASSWD": process.env.DB_PASSWD || "AB123456",
+  "DB_USER": process.env.DB_USER || "root",
+  "DB_NAME": process.env.DB_NAME || "codeexam"
 }
 const path = require('path')
-module.exports = {
+const configure = {
   apps: [{
     name: "account",
     // node ./scripts/server/runner.js -s account -p 8001
@@ -15,44 +15,67 @@ module.exports = {
     watch: true,
     env: {
       ...DB_CONFIG,
-      "NODE_ENV": "development",
+      "NODE_ENV": process.env.NODE_ENV,
       "EMAIL_PASSWD": "XQe3s2piwR0R"
-      },
-    env_production: {
-      "NODE_ENV": "production"
     }
-  },
-  {
+  }, {
     name: "exam",
     script: "./scripts/server/runner.js",
     args: "-s exam -p 8002",
     watch: true,
     env: {
       ...DB_CONFIG,
-      "NODE_ENV": "development",
-      'EXAM_DIR' : path.resolve(__dirname, 'exams'),
-    },
-    env_production: {
-      "NODE_ENV": "production"
+      "NODE_ENV": process.env.NODE_ENV,
+      'EXAM_DIR': process.env.EXAM_DIR || path.resolve(__dirname, 'exams'),
     }
-  },
-  {
+  },{
     name: "rank",
     script: "./scripts/server/runner.js",
     args: "-s rank -p 8004",
     watch: true,
     env: {
       ...DB_CONFIG,
-      "NODE_ENV": "development",
-      'EXAM_DIR' : path.resolve(__dirname, 'exams')
-    },
-    env_production: {
-      "NODE_ENV": "production"
+      "NODE_ENV": process.env.NODE_ENV,
+      'EXAM_DIR': process.env.EXAM_DIR || path.resolve(__dirname, 'exams')
     }
-  },
-  {
-    name: "server",
-    script: "./scripts/server/runner.js",
-    args: "-s server -p 8003",
+  },{
+    name : "executor",
+    script : './service/executor/index.js',
+    env : {
+      ...DB_CONFIG,
+      'EXAM_DIR': process.env.EXAM_DIR || path.resolve(__dirname, 'exams')
+    }
   }]
 }
+
+if(process.env.NODE_ENV === 'production') {
+  configure.apps.push({
+    name: "server",
+    script: "./scripts/server/runner.js",
+    args: "-s server -p 8003"
+  })
+}
+else {
+  configure.apps.push({
+    name : 'exam-webpack',
+    script: "./node_modules/.bin/webpack-dev-server",
+    args : "--config ./app/exam/webpack.config.js",
+    env : {
+      NODE_ENV : process.env.NODE_ENV,
+      APP : 'exam',
+      PORT : 8000
+    }
+  })
+  configure.apps.push({
+    name : 'inspire-webpack',
+    script: "./node_modules/.bin/webpack-dev-server",
+    args : "--config ./app/inspire/webpack.config.js",
+    env : {
+      NODE_ENV : process.env.NODE_ENV,
+      APP : 'inspire',
+      PORT : 8009
+    }
+  })
+}
+
+module.exports = configure

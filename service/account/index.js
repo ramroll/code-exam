@@ -9,6 +9,23 @@ const bodyParser = require('body-parser')
  */
 function register(app){
 
+  app.get('/me', token, api_wrapper(async (req, res) => {
+
+    const student = req.student
+    if(!student) {
+      res.status(400).send({error : '未登录'})
+      return
+    }
+    if(student.status !== 1) {
+      res.status(400).send({ error: '未激活' })
+      return
+    }
+    res.send({
+      name : student.name,
+      email : student.email,
+      nickname : student.nickname
+    })
+  }))
 
   app.post('/login', token, bodyParser.json(),api_wrapper( async (req, res) => {
     const query = req.body

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "service": "node scripts/server/runner.js",
-    "start": "cross-env NODE_ENV=development webpack-dev-server --config ./app/exam/webpack.config.js",
+    "start1": "cross-env NODE_ENV=development webpack-dev-server --config ./app/exam/webpack.config.js",
+    "start": "cross-env NODE_ENV=development pm2 start process.config.js",
     "lint": "eslint ./app ./service --fix",
     "build": "cross-env NODE_ENV=production webpack --config ./app/exam/webpack.config.js",
     "bz": "cross-env BUNDLE_ANALYZE=1 NODE_ENV=production  webpack --config ./app/exam/webpack.config.js"
@@ -47,6 +48,7 @@
     "css-loader": "^1.0.1",
     "eslint": "^5.8.0",
     "eslint-plugin-react": "^7.11.1",
+    "file-loader": "^2.0.0",
     "html-webpack-plugin": "^3.2.0",
     "less": "^3.8.1",
     "less-loader": "^4.1.0",

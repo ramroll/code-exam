@@ -31,8 +31,8 @@ const config = {
   entry: path.resolve(__dirname, './index.js'),
   watch : process.env.NODE_ENV === 'development',
   output: {
-    path: path.resolve(__dirname, '../../dist/exam'),
-    filename: process.env.NODE_ENV === 'production' ? 'exam.bundle.[hash].js' : 'exam.bundle.js',
+    path: path.resolve(__dirname, '../../dist/inspire'),
+    filename: process.env.NODE_ENV === 'production' ? 'inspire.bundle.[hash].js' : 'inspire.bundle.js',
     publicPath: PUBLIC_PATH
   },
   module: {
@@ -62,7 +62,7 @@ const config = {
     ]
   },
   devServer: {
-    contentBase: path.join(__dirname, '../../dist/exam'),
+    contentBase: path.join(__dirname, '../../dist/inspire'),
     compress: true,
     historyApiFallback: true,
     hot: true,

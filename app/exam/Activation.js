@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 
-import request from '../lib/request'
+import request from '../common/util/request'
 import qs from 'qs'
 
 export default class Activation extends Component {

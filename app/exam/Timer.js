@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import left_time from '../lib/left_time'
+import left_time from '../common/util/left_time'
 
 export default class Timer extends Component{
 
