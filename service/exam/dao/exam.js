@@ -3,6 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const R = require('ramda')
 const LogicException = require('../../lib/exception/LogicException')
+const ExecQueue = require('../../lib/queue/exec_queue')
 class Exam{
 
   constructor(){
@@ -75,10 +76,11 @@ class Exam{
       throw new LogicException('已经超出考试时间')
     }
 
-    const lastSubmit = await this.db.queryOne('select * from submit where question=? and exam_id = ? and (status=0 or status=1)', [obj.index, exam.id])
-    if(lastSubmit) {
-      throw new LogicException('您上次提交的代码正在验证')
-    }
+    // const lastSubmit = await this.db.queryOne('select * from submit where question=? and exam_id = ? and (status=0 or status=1)', [obj.index, exam.id])
+    // if(lastSubmit) {
+    //   throw new LogicException('您上次提交的代码正在验证')
+    // }
+
     const submit = {
       student_id,
       exam_id : exam.id,
@@ -87,7 +89,10 @@ class Exam{
       exam : exam.name
     }
 
-    await this.db.insert('submit', submit)
+
+    const id = await this.db.insert('submit', submit)
+    const queue = new ExecQueue()
+    queue.enqueue(id)
   }
 
 }

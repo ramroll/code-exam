@@ -1,10 +1,12 @@
 const Db = require('../lib/db/db')
 const child_process = require('child_process')
+const ExecQueue = require('../lib/queue/exec_queue')
 function executor() {
 
   return new Promise(async (resolve, reject) => {
 
     const db = new Db()
+    const queue = new ExecQueue()
     const submit = await fetchOne(db)
     if (!submit) {
       console.log('没有要执行的submit')
@@ -75,17 +77,21 @@ async function error_handler(db, submit, code, message) {
 
 async function fetchOne(db) {
   try {
-    // await db.lock('submit')
-    const sql = `select * from submit order by status,id limit 1`
+    const id = await queue.dequeue()
+    if(!id) {
+      return null
+    }
+
+    const sql = `select * from submit where id=${id}`
     const submit = await db.queryOne(sql)
     if(!submit) {return null}
-    if(submit.status === 0) {
-      await db.update('submit', {
-        id : submit.id,
-        status : 1
-      })
-      return submit
-    }
+    // if(submit.status === 0) {
+    //   await db.update('submit', {
+    //     id : submit.id,
+    //     status : 1
+    //   })
+    //   return submit
+    // }
     return null
   } finally {
     // await db.unlock()

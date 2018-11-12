@@ -34,6 +34,7 @@
     "react-dom": "^16.6.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
+    "redis": "^2.8.0",
     "sql-formatter": "^2.3.2",
     "stylus": "^0.54.5"
   },
