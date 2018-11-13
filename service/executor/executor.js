@@ -27,32 +27,36 @@ process.on('message', submit => {
   // const tester = require(tester_path)
 
   const testutil = new Testutil()
+  testutil.hook_console_start()
   try{
     testerFunction(testutil, code)
     process.send({
       code : 2,
-      exe_time : testutil.exe_time()
+      exe_time : testutil.exe_time(),
+      logs : testutil.get_logs()
     })
+    testutil.hook_console_end()
   }catch(ex) {
+    testutil.hook_console_end()
     if(ex instanceof ValueNotMatchException) {
       if(typeof ex.val1 !== 'object' && typeof ex.val2 !== 'object') {
-        sendError(101,  `${ex.val1}!==${ex.val2} 结果不正确`)
+        sendError(101,  `${ex.val1}!==${ex.val2} 结果不正确`, testutil.get_logs())
         return
       }else {
-        sendError(101, `结果不正确:` + ex.message)
+        sendError(101, `结果不正确:` + ex.message, testutil.get_logs())
         return
       }
     }
     else if(ex instanceof UndefException) {
-      sendError(104, ex.entity + '未定义')
+      sendError(104, ex.entity + '未定义', testutil.get_logs())
       return
     }
     else {
       if(typeof ex !== 'object') {
-        sendError(1000, ex)
+        sendError(1000, ex, testutil.get_logs())
       } else {
 
-        sendError(1000, ex.message)
+        sendError(1000, ex.message, testutil.get_logs())
       }
       return
     }
@@ -61,10 +65,11 @@ process.on('message', submit => {
 })
 
 
-function sendError(code, message){
+function sendError(code, message, logs){
   process.send({
     code,
-    message
+    message,
+    logs
   })
 }
 

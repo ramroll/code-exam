@@ -29,9 +29,5 @@ class App extends Component {
     )
   }
 }
-if (module.hot) {
-  module.hot.accept(function(...args) {
-    console.log('here', args)
-  })
-}
+
 ReactDOM.render(<App />, document.getElementById('app'))

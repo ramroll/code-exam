@@ -45,6 +45,7 @@ class Exam{
       const md = fs.readFileSync(path.resolve(dir, i + '.md'), 'utf-8')
       const sample = fs.readFileSync(path.resolve(dir, i + '.sample.js'), 'utf-8')
       question.md = md
+      question.console = lastSubmit ? lastSubmit.console : ''
       question.message = lastSubmit ? lastSubmit.message : ''
       question.last_submit_status = lastSubmit ? lastSubmit.status : -1
       question.sample = lastSubmit ? lastSubmit.code : sample
@@ -70,6 +71,7 @@ class Exam{
    * @param {*} student_id
    */
   async submit(obj, student_id) {
+    console.log('submit')
     const exam = await this.db.queryOne('select * from exam where name=?', [obj.exam])
     const diff = new Date().getTime() - ( new Date(exam.created).getTime() + exam.time*1000)
     if(diff > 0) {
@@ -91,6 +93,7 @@ class Exam{
 
 
     const id = await this.db.insert('submit', submit)
+    console.log('enqueue', id)
     const queue = new ExecQueue()
     queue.enqueue(id)
   }
