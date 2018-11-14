@@ -62,8 +62,6 @@ CREATE TABLE `question` (
   `sample` text NOT NULL COMMENT '题目示例-placehodler',
   `tester` text NOT NULL COMMENT '题目测试',
   `account_id` bigint(20) NOT NULL COMMENT '出题人ID',
-  `scorealg` varchar(20) NOT NULL COMMENT '打分算法',
-  `scoreconf` varchar(500) NOT NULL COMMENT '打分设置JSON',
   PRIMARY KEY(`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 DEFAULT CHARSET = utf8mb4;
 

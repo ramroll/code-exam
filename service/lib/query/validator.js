@@ -70,6 +70,17 @@ class Validator{
             throw new LogicException(rule.errorMessage)
           }
           break
+        case 'integer' :
+          if( (value + '').match(/^\d+$/) ) {
+            throw new LogicException(rule.errorMessage)
+          }
+          if(min && value < min) {
+            throw new LogicException(rule.errorMessage)
+          }
+          if(max && value > max) {
+            throw new LogicException(rule.errorMessage)
+          }
+          break
         default:
           break
         }
