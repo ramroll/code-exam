@@ -28,7 +28,17 @@ const configure = {
       "NODE_ENV": process.env.NODE_ENV,
       'EXAM_DIR': process.env.EXAM_DIR || path.resolve(__dirname, 'exams'),
     }
-  },{
+  }, {
+    name: "inspire",
+    script: "./scripts/server/runner.js",
+    args: "-s inspire -p 8010",
+    watch: true,
+    env: {
+      ...DB_CONFIG,
+      "NODE_ENV": process.env.NODE_ENV
+    }
+  },
+  {
     name: "rank",
     script: "./scripts/server/runner.js",
     args: "-s rank -p 8004",

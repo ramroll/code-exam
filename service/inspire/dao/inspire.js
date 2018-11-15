@@ -13,8 +13,13 @@ class Inspire{
    * 试题列表
    */
   questions(account_id, offset, limit) {
-    const sql = `select * from question where account_id=${account_id} and offset=${offset} and limit=${limit}`
+    const sql = `select * from question where account_id=${account_id} limit ${limit} offset ${offset} `
     return this.db.query(sql)
+  }
+
+  question(id) {
+    const sql = `select * from question where id=${id} `
+    return this.db.queryOne(sql)
   }
 
   /**
@@ -40,7 +45,7 @@ class Inspire{
    * 读取考试
    */
   exams(account_id, offset, limit) {
-    const sql = `select * from exam where account_id=${account_id} and offset=${offset} and limit=${limit}`
+    const sql = `select * from exam where account_id=${account_id} offset ${offset} limit ${limit}`
     return this.db.query(sql)
   }
 

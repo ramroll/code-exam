@@ -17,7 +17,7 @@ function withQuestion() {
 
       componentDidMount(){
 
-        request('/api/inspire/my/question')
+        request('/api/inspire/my/paper')
           .then(list => {
 
             this.setState({

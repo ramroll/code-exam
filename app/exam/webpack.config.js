@@ -49,7 +49,21 @@ const config = {
       },
       {
         test : /\.less$/,
-        loader : 'style-loader!css-loader!less-loader?javascriptEnabled=true'
+        use : [
+          {
+            loader : 'style-loader',
+          },{
+            loader : 'css-loader',
+          },{
+            loader : 'less-loader',
+            options: {
+              javascriptEnabled: true,
+              modifyVars: {
+                'primary-color': '#66b388'
+              }
+            }
+          }
+        ]
       },
       {
         test : /\.css$/,

@@ -58,6 +58,7 @@ CREATE TABLE `exam` (
 drop table if exists `question`;
 CREATE TABLE `question` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) NOT NULL COMMENT '标题',
   `md` text NOT NULL COMMENT '题目说明',
   `sample` text NOT NULL COMMENT '题目示例-placehodler',
   `tester` text NOT NULL COMMENT '题目测试',

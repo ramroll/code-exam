@@ -13,7 +13,7 @@ class Validator{
       name,
       type,
       errorMessage,
-      params
+      params : params || {}
     })
   }
 
@@ -61,7 +61,7 @@ class Validator{
             throw new LogicException(rule.errorMessage)
           }
           break
-        case 'len' :
+        case 'len' : {
           const {min, max} = rule.params
           if(min && value.length < min) {
             throw new LogicException(rule.errorMessage)
@@ -70,8 +70,11 @@ class Validator{
             throw new LogicException(rule.errorMessage)
           }
           break
-        case 'integer' :
-          if( (value + '').match(/^\d+$/) ) {
+        }
+        case 'integer' : {
+
+          const {min, max} = rule.params
+          if( !(value + '').match(/^\d+$/) ) {
             throw new LogicException(rule.errorMessage)
           }
           if(min && value < min) {
@@ -81,6 +84,7 @@ class Validator{
             throw new LogicException(rule.errorMessage)
           }
           break
+        }
         default:
           break
         }
