@@ -5,18 +5,18 @@ const send = (to, title, body) => {
   return new Promise( (resolve, reject) => {
 
     const transporter = nodemailer.createTransport({
-      host : 'smtp.mxhichina.com',
+      host : 'smtp.163.com',
       port: 465, // SMTP 端口
       secureConnection: true, // 使用 SSL
       auth: {
-        user: 'art@weavinghorse.com',
+        user: '15706844523@163.com',
         //这里密码不是qq密码，是你设置的smtp密码
         pass: process.env.EMAIL_PASSWD
       }
     })
 
     const mailOptions = {
-      from: 'art@weavinghorse.com', // 发件地址
+      from: '15706844523@163.com', // 发件地址
       to: to, // 收件列表
       subject: title, // 标题
       //text和html两者只支持一种

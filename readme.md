@@ -61,7 +61,7 @@ classnames - 类名解析
 
 ### 启动需要配置的环境变量
 
-- EMAIL_PASSED 邮箱密码
+- EMAIL_PASSWD 邮箱密码
 - DB_HOST 数据库HOST
 - DB_USER 数据用户
 - DB_PASSWD 数据库密码
