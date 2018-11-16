@@ -5,6 +5,7 @@ import CodeMirror from 'codemirror'
 import ReactDOM from 'react-dom'
 import { Button, message, Input } from 'antd'
 import request from '../../common/util/request'
+import {Field, withFields} from '../../common/component/form'
 
 const default_tester = `function tester(testutil, code){
   eval(code)
@@ -17,111 +18,6 @@ module.exports = tester
 `
 
 
-const FieldsContext = React.createContext('fields')
-function withFields() {
-
-
-  return Target => {
-    class FieldValueCollector extends Component{
-
-      constructor(){
-        super()
-        this.values = {}
-        this.notifies = {}
-      }
-      handleEmitChange = ({name, value}) => {
-        this.values[name] = value
-      }
-
-      render(){
-        return (
-          <FieldsContext.Provider value={{
-            emitChange : this.handleEmitChange,
-            registerNotifier : (name, handler) => {
-              this.notifies[name] = handler
-              return () => {
-                delete this.notifies[name]
-              }
-            },
-            values : this.values
-          }}>
-            <Target {...this.props}
-              getFieldValues={() => {
-                return this.values || {}
-              }}
-              setValues={data => {
-                this.values = data
-                Object.keys(data).forEach(key => {
-                  if(this.notifies[key]) {
-                    this.notifies[key](data[key])
-                  }
-                })
-              }}
-            />
-          </FieldsContext.Provider>
-        )
-      }
-    }
-    return FieldValueCollector
-  }
-
-}
-
-
-class Field extends Component  {
-
-  static contextType = FieldsContext
-
-  constructor(props) {
-    super()
-    this.state = {
-      value : undefined
-    }
-  }
-
-  componentWillMount(){
-    this.removeNotifier = this.context.registerNotifier(this.props.name, this.notifierHandler)
-  }
-
-  componentWillUnmount(){
-    this.removeNotifier
-  }
-
-  notifierHandler = (value) => {
-    this.setState({
-      value
-    })
-
-  }
-
-
-  changeHandler = (e) => {
-    let value = e
-    if(typeof e === 'object' && e.target) {
-      value = e.target.value
-    }
-    this.setState({
-      value
-    }, () => {
-      this.context.emitChange({
-        name : this.props.name,
-        value
-      })
-      this.props.children.onChange &&
-        this.props.children.onChange(e)
-    })
-  }
-
-  render() {
-    return <div class='field'>{React.cloneElement(this.props.children, {
-      value: this.state.value,
-      ref: r => this.r = r,
-      onChange: this.changeHandler
-
-    })
-    }</div>
-  }
-}
 
 export default @withFields() class WriteQuestion extends Component{
 
@@ -149,7 +45,7 @@ export default @withFields() class WriteQuestion extends Component{
     const values = this.props.getFieldValues()
 
     request('/api/inspire/my/question', {
-      method : 'PUT',
+      method : values.id ? 'PUT' : 'POST',
       body : values
     })
     .then(result => {

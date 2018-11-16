@@ -3,9 +3,9 @@ import request from '../../common/util/request'
 import { Button, Popconfirm } from 'antd'
 import { Link } from 'react-router-dom'
 
-function withQuestion() {
+function withPaper() {
   return Target => {
-    class QuestionProxy extends Component{
+    class PaperProxy extends Component{
 
 
       constructor(){
@@ -19,7 +19,6 @@ function withQuestion() {
 
         request('/api/inspire/my/paper')
           .then(list => {
-
             this.setState({
               list
             })
@@ -39,16 +38,16 @@ function withQuestion() {
       }
     }
 
-    return QuestionProxy
+    return PaperProxy
   }
 
 }
 
-export default @withQuestion() class Home extends Component{
+export default @withPaper() class Papers extends Component{
 
   handleDelete = (id) => {
 
-    request('/api/inspire/my/question', {
+    request('/api/inspire/my/paper', {
       method : 'DELETE',
       body : {
         id
@@ -67,8 +66,8 @@ export default @withQuestion() class Home extends Component{
     }
     if(this.props.list.length === 0) {
       return <div className='zero-status'>
-        您还没有出过题目
-        <div><Button type='primary' color='info'><Link to='/inspire/question'>出题</Link></Button></div>
+        您还没有出过试卷
+        <div><Button type='primary' color='info'><Link to='/inspire/paper'>出试卷</Link></Button></div>
       </div>
     }
 
@@ -77,8 +76,9 @@ export default @withQuestion() class Home extends Component{
 
         <thead>
           <tr>
-            <td>题目编号</td>
-            <td>题目标题</td>
+            <td>试卷编号</td>
+            <td>名称</td>
+            <td>标题</td>
             <td>操作</td>
           </tr>
         </thead>
@@ -88,8 +88,9 @@ export default @withQuestion() class Home extends Component{
           {this.props.list.map(item => {
             return <tr>
               <td>{item.id}</td>
+              <td>{item.name}</td>
               <td>{item.title}</td>
-              <td><Link to={`/inspire/question/${item.id}`}><a>编辑</a></Link>|<Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
+              <td><Link to={`/inspire/paper/${item.id}`}><a>编辑</a></Link>|<Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
 
             </tr>
           })}

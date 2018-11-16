@@ -7,6 +7,7 @@ class Inspire{
 
   constructor(){
     this.db = new Db()
+    this.put_paper = this.put_paper.bind(this)
   }
 
   /**
@@ -21,6 +22,7 @@ class Inspire{
     const sql = `select * from question where id=${id} `
     return this.db.queryOne(sql)
   }
+
 
   /**
    * 创建/编辑试题
@@ -45,7 +47,7 @@ class Inspire{
    * 读取考试
    */
   exams(account_id, offset, limit) {
-    const sql = `select * from exam where account_id=${account_id} offset ${offset} limit ${limit}`
+    const sql = `select * from exam where account_id=${account_id} limit ${limit} offset ${offset}`
     return this.db.query(sql)
   }
 
@@ -53,12 +55,40 @@ class Inspire{
    * 增加修改考试
    * @param {*} query
    */
-  put_exam(query) {
-    if(query.id) {
-      return this.db.update('exam', query)
-    } else {
+  async put_paper(query, account_id) {
+    const {list, ...others} = query
 
+
+    others.account_id = account_id
+    const connection = await this.db.getConnection()
+
+    try{
+      await this.db.beginTransaction(connection)
+
+      let id = others.id
+      if (others.id) {
+        await this.db.update('exam',others, connection)
+        const ids = list.map(x => x.id)
+        const sql = `delete from exam_question where id in (${ids.join(',')})`
+        await this.db.query(sql, null, connection)
+      } else {
+        id = await this.db.insert('exam',others, connection)
+      }
+
+      for (let i = 0; i < list.length; i++) {
+        const question_exam = list[i]
+        question_exam.exam_id = id
+        await this.db.insert('exam_question', question_exam, connection)
+      }
+
+      await this.db.commitTransation(connection)
+      connection.release()
+    } catch(ex) {
+      await this.db.rollback(connection)
+      connection.release()
+      throw ex
     }
+
 
   }
 
