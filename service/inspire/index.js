@@ -57,7 +57,7 @@ function register(app){
       max : 30
     })
     validator.check('md', 'required', '请填写题目内容')
-    validator.check('md', 'len', '题目内容应当为10-1000个字符', {
+    validator.check('md', 'len', '题目内容应当为10-3000个字符', {
       min : 10,
       max : 1000
     })
