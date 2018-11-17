@@ -31,6 +31,9 @@ export default class Timer extends Component{
   }
 
   render(){
+    if(this.props.left === 0) {
+      return <span>直到永远</span>
+    }
     if(!this.state.left) {
       return <span>已结束</span>
     }

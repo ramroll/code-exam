@@ -1,5 +1,6 @@
 const ValueNotMatchException = require('./ValueNotMatchException')
 const UndefException = require('./UndefException')
+const CustomError = require('./CustomError')
 const deepEqual = require('deep-equal')
 
 
@@ -20,7 +21,8 @@ class Testutil {
    * 使用伪随机数替代随机数
    * 让测试更加稳定
    */
-  psedo_start() {
+  psedo_start(pseed = 1) {
+    seed = pseed
     rnd = Math.random
     Math.random = psedo_random
   }
@@ -39,6 +41,10 @@ class Testutil {
     this.begin = process.hrtime()
   }
 
+
+  error(message) {
+    throw new CustomError(message)
+  }
 
   undef(entity){
     throw new UndefException(entity)
@@ -74,8 +80,8 @@ class Testutil {
   hook_console_start() {
     this._clog = console.log
 
-    console.log = (...args) => {
-      this.log.push(args)
+    global.console.log = (...args) => {
+      this.logs.push(args)
       this._clog(...args)
     }
   }
@@ -84,8 +90,87 @@ class Testutil {
    * Hook console end
    */
   hook_console_end() {
-    console.log = this._clog
+    global.console.log = this._clog
+  }
+
+
+  get_logs() {
+    let lines = []
+    for(let i = 0; i < this.logs.length; i++) {
+      const args = this.logs[i]
+      if(args.length === 1) {
+        lines.push(object_to_log(args[0]))
+      } else {
+        lines.push(args.map(arg => {
+          if(typeof arg === 'object') {
+            if(Array.isArray(arg)) {
+              return '<Array ...>'
+            }
+            return '<Object ...>'
+          }
+          return arg
+        }).join(' '))
+      }
+    }
+    return lines.join('\n')
   }
 }
+
+/**
+ * 将对象转换成日志，最多支持100个成员
+ * @param {*} obj
+ * @param {*} level
+ */
+function object_to_log(obj, level = 0){
+  if(level === undefined) {
+    throw 'error'
+  }
+
+  if(typeof obj === 'function') {
+    return 'Function ' + obj.name
+  }
+  else if(typeof obj === 'object') {
+    if(Array.isArray(obj)) {
+      if(level >= 2) {
+        return '<Array...>'
+      }
+      const subArray = obj.slice(0, 100)
+      const r = []
+      for(let i = 0; i < subArray.length; i++) {
+        r.push(object_to_log(obj[i], level + 1))
+      }
+      return obj.length > 100 ? `[${r.join(',')}...]` : `[${r.join(',')}]`
+    }
+
+
+    if(level >= 2) {
+      return '<Object...>'
+    }
+    const keys = Object.keys(obj).slice(0, 100)
+    const mockObj ={}
+
+    let kvs = []
+    for(let i = 0; i < keys.length; i++) {
+      const key = keys[i]
+      if (typeof obj[key] === 'string') {
+        kvs.push(''.padStart(2*(level + 1)) + `${key} : '${object_to_log(obj[key], level + 1)}'`)
+      } else {
+        kvs.push(''.padStart(2*(level + 1)) + `${key} : ${object_to_log(obj[key], level + 1)}`)
+      }
+    }
+    if(keys.length > 100) {
+      kvs.push(''.padStart((level + 1) * 2) + '...')
+    }
+    return ''.padStart(level * 2) + `{\n` + kvs.join(",\n") +`\n` + ''.padStart(level*2) + `}`
+  }
+  else {
+    if(typeof obj === 'string') {
+      return obj.length > 100 ? obj.substr(0, 100) + '...' : obj
+    }
+    return obj
+  }
+}
+
+
 
 module.exports = Testutil

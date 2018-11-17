@@ -26,6 +26,7 @@ class Db{
   async insert(tbl, data, conn = null) {
     const sql = `insert into ${tbl} set ?`
     const result = await this.query(sql, data, conn)
+
     return result.insertId
 
   }
@@ -141,7 +142,9 @@ class Db{
       function __query(connection, sql, params) {
         connection.query(sql, params, (error, results, fields) => {
           console.log('release-a-connection')
-          connection.release()
+          if(!conn) {
+            connection.release()
+          }
           if (error) {
             console.log(sqlFormatter.format(sql))
             reject(error)
@@ -150,7 +153,7 @@ class Db{
         })
       }
       if (conn) {
-        __query(connection, sql, params)
+        __query(conn, sql, params)
       } else {
         console.log('get-a-connection')
         Db.pool.getConnection(function (err, connection) {

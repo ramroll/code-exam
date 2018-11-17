@@ -3,7 +3,8 @@ import React, {Component} from 'react'
 import MarkdownIt from 'markdown-it'
 import ReactDOM from 'react-dom'
 import CodeMirror from 'codemirror'
-import { Button, message } from 'antd'
+import { Button, message, Tabs } from 'antd'
+const TabPane = Tabs.TabPane
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/javascript/javascript'
 import request from '../common/util/request'
@@ -18,7 +19,9 @@ export default class Question extends Component{
     super()
 
     this.state = {
-      question : props.question
+      tab : 'question',
+      question : props.question,
+      timeout : false
     }
   }
 
@@ -31,8 +34,10 @@ export default class Question extends Component{
 
   wait = () => {
     this.setState({
-      loading : true
+      loading : true,
+      timeout : false
     })
+
     this.I = setInterval( () => {
       request(`/api/exam/paper?name=${this.props.exam}`)
         .then(paper => {
@@ -41,10 +46,15 @@ export default class Question extends Component{
           if(question.last_submit_status > 1) {
             clearInterval(this.I)
             state.loading = false
+            state.timeout = false
+            this.T && clearTimeout(this.T)
           }
+          console.log('result', paper)
           this.setState(state)
         })
     }, 2000)
+
+
   }
 
   componentWillUnmount(){
@@ -63,7 +73,7 @@ export default class Question extends Component{
       method : 'POST',
       body : {
         exam : this.props.exam,
-        index : this.props.index,
+        question_id: this.props.question.id,
         code
       }
     })
@@ -74,11 +84,21 @@ export default class Question extends Component{
       .catch(ex => {
         message.error(ex.error)
       })
+    // this.T = setTimeout(() => {
+    //   clearTimeout(this.I)
+    //   this.setState({
+    //     loading: false,
+    //     timeout : true
+    //   })
+    // }, 10000)
   }
 
   renderLastStatus = (status, message) => {
 
     if(this.state.loading) {return ''}
+    // if(this.state.timeout) {
+    //   return <span>上一次提交（系统繁忙）请重试</span>
+    // }
     switch(status) {
     case -1 :
       return ''
@@ -101,12 +121,23 @@ export default class Question extends Component{
     const md = new MarkdownIt()
 
     return <div className='question'>
-      <div className='md' dangerouslySetInnerHTML={{__html : md.render( this.state.question.md )}}></div>
-      <textarea ref={r => this.r = r} defaultValue={this.state.question.sample}></textarea>
-      <div>{this.renderLastStatus(this.state.question.last_submit_status,
-        this.state.question.message)}</div>
-      {this.state.question.correct && <div className='answer'>最优正确答案（执行时间:{this.state.question.exe_time / 1000000}ms)</div>}
-      <Button style={{marginTop : 10}} onClick={this.submit}>{this.state.loading ? '执行...' : '提交'}</Button>
+      <Tabs defaultActiveKey='1' onChange={this._change_tab}>
+        <TabPane tab='题目' key='1'>
+          <h3>题目{this.props.index + 1}:{this.state.question.title}</h3>
+          <div className='md' dangerouslySetInnerHTML={{ __html: md.render(this.state.question.md) }}></div>
+          <textarea ref={r => this.r = r} defaultValue={this.state.question.sample}></textarea>
+          <div>{this.renderLastStatus(this.state.question.last_submit_status,
+            this.state.question.message)}</div>
+          {this.state.question.correct && <div className='answer'>最优正确答案（执行时间:{this.state.question.exe_time / 1000000}ms)</div>}
+          <Button style={{ marginTop: 10 }} onClick={this.submit}>{this.state.loading ? '执行...' : '提交'}</Button>
+        </TabPane>
+        <TabPane tab='控制台' key="2">
+          <div className='console'>
+            {this.state.question.console}
+          </div>
+        </TabPane>
+      </Tabs>
     </div>
   }
 }
+

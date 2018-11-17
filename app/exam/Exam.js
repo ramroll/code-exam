@@ -27,7 +27,13 @@ export default @withExam() class Exam extends Component {
   render() {
     return <div className='paper'>
       <Rank exam={this.props.name} />
-      <h1>{this.props.title}<Timer left={this.props.left} /></h1>
+      <h1>{this.props.title}
+        <div className='timer-w'>
+          距离考试结束：<Timer left={this.props.left} />
+        </div>
+      </h1>
+
+
 
       {this.state.QuestionComponent && this.props.questions.map( (question, i) => {
         const { QuestionComponent } = this.state
