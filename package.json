@@ -8,7 +8,8 @@
     "service": "node scripts/server/runner.js",
     "start": "cross-env NODE_ENV=development pm2 start process.config.js",
     "lint": "eslint ./app ./service --fix",
-    "build": "cross-env NODE_ENV=production webpack --config ./app/exam/webpack.config.js",
+    "build-exam": "cross-env NODE_ENV=production webpack --config ./app/exam/webpack.config.js",
+    "build-inspire": "cross-env NODE_ENV=production webpack --config ./app/inspire/webpack.config.js",
     "bz": "cross-env BUNDLE_ANALYZE=1 NODE_ENV=production  webpack --config ./app/exam/webpack.config.js"
   },
   "author": "",
