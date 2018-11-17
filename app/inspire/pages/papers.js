@@ -53,7 +53,6 @@ export default @withPaper() class Papers extends Component{
         id
       }
     }).then(result => {
-      debugger
       this.props.remove(id)
     })
   }
@@ -85,12 +84,12 @@ export default @withPaper() class Papers extends Component{
 
 
         <tbody>
-          {this.props.list.map(item => {
-            return <tr>
+          {this.props.list.map( (item, i) => {
+            return <tr key={i}>
               <td>{item.id}</td>
               <td>{item.name}</td>
               <td>{item.title}</td>
-              <td><Link to={`/inspire/paper/${item.id}`}><a>编辑</a></Link>|<Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
+              <td><Link to={`/inspire/paper/${item.id}`}>编辑</Link>|<Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
 
             </tr>
           })}

@@ -18,33 +18,34 @@ class Exam{
    */
   async load(name, student_id){
 
-    const dir = path.resolve(process.env.EXAM_DIR, name)
-    console.log('dir', dir)
-    if(!fs.existsSync(dir)) {
-      throw new LogicException('试卷不存在')
-    }
-    const files = fs.readdirSync(dir)
-    const count = files.filter(x => x.match(/\.md$/)).length
-
-    const questions = []
-
     const sql = `select * from exam where name=?`
     const exam = await this.db.queryOne(sql, [name])
+
     if(!exam) {
       throw new LogicException('试卷不存在')
     }
 
+    const sql2 = `select B.id as question_id,B.title, B.id,A.min_score,A.ref_time,A.weight,B.md,B.sample,B.title from exam_question A
+      left join question B
+      on A.question_id = B.id
+      where A.exam_id=${exam.id}
+      order by A.id
+    `
     const submits = await this.db.query('select * from submit where exam_id=? and student_id=? order by id desc ', [exam.id, student_id])
+    const configs = await this.db.query(sql2) 
 
+    const count = configs.length
+    const questions = []
     for(let i = 1; i <= count; i++) {
-
-      const lastSubmit = submits.find(x => x.question === i - 1)
-      const successSubmits = submits.filter(x =>(x.status === 2 && x.question === i - 1))
-      const fastestSubmit = findMin(x => x.exe_time)(successSubmits)
       const question = {}
-      const md = fs.readFileSync(path.resolve(dir, i + '.md'), 'utf-8')
-      const sample = fs.readFileSync(path.resolve(dir, i + '.sample.js'), 'utf-8')
+      const lastSubmit = submits.find(x => x.question === configs[i-1].id)
+      const successSubmits = submits.filter(x =>(x.status === 2 && x.question === configs[i-1].id))
+      const fastestSubmit = findMin(x => x.exe_time)(successSubmits)
+      const {md,sample, question_id, title} = configs[i-1]
+      question.id = question_id 
       question.md = md
+      question.title = title
+      question.sample = sample
       question.console = lastSubmit ? lastSubmit.console : ''
       question.message = lastSubmit ? lastSubmit.message : ''
       question.last_submit_status = lastSubmit ? lastSubmit.status : -1
@@ -74,19 +75,15 @@ class Exam{
     console.log('submit')
     const exam = await this.db.queryOne('select * from exam where name=?', [obj.exam])
     const diff = new Date().getTime() - ( new Date(exam.created).getTime() + exam.time*1000)
-    if(diff > 0) {
+    if(!(exam.time === 0) && diff > 0) {
       throw new LogicException('已经超出考试时间')
     }
 
-    // const lastSubmit = await this.db.queryOne('select * from submit where question=? and exam_id = ? and (status=0 or status=1)', [obj.index, exam.id])
-    // if(lastSubmit) {
-    //   throw new LogicException('您上次提交的代码正在验证')
-    // }
 
     const submit = {
       student_id,
       exam_id : exam.id,
-      question : obj.index,
+      question : obj.question_id,
       code : obj.code,
       exam : exam.name
     }

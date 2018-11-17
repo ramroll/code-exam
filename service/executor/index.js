@@ -20,14 +20,33 @@ function executor() {
     const cp = child_process.fork(__dirname + '/executor.js')
 
 
+    let finished = false
+    setTimeout(() => {
+
+      if(!finished) {
+
+        console.log('here---')
+        cp.kill('SIGINT')
+        console.log('killed---')
+        error_handler(db, submit, 100, '执行超出3s限制')
+          .then(() => {
+            console.log(`${submit.student_id}超时`)
+          })
+      }
+    }, 3000)
+
+
     cp.send({
       exam: submit.exam,
       question : submit.question,
-      code
+      code,
+      tester_code : submit.tester_code
     })
 
     cp.on('message', result => {
       if (result.code >= 100) {
+
+        finished = true
         error_handler(db, submit, result.code, result.message, result.logs)
           .then(() => {
             console.log(`${submit.student_id}提交了错误的答案`)
@@ -35,6 +54,8 @@ function executor() {
           })
       }
       if (result.code === 2) {
+
+        finished = true
         success_handler(db, submit, result.exe_time, result.logs)
           .then(() => {
             console.log(`${submit.student_id}提交了正确的答案`)
@@ -89,6 +110,8 @@ async function fetchOne(db) {
     const sql = `select * from submit where id=${id}`
     const submit = await db.queryOne(sql)
     if(!submit) {return null}
+    const question = await db.queryOne(`select tester from question where id=${submit.question}`)
+    submit.tester_code = question.tester
     return submit
   }  catch(ex) {
     console.error(ex)

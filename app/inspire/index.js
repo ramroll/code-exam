@@ -47,6 +47,7 @@ class App extends Component {
                 <Menu.Item key='questions' ><Link to='/inspire/questions'>我出的题目</Link></Menu.Item>
                 <Menu.Item key='question' ><Link to='/inspire/question'>出题</Link></Menu.Item>
                 <Menu.Item key='papers'><Link to='/inspire/papers'>我出的试卷</Link></Menu.Item>
+                <Menu.Item key='paper'><Link to='/inspire/paper'>出卷</Link></Menu.Item>
 
               </SubMenu>
             </Menu>

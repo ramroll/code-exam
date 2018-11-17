@@ -8,16 +8,20 @@ export function withFields() {
   return Target => {
     class FieldValueCollector extends Component{
 
-      constructor(){
+      constructor(props){
         super()
-        this.values = {}
+        this.values = props.defaultValues || {}
         this.notifies = {}
       }
       handleEmitChange = ({name, value}) => {
         this.values[name] = value
-        this.props.onChange && this.props.onChange(this.values)
+        this.props.onChange && this.props.onChange(this.getFieldValues())
       }
 
+
+      getFieldValues = () => {
+        return this.values
+      }
       render(){
         return (
           <FieldsContext.Provider value={{
@@ -31,9 +35,7 @@ export function withFields() {
             values : this.values
           }}>
             <Target {...this.props}
-              getFieldValues={() => {
-                return this.values || {}
-              }}
+              getFieldValues={this.getFieldValues}
               setValues={data => {
                 this.values = data
                 Object.keys(data).forEach(key => {
@@ -64,6 +66,9 @@ export class Field extends Component  {
   }
 
   componentWillMount(){
+    this.setState({
+      value : this.context.values[this.props.name]
+    })
     this.removeNotifier = this.context.registerNotifier(this.props.name, this.notifierHandler)
   }
 

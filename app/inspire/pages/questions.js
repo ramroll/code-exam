@@ -85,11 +85,11 @@ export default @withQuestion() class Home extends Component{
 
 
         <tbody>
-          {this.props.list.map(item => {
-            return <tr>
+          {this.props.list.map( (item, i) => {
+            return <tr key={i}>
               <td>{item.id}</td>
               <td>{item.title}</td>
-              <td><Link to={`/inspire/question/${item.id}`}><a>编辑</a></Link>|<Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
+              <td><Link to={`/inspire/question/${item.id}`}>编辑</Link>|<Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
 
             </tr>
           })}

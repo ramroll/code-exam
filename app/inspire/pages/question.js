@@ -134,6 +134,7 @@ class ProgramEditor extends Component{
     this.cm = CodeMirror.fromTextArea(node, {
       mode: 'javascript'
     })
+    this.cm.on('change', this.changeHandler)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -146,13 +147,14 @@ class ProgramEditor extends Component{
   }
 
   changeHandler = (e) => {
-    this.props.onChange && this.props.onChange(e.target.value)
+    const value = this.cm.getValue()
+    this.state.value = value
+    this.props.onChange && this.props.onChange(value)
   }
 
 
   render(){
     return <textarea
-      onChange={this.changeHandler}
       value={this.state.value}
       ref={r => this.r = r}></textarea>
   }

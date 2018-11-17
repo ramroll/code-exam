@@ -1,5 +1,6 @@
 const ValueNotMatchException = require('./ValueNotMatchException')
 const UndefException = require('./UndefException')
+const CustomError = require('./CustomError')
 const deepEqual = require('deep-equal')
 
 
@@ -20,7 +21,8 @@ class Testutil {
    * 使用伪随机数替代随机数
    * 让测试更加稳定
    */
-  psedo_start() {
+  psedo_start(pseed = 1) {
+    seed = pseed
     rnd = Math.random
     Math.random = psedo_random
   }
@@ -39,6 +41,10 @@ class Testutil {
     this.begin = process.hrtime()
   }
 
+
+  error(message) {
+    throw new CustomError(message)
+  }
 
   undef(entity){
     throw new UndefException(entity)

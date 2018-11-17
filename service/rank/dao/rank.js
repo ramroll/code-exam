@@ -6,8 +6,10 @@ const LogicException = require('../../lib/exception/LogicException')
 const MaxHeap = require('./heap')
 
 
-function sum(list) {
-  return list.reduce((x, y) => x + y, 0)
+function sum(obj) {
+  return Object.values(obj).reduce((x, y) => {
+    return x + y
+  }, 0)
 }
 
 function hide(email) {
@@ -33,53 +35,62 @@ class Rank {
     const lg_real = Math.log2(real_exe_time)
     const lg_refer = Math.log2(refer_exe_time)
 
-    const diff = lg_refer - lg_real
+    let diff = lg_refer - lg_real
 
+    let addScore = 50
+    if(diff < 0) {
+      addScore += diff * 10
+    }
+    else {
+      addScore += diff * 25 
+    }
 
-    console.log('diff', diff, 'ref=', refer_exe_time)
-    let score = 50 + (diff > 0 ? diff * (50 / 2) : diff * (50 / 5))
-    if(score > 100) {score = 100}
-    if(score < min_score) {score = min_score}
+    if(addScore > 100) {
+      addScore = 100
+    }
+    if(addScore < 0) {
+      addScore = 0
+    }
 
+    let score = min_score + (addScore  / 2)
     weight = weight / 100
-    console.log('score', real_exe_time, refer_exe_time, score, weight)
+    console.log('score', diff, refer_exe_time, real_exe_time, score)
     return score * weight
   }
 
 
-  loadExamConfs() {
-    const dir = path.resolve(process.env.EXAM_DIR)
-    if(!fs.existsSync(dir)) {
-      throw new LogicException('试卷不存在')
-    }
-    const exams = fs.readdirSync(dir)
-    let conf = {}
-    for(let i = 0; i < exams.length; i++) {
-      const exam = exams[i]
-      const scores = require(path.resolve(dir, exam, 'scores.config.js'))
-      // console.log('files', fs.readdirSync(path.resolve(dir, exam)))
-      const count = fs.readdirSync(path.resolve(dir, exam)).filter(x => x.match(/\.md$/)).length
-      conf[exam] = {
-        scores,
-        count
+  async loadExamConfs() {
+    
+    const sql = `select A.question_id, B.name, A.min_score, A.ref_time, A.weight from exam_question A
+      left join exam B
+      on B.id = A.exam_id
+    `
+    const items = await this.db.query(sql)
+    const conf = {}
+
+    for(let i = 0; i < items.length; i++) {
+      const {name, min_score, ref_time, weight, question_id} = items[i]
+
+      if(!conf[name]) {
+        conf[name] = {
+          count : 0,
+          scores : {} 
+        }
       }
+
+      conf[name].scores[question_id] = {
+        min_score, 
+        ref_time,
+        weight
+      }
+      conf[name].count ++
     }
     return conf
   }
 
-  loadExamConf(name) {
-    const dir = path.resolve(process.env.EXAM_DIR, name)
-    if(!fs.existsSync(dir)) {
-      throw new LogicException('试卷不存在')
-    }
-    const scores = require(path.resolve(dir, 'scores.config.js'))
-    const count = fs.readdirSync(path.resolve(dir)).filter(x => x.match(/\.md$/)).length
-    return {scores,count}
-  }
-
   async buildRank() {
     const exam_names = ( await this.db.query(`select distinct(exam) from submit`) ).map(x => x.exam)
-    this.conf = this.loadExamConfs()
+    this.conf = await this.loadExamConfs()
 
     const sql = `
       select A.id, A.exam, A.student_id, A.status, A.question, A.exe_time,B.email, B.nickname
@@ -98,7 +109,7 @@ class Rank {
         this.max_id = id
       }
       if(!this.conf[exam]) {
-        this.conf[exam] = this.loadExamConf(exam)
+        continue
       }
 
       if(!this.exams[exam]) {
@@ -107,30 +118,32 @@ class Rank {
         }
       }
       const {scores,count} = this.conf[exam]
-      // console.log('count', count)
 
       // 初始化为0分
       if(!this.exams[exam].users[student_id]) {
         this.exams[exam].users[student_id] = {
           nickname,
           email : hide(email),
-          scores : Array(count).fill(0),
+          scores : {},
           total : 0
         }
       }
       const users = this.exams[exam].users
 
       // 对当前submit打分
-      const index = question
+      const question_id = question
       const score = this.score(
         exe_time,
-        scores[index].exe_time,
-        scores[index].min_score,
+        scores[question_id].ref_time,
+        scores[question_id].min_score,
         status === 2,
-        scores[index].weight
+        scores[question_id].weight
       )
-      if (users[student_id].scores[index] < score) {
-        users[student_id].scores[index] = score
+      if(!users[student_id].scores[question_id]) {
+        users[student_id].scores[question_id] = 0
+      }
+      if (users[student_id].scores[question_id] < score) {
+        users[student_id].scores[question_id] = score
         users[student_id].total = sum(users[student_id].scores)
       }
     }

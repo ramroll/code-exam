@@ -38,7 +38,12 @@ class Inspire{
   /**
    * 删除试题
    */
-  delete_question(id) {
+  async delete_question(id) {
+    const sql = `select * from question_exam where question_id=${id}`
+    const question = await this.db.queryOne(sql)
+    if(question) {
+      throw new LogicException('这道题目已经在其他试卷中使用')
+    }
     return this.db.delete('question', id)
   }
 
@@ -49,6 +54,14 @@ class Inspire{
   exams(account_id, offset, limit) {
     const sql = `select * from exam where account_id=${account_id} limit ${limit} offset ${offset}`
     return this.db.query(sql)
+  }
+  /**
+   * 考试是否存在 
+   */
+  exists_exam(name) {
+
+    const sql = `select id from exam where name='${name}'`
+    return this.db.queryOne(sql)
   }
 
   /**
@@ -68,7 +81,7 @@ class Inspire{
       let id = others.id
       if (others.id) {
         await this.db.update('exam',others, connection)
-        const ids = list.map(x => x.id)
+        const ids = list.map(x => x.id).filter(x => x)
         const sql = `delete from exam_question where id in (${ids.join(',')})`
         await this.db.query(sql, null, connection)
       } else {
@@ -100,6 +113,30 @@ class Inspire{
   }
 
 
+  /**
+   * 获取试卷
+   */
+  async paper(id){
+
+    const sql = `select * from exam where id=${id}` 
+    const paper = await this.db.queryOne(sql)
+    if(!paper) {
+      throw new LogicException('试卷不存在')
+    }
+    const sql2 = `select * from exam_question where exam_id=${paper.id}`
+    const list = await this.db.query(sql2)
+    paper.list = list
+    return paper
+
+  }
+
+  /**
+   * 删除试卷
+   */
+  async delete_paper(id) {
+    await this.db.query(`delete from exam_question where exam_id=${id}`)
+    await this.db.delete('exam', id)
+  }
 
 }
 

@@ -67,9 +67,9 @@ function register(app){
       max : 200
     })
     validator.check('tester', 'required', '请填写测试程序')
-    validator.check('tester', 'len', '测试程序应当为20-1000个字符', {
+    validator.check('tester', 'len', '测试程序应当为20-3000个字符', {
       min: 10,
-      max: 1000
+      max: 3000
     })
     validator.validate()
   }
@@ -94,6 +94,7 @@ function register(app){
 
     await inspire.put_question({
       md : req.body.md,
+      title : req.body.title,
       tester : req.body.tester,
       sample : req.body.sample,
       account_id : req.student.account_id
@@ -138,6 +139,16 @@ function register(app){
     res.send(papers)
   }))
 
+  app.get('/my/paper/:id', token, api_wrapper( async (req, res) => {
+    const id = req.params.id
+    if(!id.match(/^\d+$/)) {
+      throw new LogicException('id格式不正确')
+    }
+    const inspire = new Inspire()
+    const paper = await inspire.paper(id)
+    res.send(paper)
+  }))
+
 
   async function validateExam(req, inspire) {
 
@@ -152,8 +163,8 @@ function register(app){
     validator.check('name', 'required', '请填写试卷名称')
     validator.check('name', /^[a-z][a-z0-9-]{3,19}$/, '试卷名称应当4-20个小写字母、数字和-')
     validator.check('time', 'required', '请填写时间')
-    validator.check('time', 'integer', '时间应当是大于0的整数', {
-      min : 1
+    validator.check('time', 'integer', '时间应当是大于等于0的整数', {
+      min : 0
     })
 
     const list = req.body.list
@@ -162,6 +173,14 @@ function register(app){
       throw new LogicException('需要至少1个问题')
     }
 
+    if (req.method === 'POST') {
+
+      const dup = await inspire.exists_exam(req.body.name)
+      if (dup) {
+        throw new LogicException('名称为' + req.body.name + '的试卷已经存在')
+      }
+
+    }
 
     let q_list = []
     for(let i = 0; i < list.length; i++) {
@@ -200,6 +219,39 @@ function register(app){
     await validateExam(req, inspire)
 
     await inspire.put_paper(req.body, req.student.account_id)
+    res.send({
+      success : 1
+    })
+  }))
+
+
+  app.put('/my/paper', token,bodyParser.json(), api_wrapper( async (req, res) => {
+    if(!req.student) {
+      throw new LoginException('没有登录')
+    }
+    const inspire = new Inspire()
+    await validateExam(req, inspire)
+
+    delete req.body.created
+    req.body.list.forEach(x => {
+      delete x.created
+    })
+    await inspire.put_paper(req.body, req.student.account_id)
+    res.send({
+      success : 1
+    })
+  }))
+
+  app.delete('/my/paper', token, bodyParser.json(), api_wrapper(async (req, res) => {
+    if(!req.student) {
+      throw new LoginException('没有登录')
+    }
+    const validator = new Validator(req.body)
+    validator.check('id', 'required', '需要id')
+    validator.check('id', 'integer', '需要整数id')
+
+    const inspire = new Inspire()
+    await inspire.delete_paper(req.body.id)
     res.send({
       success : 1
     })

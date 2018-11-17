@@ -20,7 +20,8 @@ export default class Question extends Component{
 
     this.state = {
       tab : 'question',
-      question : props.question
+      question : props.question,
+      timeout : false
     }
   }
 
@@ -33,30 +34,27 @@ export default class Question extends Component{
 
   wait = () => {
     this.setState({
-      loading : true
+      loading : true,
+      timeout : false
     })
 
     this.I = setInterval( () => {
       request(`/api/exam/paper?name=${this.props.exam}`)
         .then(paper => {
-          this.T && clearTimeout(this.T)
           const question = paper.questions[this.props.index]
           const state = {question }
           if(question.last_submit_status > 1) {
             clearInterval(this.I)
             state.loading = false
+            state.timeout = false
+            this.T && clearTimeout(this.T)
           }
           console.log('result', paper)
           this.setState(state)
         })
     }, 2000)
 
-    this.T = setTimeout(() => {
-      clearTimeout(this.I)
-      this.setState({
-        loading : false
-      })
-    }, 10000)
+
   }
 
   componentWillUnmount(){
@@ -75,7 +73,7 @@ export default class Question extends Component{
       method : 'POST',
       body : {
         exam : this.props.exam,
-        index : this.props.index,
+        question_id: this.props.question.id,
         code
       }
     })
@@ -86,11 +84,21 @@ export default class Question extends Component{
       .catch(ex => {
         message.error(ex.error)
       })
+    // this.T = setTimeout(() => {
+    //   clearTimeout(this.I)
+    //   this.setState({
+    //     loading: false,
+    //     timeout : true
+    //   })
+    // }, 10000)
   }
 
   renderLastStatus = (status, message) => {
 
     if(this.state.loading) {return ''}
+    // if(this.state.timeout) {
+    //   return <span>上一次提交（系统繁忙）请重试</span>
+    // }
     switch(status) {
     case -1 :
       return ''
@@ -115,6 +123,7 @@ export default class Question extends Component{
     return <div className='question'>
       <Tabs defaultActiveKey='1' onChange={this._change_tab}>
         <TabPane tab='题目' key='1'>
+          <h3>题目{this.props.index + 1}:{this.state.question.title}</h3>
           <div className='md' dangerouslySetInnerHTML={{ __html: md.render(this.state.question.md) }}></div>
           <textarea ref={r => this.r = r} defaultValue={this.state.question.sample}></textarea>
           <div>{this.renderLastStatus(this.state.question.last_submit_status,

@@ -39,13 +39,13 @@ export default @withFields() class WritePaper extends Component{
 
     const values = this.props.getFieldValues()
 
-
     request('/api/inspire/my/paper', {
       method: values.id ? 'PUT' : 'POST',
       body: values
     })
     .then(data => {
       message.success('操作成功')
+      this.props.history.push('/inspire/papers')
     })
     .catch(ex => {
       message.error(ex.error)
@@ -98,14 +98,19 @@ class QuestionList extends Component{
 
   constructor(props){
     super()
-
     this.state = {
       list : props.list || []
     }
-
   }
 
 
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.value !== this.state.list) {
+      this.setState({
+        list : nextProps.value
+      })
+    }
+  }
   addQuestion = () => {
     this.setState({
       list : [...this.state.list, {
@@ -130,6 +135,7 @@ class QuestionList extends Component{
   render(){
     return <div>
       <table className='question-list'>
+        <thead>
         <tr>
           <td>题目编号</td>
           <td>最低分</td>
@@ -137,14 +143,18 @@ class QuestionList extends Component{
           <td>权重</td>
           <td></td>
         </tr>
+        </thead>
+        <tbody>
         {
           this.state.list.map((question, i) => {
             return <Question
               delete={this.deleteHandler.bind(this, i)}
               onChange={this.changeHandler.bind(this, i)}
-              defaultVaues={question} save={this.saveQuestion} key={i} />
+              defaultValues={question} 
+              save={this.saveQuestion} key={i} />
           })
         }
+        </tbody>
       </table>
       <a onClick={this.addQuestion}>+增加题目</a>
     </div>

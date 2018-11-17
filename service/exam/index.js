@@ -41,8 +41,8 @@ function register(app){
     const validator = new Validator(req.body)
     validator.check('exam', 'required', '需要传入试题名称')
     validator.check('exam', /[a-z-]{3,20}/, '试题格式不正确')
-    validator.check('index', 'required', '需要题目序号')
-    validator.check('index', /\d+/, '题目需要格式不正确')
+    validator.check('question_id', 'required', '需要题目id')
+    validator.check('question_id', /\d+/, '题目id格式不正确')
     validator.check('code', 'required', '需要代码')
     validator.check('code', 'len', '答案不能超过2000个字符', {
       max : 2000

@@ -5,21 +5,15 @@ const ValueNotMatchException = require('./ValueNotMatchException')
 const UndefException = require('./UndefException')
 process.on('message', submit => {
   if(submit.type === 'exit') {process.exit(submit.code)}
-  const {code, exam, question} = submit
-  const exam_dir = path.resolve( process.env.EXAM_DIR, exam )
+  const {code, exam, question, tester_code} = submit
+  console.log(code)
 
-  if(!fs.existsSync(exam_dir)) {
-    sendError(102, '考试不存在')
-    return
-  }
+  
 
-
-  const tester_path = path.resolve( process.env.EXAM_DIR, exam, (question+1) + '.test.js')
-  const testerCode = fs.readFileSync(tester_path, 'utf-8')
 
   let testerFunction = null
   try {
-    testerFunction = eval(testerCode)
+    testerFunction = eval(tester_code)
   } catch(ex) {
     console.error(ex)
     sendError(1001, '执行试卷出错')
@@ -30,6 +24,7 @@ process.on('message', submit => {
   testutil.hook_console_start()
   try{
     testerFunction(testutil, code)
+    console.log(testutil.exe_time())
     process.send({
       code : 2,
       exe_time : testutil.exe_time(),
