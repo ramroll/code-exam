@@ -82,16 +82,23 @@ class Inspire{
       if (others.id) {
         await this.db.update('exam',others, connection)
         const ids = list.map(x => x.id).filter(x => x)
-        const sql = `delete from exam_question where id in (${ids.join(',')})`
-        await this.db.query(sql, null, connection)
+        if(ids.length > 0) {
+          const sql = `delete from exam_question where id in (${ids.join(',')})`
+          await this.db.query(sql, null, connection)
+        }
       } else {
         id = await this.db.insert('exam',others, connection)
       }
 
+      let total = 0
       for (let i = 0; i < list.length; i++) {
         const question_exam = list[i]
         question_exam.exam_id = id
         await this.db.insert('exam_question', question_exam, connection)
+        total ++
+      }
+      if(total === 0) {
+        throw new LogicException('至少要提1个问题')
       }
 
       await this.db.commitTransation(connection)
