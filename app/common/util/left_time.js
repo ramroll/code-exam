@@ -20,6 +20,6 @@ export default function left_time(left){
 }
 
 function pad(v) {
-  return ''.padStart(2, v.toString())
+  return (v + '').padStart(2, '0')
 }
 
