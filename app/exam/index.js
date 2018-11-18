@@ -6,6 +6,7 @@ import Login from './Login'
 import Register from './Register'
 import Activation from './Activation'
 import RegisterSuccess from './RegisterSuccess'
+import Logout from './Logout'
 import Home from './Home'
 import './styl/index.styl'
 
@@ -24,6 +25,7 @@ class App extends Component {
           <Route path='/register' component={Register} />
           <Route path='/regsucc' component={RegisterSuccess} />
           <Route path='/activation' component={Activation} />
+          <Route path='/logout' component={Logout} />
         </div>
       </Router>
     )

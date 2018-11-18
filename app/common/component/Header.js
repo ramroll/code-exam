@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {Link} from 'react-router-dom'
 
 import withMe from './withMe'
 import './header.styl'
@@ -12,7 +13,17 @@ export default @withMe() class Header extends Component {
       </div>
 
       <div className='u'>
-        <div className='circle'>{this.props.nickname && this.props.nickname[0]}</div>
+        <div className='circle'>
+          {this.props.nickname && this.props.nickname[0]}
+        </div>
+        <div className='top-menu'>
+          <div className='item'>
+            <a href='/inspire'>创作中心</a>
+          </div>
+          <div className='item'>
+            <a href='/logout'>登出</a>
+          </div>
+        </div>
       </div>
     </div>
   }
