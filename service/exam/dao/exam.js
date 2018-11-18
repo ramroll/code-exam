@@ -38,7 +38,7 @@ class Exam{
     const questions = []
     for(let i = 1; i <= count; i++) {
       const question = {}
-      const lastSubmit = submits.find(x => x.question === configs[i-1].question_id
+      const lastSubmit = submits.find(x => x.question === configs[i-1].question_id)
       const successSubmits = submits.filter(x =>(x.status === 2 && x.question === configs[i-1].question_id))
       const fastestSubmit = findMin(x => x.exe_time)(successSubmits)
       const {md,sample, question_id, title} = configs[i-1]
