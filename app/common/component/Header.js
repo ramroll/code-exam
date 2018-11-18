@@ -6,7 +6,7 @@ import './header.styl'
 
 export default @withMe() class Header extends Component {
   render(){
-    const login = !!this.props.student
+    const login = !!this.props.name
     return <div className='header'>
       <div className='logo'>
         <img src={require('../../../static/img/horse.png')} />
