@@ -80,7 +80,7 @@ class Exam{
   async submit(obj, student_id) {
     console.log('submit')
     const exam = await this.db.queryOne('select * from exam where name=?', [obj.exam])
-    const diff = new Date().getTime() - ( new Date(exam.created).getTime() + exam.time*1000)
+    const diff = new Date().getTime() - ( new Date(exam.start_time).getTime() + exam.time*1000)
     if(!(exam.time === 0) && diff > 0) {
       throw new LogicException('已经超出考试时间')
     }
