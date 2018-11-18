@@ -16,7 +16,7 @@ class Exam{
    * @param {*} name
    * @param {*} student_id
    */
-  async load(name, student_id){
+  async load(name, student_id, account_id){
 
     const sql = `select * from exam where name=?`
     const exam = await this.db.queryOne(sql, [name])
@@ -55,14 +55,20 @@ class Exam{
       questions.push(question)
     }
 
-    const created_time = new Date(exam.created).getTime()
-    const diff = created_time + exam.time * 1000 - new Date().getTime()
+    const start_time = new Date(exam.start_time).getTime()
+    const diff = start_time+ exam.time * 1000 - new Date().getTime()
+    const tillstart = start_time - new Date().getTime()
+    console.log( questions)
+    console.log(
+      (exam.account_id !== account_id) ? (tillstart > 0 ? [] : questions) : questions )
 
     return {
       name,
       title : exam.title,
-      left :  diff > 0 ? diff : 0,
-      questions
+      permanent : exam.time === 0,
+      left :  diff,
+      tillstart,
+      questions : (exam.account_id !== account_id) ? (tillstart > 0 ? [] : questions) : questions 
     }
   }
 

@@ -1,4 +1,5 @@
 ALTER TABLE `exam` ADD COLUMN account_id bigint(20) unsigned NOT NULL COMMENT '试卷出题人';
+ALTER TABLE `exam` ADD COLUMN start_time timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT '考试开始时间';
 ALTER TABLE `submit` ADD COLUMN console text NULL COMMENT '控制台';
 ALTER TABLE `exam` ADD CONSTRAINT `cst_name` UNIQUE KEY (`name`);
 

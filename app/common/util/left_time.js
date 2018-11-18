@@ -3,6 +3,7 @@
  * @param {*} left 
  */
 export default function left_time(left){
+  if(left < 0) left = -left
   const d = Math.floor( left / (3600*1000*24) )
   left -= d * 3600*1000*24
   const h = Math.floor ( left / (3600*1000) )

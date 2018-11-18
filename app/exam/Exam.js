@@ -29,7 +29,7 @@ export default @withExam() class Exam extends Component {
       <Rank exam={this.props.name} />
       <h1>{this.props.title}
         <div className='timer-w'>
-          距离考试结束：<Timer left={this.props.left} />
+          <Timer permanent={this.props.permanent} left={this.props.left} tillstart={this.props.tillstart} />
         </div>
       </h1>
 

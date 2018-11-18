@@ -26,7 +26,7 @@ function register(app){
     validator.validate()
 
     const exam = new Exam()
-    const result = await exam.load(req.query.name, req.student.student_id)
+    const result = await exam.load(req.query.name, req.student.student_id, req.student.account_id)
     res.send(result)
   }))
 
