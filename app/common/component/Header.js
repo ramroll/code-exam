@@ -6,6 +6,7 @@ import './header.styl'
 
 export default @withMe() class Header extends Component {
   render(){
+    const login = !!this.props.student
     return <div className='header'>
       <div className='logo'>
         <img src={require('../../../static/img/horse.png')} />
@@ -16,14 +17,23 @@ export default @withMe() class Header extends Component {
         <div className='circle'>
           {this.props.nickname && this.props.nickname[0]}
         </div>
-        {this.props.student && <div className='top-menu'>
-          <div className='item'>
+        <div className='top-menu'>
+          {!login && <div className='item'>
+            <a href='/login'>登录</a>
+          </div>}
+          {!login && <div className='item'>
+            <a href='/register'>注册</a>
+          </div>}
+
+
+          {login && <div className='item'>
             <a href='/inspire'>创作中心</a>
-          </div>
-          <div className='item'>
+          </div>}
+          {login && <div className='item'>
             <a href='/logout'>登出</a>
           </div>
-        </div>}
+          }
+        </div>
       </div>
     </div>
   }
