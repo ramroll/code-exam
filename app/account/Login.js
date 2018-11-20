@@ -77,7 +77,7 @@ class NormalLoginForm extends React.Component {
 
 
           <div>
-            <a href="/register">注册</a>
+            <a href="/account/register">注册</a>
           </div>
 
         </FormItem>

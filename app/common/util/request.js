@@ -23,7 +23,7 @@ export default function request(url, options = {}) {
         }
 
         if (resp.status === 401 && options.method === 'GET') {
-          window.location.href = '/login?next=' + encodeURIComponent(location.href)
+          window.location.href = '/account/login?next=' + encodeURIComponent(location.href)
           return
         }
         const token = resp.headers.get('TOKEN')

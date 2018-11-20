@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/javascript/javascript'
-import CodeMirror from 'codemirror'
+
 import ReactDOM from 'react-dom'
 import { Button, message, Input } from 'antd'
 import request from '../../common/util/request'
 import {Field, withFields} from '../../common/component/form'
+
+import ProgramEditor from '../../common/component/ProgramEditor'
+import MarkdownEditor from '../../common/component/MarkdownEditor'
 
 const default_tester = `function tester(testutil, code){
   eval(code)
@@ -90,72 +91,4 @@ export default @withFields() class WriteQuestion extends Component{
 
 }
 
-class MarkdownEditor extends Component{
 
-  constructor(props){
-    super()
-    this.state = {
-      value : props.value
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if(this.props.value !== nextProps.value) {
-      this.setState({
-        value : nextProps.value
-      })
-    }
-  }
-
-  changeHandler = (e) => {
-    this.props.onChange && this.props.onChange(e.target.value)
-  }
-
-  render(){
-    return <textarea
-      className='markdown-editor'
-      onChange={this.changeHandler}
-      value={this.state.value}
-    />
-  }
-}
-
-class ProgramEditor extends Component{
-
-  constructor(props){
-    super()
-    this.state = {
-      value : props.value
-    }
-  }
-
-  componentDidMount(){
-    const node = ReactDOM.findDOMNode(this.r)
-    this.cm = CodeMirror.fromTextArea(node, {
-      mode: 'javascript'
-    })
-    this.cm.on('change', this.changeHandler)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if(this.state.value !== nextProps.value) {
-      this.cm.setValue(nextProps.value)
-      this.setState({
-        value : nextProps.value
-      })
-    }
-  }
-
-  changeHandler = (e) => {
-    const value = this.cm.getValue()
-    this.state.value = value
-    this.props.onChange && this.props.onChange(value)
-  }
-
-
-  render(){
-    return <textarea
-      value={this.state.value}
-      ref={r => this.r = r}></textarea>
-  }
-}

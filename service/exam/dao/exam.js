@@ -32,7 +32,7 @@ class Exam{
       order by A.id
     `
     const submits = await this.db.query('select * from submit where exam_id=? and student_id=? order by id desc ', [exam.id, student_id])
-    const configs = await this.db.query(sql2) 
+    const configs = await this.db.query(sql2)
 
     const count = configs.length
     const questions = []
@@ -42,7 +42,7 @@ class Exam{
       const successSubmits = submits.filter(x =>(x.status === 2 && x.question === configs[i-1].question_id))
       const fastestSubmit = findMin(x => x.exe_time)(successSubmits)
       const {md,sample, question_id, title} = configs[i-1]
-      question.id = question_id 
+      question.id = question_id
       question.md = md
       question.title = title
       question.sample = sample
@@ -68,7 +68,7 @@ class Exam{
       permanent : exam.time === 0,
       left :  diff,
       tillstart,
-      questions : (exam.account_id !== account_id) ? (tillstart > 0 ? [] : questions) : questions 
+      questions : (exam.account_id !== account_id) ? (tillstart > 0 ? [] : questions) : questions
     }
   }
 
@@ -99,6 +99,35 @@ class Exam{
     console.log('enqueue', id)
     const queue = new ExecQueue()
     queue.enqueue(id)
+  }
+
+
+  /**
+   * 加载解释
+   * @param {*} name
+   */
+  async explains(name) {
+    const sql = `select id from exam where name='${name}'`
+    const exam = await this.db.queryOne(sql)
+    if(!exam) {
+      throw new LogicException('试卷不存在')
+    }
+    const sql2 = `select * from exam_explain where exam_id='${exam.id}'`
+    return await this.db.query(sql2)
+  }
+
+  /**
+   * 加载解释
+   * @param {*} name
+   */
+  async explain(name, id) {
+    const sql = `select id from exam where name='${name}'`
+    const exam = await this.db.queryOne(sql)
+    if(!exam) {
+      throw new LogicException('试卷不存在')
+    }
+    const sql2 = `select * from exam_explain where id='${id}'`
+    return await this.db.queryOne(sql2)
   }
 
 }

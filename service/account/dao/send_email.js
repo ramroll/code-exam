@@ -42,7 +42,7 @@ const TPL_REG = (activation_code) => {
   return `
         <p>您好！</p>
         <p>&nbsp;&nbsp;您的算法课程帐号需要激活。</p>
-        <p>&nbsp;&nbsp;请去<a href="http://www.weavinghorse.com/activation?code=${activation_code}">点击此处激活</a></p>
+        <p>&nbsp;&nbsp;请去<a href="http://www.weavinghorse.com/account/activation?code=${activation_code}">点击此处激活</a></p>
         <p>谢谢！</p>
 `
 }
