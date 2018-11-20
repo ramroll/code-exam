@@ -3,6 +3,7 @@ import React, {Component} from 'react'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/javascript/javascript'
 import CodeMirror from 'codemirror'
+import ReactDOM from 'react-dom'
 
 export default class ProgramEditor extends Component{
 
