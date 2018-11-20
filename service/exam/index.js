@@ -20,7 +20,7 @@ function register(app){
       throw new LoginException()
     }
 
-    const validator = new Vqueryalidator(req.query)
+    const validator = new Validator(req.query)
     validator.check('name', 'required', '需要传入试题名称')
     validator.check('name', /[a-z-]{3,20}/, '试题格式不正确')
     validator.validate()
