@@ -19,10 +19,10 @@ export default @withMe() class Header extends Component {
         </div>
         <div className='top-menu'>
           {!login && <div className='item'>
-            <a href='/login'>登录</a>
+            <a href='/account/login'>登录</a>
           </div>}
           {!login && <div className='item'>
-            <a href='/register'>注册</a>
+            <a href='/account/register'>注册</a>
           </div>}
 
 

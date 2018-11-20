@@ -21,6 +21,7 @@ function register(app){
       return
     }
     res.send({
+      account_id : student.account_id,
       name : student.name,
       email : student.email,
       nickname : student.nickname

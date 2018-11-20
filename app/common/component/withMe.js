@@ -23,7 +23,7 @@ export default function withMe(){
           })
       }
       render(){
-        return <Target {...this.state.student} />
+        return <Target {...this.state.student} {...this.props} />
       }
     }
     return WithMeProxy

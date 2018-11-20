@@ -29,7 +29,7 @@ class NormalLoginForm extends React.Component {
         request('/api/account/register', {method : 'POST', body : values})
           .then(() => {
             message.success('注册成功，邮件已发送至您的邮箱')
-            window.location = '/regsucc'
+            window.location = '/account/regsucc'
           })
           .catch( ({error}) => {
             message.error(error)
@@ -91,7 +91,7 @@ class NormalLoginForm extends React.Component {
 
 
           <div>
-            <a href="/login">登录</a>
+            <a href="/account/login">登录</a>
           </div>
 
         </FormItem>

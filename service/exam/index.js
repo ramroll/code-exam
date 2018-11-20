@@ -20,7 +20,7 @@ function register(app){
       throw new LoginException()
     }
 
-    const validator = new Validator(req.query)
+    const validator = new Vqueryalidator(req.query)
     validator.check('name', 'required', '需要传入试题名称')
     validator.check('name', /[a-z-]{3,20}/, '试题格式不正确')
     validator.validate()
@@ -28,6 +28,40 @@ function register(app){
     const exam = new Exam()
     const result = await exam.load(req.query.name, req.student.student_id, req.student.account_id)
     res.send(result)
+  }))
+
+  app.get('/paper/:name/explain', token, api_wrapper(async (req, res) => {
+
+    if(!req.student) {
+      throw new LoginException()
+    }
+
+    const validator = new Validator(req.params)
+    validator.check('name', 'required', '需要传入试题名称')
+    validator.check('name', /[a-z-]{3,20}/, '试题格式不正确')
+    validator.validate()
+
+    const exam = new Exam()
+    const results = await exam.explains(req.params.name)
+    res.send(results)
+  }))
+
+  app.get('/paper/:name/explain/:id', token, api_wrapper(async (req, res) => {
+    if(!req.student) {
+      throw new LoginException()
+    }
+
+    const validator = new Validator(req.params)
+    validator.check('name', 'required', '需要传入试题名称')
+    validator.check('name', /[a-z-]{3,20}/, '试题格式不正确')
+    validator.check('id', 'required', '需要传入id')
+    validator.check('id', 'integer', 'id应当是整数')
+    validator.validate()
+
+    const exam = new Exam()
+    const results = await exam.explain(req.params.name, req.params.id)
+    res.send(results)
+
   }))
 
 

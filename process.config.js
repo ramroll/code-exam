@@ -77,6 +77,16 @@ else {
     }
   })
   configure.apps.push({
+    name: 'account-webpack',
+    script: "./node_modules/.bin/webpack-dev-server",
+    args: "--config ./app/account/webpack.config.js",
+    env: {
+      NODE_ENV: process.env.NODE_ENV,
+      APP: 'account',
+      PORT: 8011
+    }
+  })
+  configure.apps.push({
     name : 'inspire-webpack',
     script: "./node_modules/.bin/webpack-dev-server",
     args : "--config ./app/inspire/webpack.config.js",

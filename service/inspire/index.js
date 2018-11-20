@@ -7,6 +7,7 @@ const LogicException = require('../lib/exception/LogicException')
 const LoginException = require('../lib/exception/LoginException')
 
 const Inspire = require('./dao/inspire')
+const Explain = require('./dao/explain')
 
 /**
  * 服务注册函数
@@ -256,6 +257,56 @@ function register(app){
       success : 1
     })
   }))
+
+  function validateExplain(req) {
+
+
+    const validator = new Validator(req.body)
+    if(req.method === 'PUT') {
+      validator.check('id', 'required', '需要id')
+      validator.check('id', 'integer', 'id应该为整数')
+    }
+
+    validator.check('name', 'required', '需要试题名称')
+    validator.check('name', /[a-z-]{3,20}/, '试题名称格式不正确')
+
+    validator.check('md', 'required', '需要内容')
+    validator.check('md', 'len', '内容应当为10-5000个字符')
+  }
+
+
+  app.post('/my/explain', token, bodyParser.json(), api_wrapper(async (req, res) => {
+    if(!req.student) {
+      throw new LoginException('需要登录')
+    }
+
+    validateExplain(req.body)
+    const explain = new Explain()
+    await explain.put_expain(req.body, req.student.account_id)
+
+    res.send({
+      success : 1
+    })
+
+  }))
+
+  app.delete('/my/explain/:id', token, bodyParser.json(), api_wrapper(async (req, res) => {
+    if(!req.student) {
+      throw new LoginException('需要登录')
+    }
+    const validator = new Validator(req.params)
+    validator.check('id', 'required', '需要id')
+    validator.check('id', 'integer', 'id应该为整数')
+
+    const explain = new Explain()
+    await explain.delete(req.params.id)
+
+    res.send({
+      success : 1
+    })
+
+  }))
+
 
 
 }

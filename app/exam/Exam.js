@@ -5,6 +5,7 @@ import request from '../common/util/request'
 import Timer from './Timer'
 import Rank from './Rank'
 import {tract_submit, tract_view_paper} from '../common/util/tract'
+import {Link} from 'react-router-dom'
 
 export default @withExam() class Exam extends Component {
 
@@ -33,6 +34,7 @@ export default @withExam() class Exam extends Component {
         </div>
       </h1>
 
+      <FloatMenu name={this.props.name} />
 
 
       {this.state.QuestionComponent && this.props.questions.map( (question, i) => {
@@ -46,6 +48,17 @@ export default @withExam() class Exam extends Component {
 }
 
 
+class FloatMenu extends Component{
+
+  render(){
+    return <div className='float-menu'>
+      <div className='item'>
+        <Link to={'/exam/' + this.props.name + '/explain'}>解答</Link>
+      </div>
+    </div>
+  }
+}
+
 
 function withExam() {
 
@@ -54,7 +67,7 @@ function withExam() {
     class ExamProxy extends Component {
       constructor(props) {
         super()
-        this.name = location.pathname.split('/').pop()
+        this.name = props.match.params.name
         this.state = {
           exam : null,
           error : null
