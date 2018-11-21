@@ -42,7 +42,7 @@ class Rank {
       addScore += diff * 10
     }
     else {
-      addScore += diff * 25 
+      addScore += diff * 25
     }
 
     if(addScore > 100) {
@@ -60,7 +60,7 @@ class Rank {
 
 
   async loadExamConfs() {
-    
+
     const sql = `select A.question_id, B.name, A.min_score, A.ref_time, A.weight from exam_question A
       left join exam B
       on B.id = A.exam_id
@@ -74,12 +74,12 @@ class Rank {
       if(!conf[name]) {
         conf[name] = {
           count : 0,
-          scores : {} 
+          scores : {}
         }
       }
 
       conf[name].scores[question_id] = {
-        min_score, 
+        min_score,
         ref_time,
         weight
       }
@@ -103,7 +103,8 @@ class Rank {
 
 
     for(let i = 0; i < submits.length; i++) {
-      const {id, exam, student_id, question , status, exe_time, nickname, email}= submits[i]
+      const {id, email, exam, student_id, question , status, exe_time, nickname, email}= submits[i]
+      if(!student_id) {continue}
 
       if(this.max_id < id) {
         this.max_id = id
