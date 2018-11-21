@@ -5,15 +5,18 @@ import Questions from './pages/questions'
 import Question from './pages/question'
 import Papers from './pages/papers'
 import Paper from './pages/paper'
+import MyInfo from './pages/my_info'
 import './styl/index.styl'
 
 import Header from '../common/component/Header'
 import { Menu, Icon } from 'antd'
+import withMe from '../common/component/withMe'
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
 
 
+@withMe()
 class App extends Component {
 
   constructor(){
@@ -31,7 +34,6 @@ class App extends Component {
     }
   }
 
-
   render(){
     return (
       <Router>
@@ -40,15 +42,18 @@ class App extends Component {
           <div className='page'>
             <Menu
               defaultSelectedKeys={[this.state.routeKey]}
-              defaultOpenKeys={['creative']}
+              defaultOpenKeys={['creative', 'personal']}
               mode='inline'
               style={{width : 300}} >
+              <SubMenu key='personal' title='个人中心'>
+                <Menu.Item key='/inspire/my/info'><Link to='/inspire/my/info'>个人信息</Link></Menu.Item>
+                <Menu.Item key='/inspire/my/submit'>考试记录</Menu.Item>
+              </SubMenu>
                <SubMenu key='creative' title='创作'>
                 <Menu.Item key='questions' ><Link to='/inspire/questions'>我出的题目</Link></Menu.Item>
                 <Menu.Item key='question' ><Link to='/inspire/question'>出题</Link></Menu.Item>
                 <Menu.Item key='papers'><Link to='/inspire/papers'>我出的试卷</Link></Menu.Item>
                 <Menu.Item key='paper'><Link to='/inspire/paper'>出卷</Link></Menu.Item>
-
               </SubMenu>
             </Menu>
             <div className='page-content'>
@@ -59,6 +64,9 @@ class App extends Component {
               <Route path='/inspire/papers' exact component={Papers} />
               <Route path='/inspire/paper/:id' exact component={Paper} />
               <Route path='/inspire/paper' exact component={Paper} />
+
+              <Route path='/inspire/my/info' exact component={MyInfo} />
+
             </div>
 
           </div>

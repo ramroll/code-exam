@@ -1,6 +1,8 @@
 
 import React, {Component} from 'react'
 import request from '../util/request'
+
+const MeContext = React.createContext('me')
 export default function withMe(){
   return Target => {
 
@@ -23,9 +25,14 @@ export default function withMe(){
           })
       }
       render(){
-        return <Target {...this.state.student} {...this.props} />
+        return <MeContext.Provider value={this.state.student}>
+          <Target {...this.props} />
+        </MeContext.Provider>
+
       }
     }
     return WithMeProxy
   }
 }
+
+withMe.Context = MeContext

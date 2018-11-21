@@ -4,9 +4,13 @@ import {Link} from 'react-router-dom'
 import withMe from './withMe'
 import './header.styl'
 
-export default @withMe() class Header extends Component {
+const MeContext = withMe.Context
+
+export default class Header extends Component {
+  static contextType = MeContext
   render(){
-    const login = !!this.props.name
+    const {nickname} = this.context || {}
+    const login = !!nickname
     return <div className='header'>
       <div className='logo'>
         <img src={require('../../../static/img/horse.png')} />
@@ -15,7 +19,7 @@ export default @withMe() class Header extends Component {
 
       <div className='u'>
         <div className='circle'>
-          {this.props.nickname && this.props.nickname[0]}
+          {nickname && nickname[0]}
         </div>
         <div className='top-menu'>
           {!login && <div className='item'>

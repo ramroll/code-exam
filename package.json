@@ -21,6 +21,7 @@
     "chalk": "^2.4.1",
     "codemirror": "^5.41.0",
     "commander": "^2.19.0",
+    "connect-busboy": "^0.0.2",
     "cross-env": "^5.2.0",
     "happypack": "^5.0.0",
     "markdown-it": "^8.4.2",

@@ -8,6 +8,7 @@ const LoginException = require('../lib/exception/LoginException')
 
 const Inspire = require('./dao/inspire')
 const Explain = require('./dao/explain')
+const busboy = require('connect-busboy')
 
 /**
  * 服务注册函数
@@ -305,6 +306,17 @@ function register(app){
       success : 1
     })
 
+  }))
+
+  app.post('/upload/avatar', token, busboy(), api_wrapper(async (req, res) => {
+    if(req.busboy) {
+      req.busboy.on('file', function(fieldname, file,filename,encoding,mimetype){
+        res.send({
+          success : 1
+        })
+      })
+      req.busboy.
+    }
   }))
 
 
