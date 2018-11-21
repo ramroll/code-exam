@@ -104,7 +104,7 @@ class Rank {
 
     for(let i = 0; i < submits.length; i++) {
       const {id, email, exam, student_id, question , status, exe_time, nickname}= submits[i]
-      if(!student_id) {continue}
+      if(!email) {continue}
 
       if(this.max_id < id) {
         this.max_id = id
