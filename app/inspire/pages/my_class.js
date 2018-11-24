@@ -1,104 +1,163 @@
 import React, {Component} from 'react'
+import ReactDOM from 'react-dom'
+import { Button, message, Input, InputNumber } from 'antd'
 import request from '../../common/util/request'
-import { Button, Popconfirm } from 'antd'
-import { Link } from 'react-router-dom'
-
-function withClass() {
-  return Target => {
-    class PaperProxy extends Component{
+import {withFields, Field} from '../../common/component/form'
 
 
-      constructor(){
-        super()
-        this.state = {
-          list : null
-        }
-      }
+export default @withFields() class WritePaper extends Component{
 
-      componentDidMount(){
+  constructor(){
+    super()
 
-        request('/api/inspire/my/paper')
-          .then(list => {
-            this.setState({
-              list
-            })
-          })
-      }
-
-      remove = (id) => {
-        this.setState({
-          list : this.state.list.filter(x => x.id !== id)
-        })
-      }
-
-      render(){
-        return <Target
-          remove={this.remove}
-          list={this.state.list} {...this.props} />
-      }
+    this.state = {
+      questionList : []
     }
+  }
 
-    return PaperProxy
+  componentDidMount() {
+
+    const id = this.props.match.params.id
+    if(id) {
+      request(`/api/school/my/class/${id}`)
+        .then(question => {
+          this.props.setValues(question)
+        })
+    } else {
+      this.props.setValues({
+      })
+
+    }
+  }
+
+  submit = () => {
+
+    const values = this.props.getFieldValues()
+    console.log(values)
+
+    return
+    request('/api/school/my/class', {
+      method: values.id ? 'PUT' : 'POST',
+      body: values
+    })
+    .then(data => {
+      message.success('操作成功')
+      this.props.history.push('/inspire/my/classes')
+    })
+    .catch(ex => {
+      message.error(ex.error)
+    })
+    console.log(values)
+
+
+  }
+
+
+  render(){
+
+    return <div className='form'>
+      <Field name='id' />
+
+      <h2>班级名称</h2>
+      <Field name='name'>
+        <Input  placeholder='请输入班级名称' />
+      </Field>
+
+      <h2>班级介绍</h2>
+      <Field name='intro'>
+        <Input.TextArea  placeholder='请输入班级介绍' />
+      </Field>
+
+      <Field name='managers'>
+        <Managers />
+      </Field>
+
+      <Button style={{ marginTop: 20 }} onClick={this.submit} type='primary'>
+        保存
+      </Button>
+    </div>
+
   }
 
 }
 
-export default @withClass() class Papers extends Component{
+class Managers extends Component{
 
-  handleDelete = (id) => {
+  constructor(props){
+    super()
+    this.state = {
+      list : props.list || []
+    }
+  }
 
-    request('/api/inspire/my/paper', {
-      method : 'DELETE',
-      body : {
-        id
-      }
-    }).then(result => {
-      this.props.remove(id)
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.value !== this.state.list) {
+      this.setState({
+        list : nextProps.value
+      })
+    }
+  }
+  addItem = () => {
+    this.setState({
+      list : [...this.state.list, {
+      }]
     })
   }
-  render() {
 
-    if(!this.props.list) {
-      return <div className='zero-status'>
-        加载中...
-      </div>
-    }
-    if(this.props.list.length === 0) {
-      return <div className='zero-status'>
-        您还没有出过试卷
-        <div><Button type='primary' color='info'><Link to='/inspire/paper'>出试卷</Link></Button></div>
-      </div>
-    }
+  changeHandler = (i, values) => {
+    this.state.list[i] = values
+    this.props.onChange && this.props.onChange(this.state.list)
+  }
 
+  deleteHandler = (i) => {
+
+    this.setState({
+      list : this.state.list.filter((x, j) => j !== i)
+    })
+  }
+
+  render(){
     return <div>
-      <table className='table-with-actions'>
-
+      <table className='subform-list'>
         <thead>
-          <tr>
-            <td>试卷编号</td>
-            <td>名称</td>
-            <td>标题</td>
-            <td>操作</td>
-          </tr>
+        <tr>
+          <td>邮箱</td>
+          <td></td>
+        </tr>
         </thead>
-
-
         <tbody>
-          {this.props.list.map( (item, i) => {
-            return <tr key={i}>
-              <td>{item.id}</td>
-              <td>{item.name}</td>
-              <td>{item.title}</td>
-              <td><Link to={`/inspire/paper/${item.id}`}>编辑</Link>|<Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
-
-            </tr>
-          })}
+        {
+          this.state.list.map((question, i) => {
+            return <Manager
+              delete={this.deleteHandler.bind(this, i)}
+              onChange={this.changeHandler.bind(this, i)}
+              defaultValues={question} 
+              save={this.saveQuestion} key={i} />
+          })
+        }
         </tbody>
-
-
       </table>
-
+      <a onClick={this.addItem}>+增加管理人员</a>
     </div>
+  }
+}
+
+@withFields()
+class Manager extends Component{
+  render(){
+
+    return <tr>
+      <td>
+        <Field name='email' >
+          <Input type='email' placeholder='管理人员邮箱' />
+        </Field>
+      </td>
+      <td>
+        <Button type='danger' onClick={this.props.delete}>删除</Button>
+      </td>
+
+    </tr>
 
   }
 }

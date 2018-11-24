@@ -1,7 +1,7 @@
-const Db = require('../../lib/db/db')
+const Db = require('../lib/db/db')
 const fs = require('fs')
 const path = require('path')
-const LogicException = require('../../lib/exception/LogicException')
+const LogicException = require('../lib/exception/LogicException')
 
 class School {
 
@@ -11,13 +11,33 @@ class School {
 
 
   /**
-   * 获取我创建的班级
+   * 获取我有权限管理的班级
    */
-  my_classes(account_id, offset, limit) {
-    return this.db.query(`select * from class where account_id${account_id} offset ${offset} limit ${limit}`)
+  async my_classes(account_id, offset, limit) {
+
+    const proxy = await this.db.query(`select class_id from class_admin where account_id=${account_id}`)
+
+    let related = [] 
+    if(proxy.length > 0) {
+      const ids = proxy.map(x => x.class_id)
+      related = await this.db.query(`select * from class where id in (${ids.join(',')})`)
+      related = related.map(x => {
+        x.prev = 'manager'
+        return x
+      })
+    }
+    let mine = await this.db.query(`select * from class where account_id=${account_id} limit ${limit} offset ${offset}`)
+
+    mine = mine.map(x => {
+      x.priv = 'super'
+      return x
+    })
+
+
+    return [...mine, ...related]
   }
 
-  delete_class(id, account_id) {
+  async delete_class(id, account_id) {
     const myClass = await this.db.queryOne(`select id, account_id from class where id=${id}`)
     if(myClass.id !== account_id) {
       throw new LogicException('权限不足')
@@ -31,10 +51,18 @@ class School {
    * 创建和修改班级 
    * @param {*} obj 
    */
-  put_class(obj) {
+  async put_class(obj, account_id) {
     if(obj.id) {
+      const myClass = await this.db.queryOne(`select id, account_id from class where id=${id}`)
+      if(!myClass) {
+        throw new LogicException('班级不存在')
+      }
+      if(myClass.account_id !== account_id) {
+        throw new LogicException('权限不足')
+      }
       return this.db.update('class', obj)
     } else {
+      obj.account_id = account_id
       return this.db.insert('class', obj)
     }
   }

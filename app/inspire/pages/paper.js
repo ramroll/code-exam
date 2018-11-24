@@ -134,7 +134,7 @@ class QuestionList extends Component{
 
   render(){
     return <div>
-      <table className='question-list'>
+      <table className='subform-list'>
         <thead>
         <tr>
           <td>题目编号</td>

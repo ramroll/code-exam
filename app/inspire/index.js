@@ -12,6 +12,7 @@ import Header from '../common/component/Header'
 import { Menu, Icon } from 'antd'
 import withMe from '../common/component/withMe'
 
+import MyClassList from './pages/my_class_list'
 import MyClass from './pages/my_class'
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -44,12 +45,16 @@ class App extends Component {
           <div className='page'>
             <Menu
               defaultSelectedKeys={[this.state.routeKey]}
-              defaultOpenKeys={['creative', 'personal']}
+              defaultOpenKeys={['creative', 'personal', 'school']}
               mode='inline'
               style={{width : 300}} >
               <Menu.Item key='/inspire/my/info'><Link to='/inspire/my/info'>个人信息</Link></Menu.Item>
-              <Menu.Item key='/inspire/my/class'><Link to='/inspire/my/class'>我成立的班级</Link></Menu.Item>
-               <SubMenu key='creative' title='创作'>
+              <SubMenu key='school' title='班级'>
+                <Menu.Item key='/inspire/my/class/create'><Link to='/inspire/my/class/create'>成立班级</Link></Menu.Item>
+                <Menu.Item key='/inspire/my/classes'><Link to='/inspire/my/classes'>管理班级</Link></Menu.Item>
+              </SubMenu>
+
+              <SubMenu key='creative' title='创作'>
                 <Menu.Item key='questions' ><Link to='/inspire/questions'>我出的题目</Link></Menu.Item>
                 <Menu.Item key='question' ><Link to='/inspire/question'>出题</Link></Menu.Item>
                 <Menu.Item key='papers'><Link to='/inspire/papers'>我出的试卷</Link></Menu.Item>
@@ -64,9 +69,10 @@ class App extends Component {
               <Route path='/inspire/papers' exact component={Papers} />
               <Route path='/inspire/paper/:id' exact component={Paper} />
               <Route path='/inspire/paper' exact component={Paper} />
-              <Route path='/inspire/my/class' exact component={MyClass} />
-
               <Route path='/inspire/my/info' exact component={MyInfo} />
+
+              <Route path='/inspire/my/class/create' exact component={MyClass} />
+              <Route path='/inspire/my/classes' exact component={MyClassList} />
 
             </div>
 

@@ -24,7 +24,7 @@ const configure = {
     name: "school",
     // node ./scripts/server/runner.js -s account -p 8001
     script: "./scripts/server/runner.js",
-    args: "-s account -p 8012",
+    args: "-s school -p 8012",
     watch: true,
     env: {
       ...DB_CONFIG,
