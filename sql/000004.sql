@@ -16,6 +16,7 @@ CREATE TABLE `class` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `class_id` bigint(20) unsigned NOT NULL COMMENT '账户ID',
   `student_id` bigint(20) unsigned NOT NULL COMMENT '学员ID',
+  `status` varchar(10) NOT NULL COMMENT '申请状态'
   `created` timestamp NOT NULL default CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY(`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 DEFAULT CHARSET = utf8mb4;

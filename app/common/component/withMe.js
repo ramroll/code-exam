@@ -11,7 +11,8 @@ export default function withMe(){
       constructor(){
         super()
 
-        this.state = {
+        this.state = { 
+          loading : true,
           student : null
         }
       }
@@ -20,11 +21,13 @@ export default function withMe(){
         request('/api/account/me')
           .then(data => {
             this.setState({
-              student : data
+              student : data,
+              loading : false
             })
           })
       }
       render(){
+        if(this.state.loading){return null}
         return <MeContext.Provider value={this.state.student}>
           <Target {...this.props} />
         </MeContext.Provider>

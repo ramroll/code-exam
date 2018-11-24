@@ -11,6 +11,8 @@ import './styl/index.styl'
 import Header from '../common/component/Header'
 import { Menu, Icon } from 'antd'
 import withMe from '../common/component/withMe'
+
+import MyClass from './pages/my_class'
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -45,10 +47,8 @@ class App extends Component {
               defaultOpenKeys={['creative', 'personal']}
               mode='inline'
               style={{width : 300}} >
-              <SubMenu key='personal' title='个人中心'>
-                <Menu.Item key='/inspire/my/info'><Link to='/inspire/my/info'>个人信息</Link></Menu.Item>
-                <Menu.Item key='/inspire/my/submit'>考试记录</Menu.Item>
-              </SubMenu>
+              <Menu.Item key='/inspire/my/info'><Link to='/inspire/my/info'>个人信息</Link></Menu.Item>
+              <Menu.Item key='/inspire/my/class'><Link to='/inspire/my/class'>我成立的班级</Link></Menu.Item>
                <SubMenu key='creative' title='创作'>
                 <Menu.Item key='questions' ><Link to='/inspire/questions'>我出的题目</Link></Menu.Item>
                 <Menu.Item key='question' ><Link to='/inspire/question'>出题</Link></Menu.Item>
@@ -64,6 +64,7 @@ class App extends Component {
               <Route path='/inspire/papers' exact component={Papers} />
               <Route path='/inspire/paper/:id' exact component={Paper} />
               <Route path='/inspire/paper' exact component={Paper} />
+              <Route path='/inspire/my/class' exact component={MyClass} />
 
               <Route path='/inspire/my/info' exact component={MyInfo} />
 
