@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import request from '../../common/util/request'
-import { Button, Popconfirm } from 'antd'
+import { Button, Popconfirm, message } from 'antd'
 import { Link } from 'react-router-dom'
 
 function withClass() {
@@ -47,7 +47,7 @@ export default @withClass() class Papers extends Component{
 
   handleDelete = (id) => {
 
-    request('/api/inspire/my/paper', {
+    request('/api/inspire/my/class', {
       method : 'DELETE',
       body : {
         id
@@ -87,7 +87,22 @@ export default @withClass() class Papers extends Component{
             return <tr key={i}>
               <td>{item.name}</td>
               <td>{item.priv}</td>
-              <td><Link to={`/inspire/paper/${item.id}`}>编辑</Link>|<Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
+              <td>
+                <Link to={`/inspire/my/class/${item.id}`}>编辑</Link>
+                |
+                <Link to={`/inspire/my/class/${item.id}/students`}>学员管理</Link>
+                |
+                <a onClick={() => {
+                  const input = document.createElement('input')
+                  document.body.appendChild(input)
+                  input.setAttribute('value', 'hhh')
+                  input.select()
+                  document.execCommand('copy')
+                  message.success('分享链接已经拷贝到剪贴板')
+                  document.body.removeChild(input)
+                }}>分享</a>
+                |
+                <Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
             </tr>
           })}
         </tbody>
