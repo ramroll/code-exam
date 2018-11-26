@@ -13,6 +13,7 @@ import { Menu, Icon } from 'antd'
 import withMe from '../common/component/withMe'
 
 import MyClassList from './pages/my_class_list'
+import Enroll from './pages/enroll'
 import MyClass from './pages/my_class'
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -50,7 +51,7 @@ class App extends Component {
               style={{width : 300}} >
               <Menu.Item key='/inspire/my/info'><Link to='/inspire/my/info'>个人信息</Link></Menu.Item>
               <SubMenu key='school' title='班级'>
-                <Menu.Item key='/inspire/my/class/create'><Link to='/inspire/my/class/create'>成立班级</Link></Menu.Item>
+                <Menu.Item key='/inspire/my/class'><Link to='/inspire/my/class'>成立班级</Link></Menu.Item>
                 <Menu.Item key='/inspire/my/classes'><Link to='/inspire/my/classes'>管理班级</Link></Menu.Item>
               </SubMenu>
 
@@ -71,8 +72,10 @@ class App extends Component {
               <Route path='/inspire/paper' exact component={Paper} />
               <Route path='/inspire/my/info' exact component={MyInfo} />
 
-              <Route path='/inspire/my/class/create' exact component={MyClass} />
+              <Route path='/inspire/my/class' exact component={MyClass} />
+              <Route path='/inspire/my/class/:id' exact component={MyClass} />
               <Route path='/inspire/my/classes' exact component={MyClassList} />
+              <Route path='/inspire/enroll/:id' exact component={Enroll} />
 
             </div>
 

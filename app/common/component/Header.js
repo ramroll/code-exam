@@ -34,7 +34,7 @@ export default class Header extends Component {
             <a href='/inspire'>创作中心</a>
           </div>}
           {login && <div className='item'>
-            <a href='/logout'>登出</a>
+            <a href='/account/logout'>登出</a>
           </div>
           }
         </div>

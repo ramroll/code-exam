@@ -11,7 +11,7 @@ export default function withMe(){
       constructor(){
         super()
 
-        this.state = { 
+        this.state = {
           loading : true,
           student : null
         }
@@ -22,6 +22,11 @@ export default function withMe(){
           .then(data => {
             this.setState({
               student : data,
+              loading : false
+            })
+          })
+          .catch(ex => {
+            this.setState({
               loading : false
             })
           })

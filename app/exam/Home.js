@@ -12,7 +12,7 @@ export default @withMe() class Home extends Component {
   render(){
     return <div className='full flex-center flex-column'>
 
-      {!this.props.name && <h2><a href='/register'>注册</a><span>        </span><a href='/account/login'>登录</a></h2>}
+      {!this.props.name && <h2><a href='/account/register'>注册</a><span>        </span><a href='/account/login'>登录</a></h2>}
       <div className='papers'>
         <div className='paper-item'>
           <a href='/exam/test'>算法能力自测卷</a>

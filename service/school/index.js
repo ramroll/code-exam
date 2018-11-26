@@ -17,11 +17,10 @@ function register(app) {
 
     const validator = new Validator(query)
     if(req.method === 'PUT') {
-      query.id = req.params.id
       validator.check('id', 'required', '需要id')
       validator.check('id', 'integer', 'id应当为整数')
     }
-    
+
 
     validator.check('name', 'required', '需要班级名称')
     validator.check('name', 'len', '班级名称应当为2-20个字符', {
@@ -35,6 +34,21 @@ function register(app) {
     })
 
     validator.validate()
+    let mgrs = []
+    if (query.managers) {
+      for (let i = 0; i < query.managers.length; i++) {
+        if(query.managers[i]) {
+          const v2 = new Validator(query.managers[i])
+          v2.check('id', 'integer', 'id应当是整数')
+          v2.check('email', 'required', '需要邮箱')
+          v2.check('email', 'email', '邮箱格式不正确')
+          v2.validate()
+          mgrs.push(query.managers[i])
+        }
+      }
+    }
+    query.managers = mgrs
+
 
   }
   app.post('/my/class', token, bodyParser.json(), api_wrapper(async (req, res) => {
@@ -48,8 +62,82 @@ function register(app) {
       success : 1
     })
   }))
-  app.put('/my/class', token, api_wrapper(async (req, res) => {
+  app.put('/my/class', token, bodyParser.json(), api_wrapper(async (req, res) => {
+    if(!req.student) {
+      throw new LoginException()
+    }
+    validateClass(req)
+    const school = new School()
+    await school.put_class(req.body, req.student.account_id)
+    res.send({
+      success : 1
+    })
   }))
+
+  app.get('/my/class/:id', token, api_wrapper(async (req, res) => {
+
+    if(!req.student) {
+      throw new LoginException('需要登录')
+    }
+    const id = req.params.id
+    if(!(id + '').match(/^[0-9]+$/)) {
+      throw new LogicException('id格式不正确')
+    }
+    const school = new School()
+    const cls = await school.my_class(id, req.student.account_id)
+    res.send(cls)
+  }))
+
+  app.get('/my/class/:id/apply', token, api_wrapper(async (req, res) => {
+
+    if(!req.student) {
+      throw new LoginException('需要登录')
+    }
+    const id = req.params.id
+    if(!(id + '').match(/^[0-9]+$/)) {
+      throw new LogicException('id格式不正确')
+    }
+    const school = new School()
+    const cls = await school.my_class_apply(id, req.student.account_id)
+    res.send(cls)
+  }))
+
+  app.post('/my/class/:id/apply', token, api_wrapper(async (req, res) => {
+    if (!req.student) {
+      throw new LoginException('需要登录')
+    }
+    const id = req.params.id
+    if (!(id + '').match(/^[0-9]+$/)) {
+      throw new LogicException('id格式不正确')
+    }
+    const school = new School()
+    const cls = await school.apply_class(id, req.student.account_id)
+    res.send(cls)
+  }))
+
+  app.delete('/my/class', token, bodyParser.json() ,api_wrapper(async (req, res) => {
+
+    if(!req.student) {
+      throw new LoginException()
+    }
+
+    const school = new School()
+
+
+    const id = req.body.id
+    if(!(id + '').match(/^[0-9]+$/)) {
+      throw new LogicException('id格式不正确')
+    }
+
+
+    await school.delete_class(id, req.student.account_id)
+
+    res.send({
+      success : 1
+    })
+
+  }))
+
   app.get('/my/class', token, api_wrapper ( async (req, res) => {
 
     if(!req.student) {

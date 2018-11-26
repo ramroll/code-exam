@@ -47,13 +47,15 @@ export default @withClass() class Papers extends Component{
 
   handleDelete = (id) => {
 
-    request('/api/inspire/my/class', {
+    request('/api/school/my/class', {
       method : 'DELETE',
       body : {
         id
       }
     }).then(result => {
       this.props.remove(id)
+    }).catch(ex => {
+      message.error(ex.error)
     })
   }
   render() {
@@ -65,8 +67,8 @@ export default @withClass() class Papers extends Component{
     }
     if(this.props.list.length === 0) {
       return <div className='zero-status'>
-        您还没有出过试卷
-        <div><Button type='primary' color='info'><Link to='/inspire/paper'>出试卷</Link></Button></div>
+        您没有需要管理的班级
+        <div><Button type='primary' color='info'><Link to='/inspire/my/class/create'>成立一个</Link></Button></div>
       </div>
     }
 

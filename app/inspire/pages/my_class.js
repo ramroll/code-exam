@@ -33,9 +33,6 @@ export default @withFields() class WritePaper extends Component{
   submit = () => {
 
     const values = this.props.getFieldValues()
-    console.log(values)
-
-    return
     request('/api/school/my/class', {
       method: values.id ? 'PUT' : 'POST',
       body: values
@@ -132,7 +129,7 @@ class Managers extends Component{
             return <Manager
               delete={this.deleteHandler.bind(this, i)}
               onChange={this.changeHandler.bind(this, i)}
-              defaultValues={question} 
+              defaultValues={question}
               save={this.saveQuestion} key={i} />
           })
         }
