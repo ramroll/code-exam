@@ -17,7 +17,7 @@ function withClass() {
 
       componentDidMount(){
 
-        request('/api/school/my/class')
+        request('/api/school/my/student')
           .then(list => {
             this.setState({
               list
@@ -58,6 +58,35 @@ export default @withClass() class Papers extends Component{
       message.error(ex.error)
     })
   }
+
+  renderStatus(item) {
+
+    function verify(id) {
+      return () => {
+        request(`/api/school/my/class/student/${id}/verify`, {
+          method : 'POST'
+        })
+        .then(data => {
+          // message.success('已通过')
+          item.status = 'verified'
+          this.forceUpdate()
+        })
+        .catch(ex => {
+          console.log(ex)
+          message.error(ex.error)
+        })
+      }
+    }
+
+    verify = verify.bind(this)
+    if(item.status === 'apply') {
+      return <Button onClick={verify(item.id)}>通过</Button>
+    }
+    else if(item.status === 'verified') {
+      return '已通过'
+    }
+  }
+
   render() {
 
     if(!this.props.list) {
@@ -77,9 +106,10 @@ export default @withClass() class Papers extends Component{
 
         <thead>
           <tr>
-            <td>学员</td>
             <td></td>
-            <td>操作</td>
+            <td>学员</td>
+            <td>邮箱</td>
+            <td>审核状态</td>
           </tr>
         </thead>
 
@@ -87,24 +117,10 @@ export default @withClass() class Papers extends Component{
         <tbody>
           {this.props.list.map( (item, i) => {
             return <tr key={i}>
+              <td>{item.avatar}</td>
               <td>{item.name}</td>
-              <td>{item.priv}</td>
-              <td>
-                <Link to={`/inspire/my/class/${item.id}/edit`}>通过</Link>
-                |
-                <Link to={`/inspire/my/class/${item.id}/students`}>学员管理</Link>
-                |
-                <a onClick={() => {
-                  const input = document.createElement('input')
-                  document.body.appendChild(input)
-                  input.setAttribute('value', 'hhh')
-                  input.select()
-                  document.execCommand('copy')
-                  message.success('分享链接已经拷贝到剪贴板')
-                  document.body.removeChild(input)
-                }}>分享</a>
-                |
-                <Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
+              <td>{item.email}</td>
+              <td>{this.renderStatus(item)}</td>
             </tr>
           })}
         </tbody>

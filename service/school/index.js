@@ -111,8 +111,10 @@ function register(app) {
       throw new LogicException('id格式不正确')
     }
     const school = new School()
-    const cls = await school.apply_class(id, req.student.account_id)
-    res.send(cls)
+     await school.apply_class(id, req.student.account_id)
+    res.send({
+      success : 1
+    })
   }))
 
   app.delete('/my/class', token, bodyParser.json() ,api_wrapper(async (req, res) => {
@@ -144,9 +146,7 @@ function register(app) {
       throw new LoginException('需要登录')
     }
     const query = req.query
-    if(!query.offset) {
-      query.offset = 0
-    }
+    if(!query.offset) {query.offset = 0}
     if(!query.limit) {query.limit = 20}
     const validator = new Validator(query)
     validator.check('offset', 'integer', 'offset必须是整数')
@@ -154,6 +154,45 @@ function register(app) {
     const school = new School()
     const list = await school.my_classes(req.student.account_id, query.offset, query.limit)
     res.send(list)
+  }))
+
+  app.get('/my/student', token, api_wrapper( async (req, res) => {
+    if(!req.student) {
+      throw new LogicException()
+    }
+
+    const query = req.query
+    if(!query.offset) {query.offset = 0}
+    if(!query.limit) {query.limit = 20}
+    const validator = new Validator(query)
+    validator.check('offset', 'integer', 'offset必须是整数')
+    validator.check('limit', 'integer', 'limit必须是整数')
+
+    const school = new School()
+    const list = await school.my_student(req.student.account_id, query.offset, query.limit)
+    console.log(list)
+    res.send(list)
+
+  }))
+
+  app.post('/my/class/student/:id/verify', token, api_wrapper( async (req, res) => {
+
+    if(!req.student) {
+      throw new LogicException()
+    }
+
+    const id = req.params.id
+    if(!id) {
+      throw new LogicException('需要id')
+    }
+    if( !(id + '' ).match(/^\d+$/)) {
+      throw new Logicxception('需要整数id')
+    }
+    const school = new School()
+    await school.change_student_status(req.params.id, req.student.account_id, 'verified')
+    res.send({
+      success : 1
+    })
   }))
 }
 

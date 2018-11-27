@@ -1,0 +1,91 @@
+div
+  padding 0
+  margin 0
+
+$HEADER_HEIGHT=64px
+$COLOR_PRIMARY=#66b388
+$COLOR_PRIMARY_LIGHT=lighten( hue($COLOR_PRIMARY, 90deg), 40 )
+444
+*
+  box-sizing border-box
+#app
+  height 100%
+.router-wrapper
+  height 100%
+.page
+  display flex
+  padding-top 40Px
+  padding-bottom 40Px
+  height 100%
+  flex-direction row
+.page-content
+  padding 20px
+  width 100%
+  height 100%
+.zero-status
+  display flex
+  flex-direction column
+  align-items center
+  justify-content center
+  width 100%
+  height 100%
+  font-size 22Px
+
+.ant-btn-primary
+  background-color $COLOR_PRIMARY
+.ant-btn-primary:active
+  background-color $COLOR_PRIMARY
+.ant-btn-primary:focus
+  background-color $COLOR_PRIMARY
+
+
+.ant-btn-primary:hover
+  background-color lighten($COLOR_PRIMARY, 10) !important
+  border-color lighten($COLOR_PRIMARY, 10) !important
+
+
+.field
+  margin-bottom 40px
+  input
+    height 50px
+
+.ant-input-number
+  height 50px
+.form-row
+  display flex
+  flex-direction row
+  align-items center
+  margin-bottom 10px
+  .field
+    margin-bottom 0
+    margin-right 10Px
+
+
+.markdown-editor
+  padding 10Px
+  width 100%
+  height 200Px
+  resize none
+  outline none
+.CodeMirror
+  border 1px solid #ccc
+  padding 10Px
+
+.form
+  margin-bottom 20Px
+
+
+.subform-list
+  width 100%
+  .field
+    margin-bottom 0
+    margin-right 20px
+  td
+    vertical-align middle
+@import './menu'
+@import './table'
+
+.avatar
+  width 64px
+  height 64px
+  border-radius 32px

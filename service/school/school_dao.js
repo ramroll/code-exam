@@ -216,24 +216,29 @@ class School {
     const student = await this.db.queryOne(`select * from class_student
       where id=${id}`)
 
-
-    if(!student) {
+    if (!student) {
       throw new LogicException('学员不存在(或没有选课）')
     }
 
-
-
-    if(student.status === status) {
+    if (student.status === status) {
       throw new LogicException('不能重复设置状态')
     }
 
+
     const myClass = await this.db.queryOne(`select id, account_id from class where id=${student.class_id}`)
-    if(myClass.account_id !== account_id) {
-      throw new LogicException('权限不足')
+    const others = await this.db.query(`select id, account_id from class_admin where class_id=${student.class_id}`)
+
+
+    /* 验证权限 */
+    if (myClass.account_id !== account_id) {
+      const o = others.find(x => x.account_id === account_id)
+      if (!o) {
+        throw new LogicException('权限不足')
+      }
     }
 
-    this.update('class_student', {
-      id : id,
+    this.db.update('class_student', {
+      id: id,
       status,
     })
   }
@@ -253,6 +258,28 @@ class School {
     }
 
     return await this.db.delete('class_student', id)
+  }
+
+  async my_student(account_id, offset, limit) {
+    const mine = await this.db.query(`select id from class where account_id = ${account_id}`)
+    const others = await this.db.query(
+      `select class_id as id from class_admin where account_id=${account_id}`
+    )
+
+    const ids = [...mine.map(x => x.id), ...others.map(x => x.id)]
+
+    if(ids.length === 0) {return []}
+
+    const list = await this.db.query(
+      `select A.id, B.name,B.email, B.avatar, A.status from class_student A
+       left join student B
+       on B.account_id = A.account_id
+       where A.class_id in (${ids.join(',')})`
+    )
+
+    return list
+
+
 
   }
 

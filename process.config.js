@@ -91,6 +91,17 @@ else {
     }
   })
   configure.apps.push({
+    name: 'my-webpack',
+    script: "./node_modules/.bin/webpack-dev-server",
+    args: "--config ./app/exam/webpack.config.js",
+    env: {
+      AVATAR_URL,
+      NODE_ENV: process.env.NODE_ENV,
+      APP: 'exam',
+      PORT: 8000
+    }
+  })
+  configure.apps.push({
     name: 'account-webpack',
     script: "./node_modules/.bin/webpack-dev-server",
     args: "--config ./app/account/webpack.config.js",
