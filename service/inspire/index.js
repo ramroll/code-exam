@@ -312,17 +312,20 @@ function register(app){
   }))
 
   app.post('/upload/avatar', token,api_wrapper(async (req, res) => {
+    console.log('here')
     const busboy = new Busboy({headers : req.headers})
     let sent = false
 
 
+    let name = null
+    let rnd = new Date().getTime() + '-' + Math.floor(Math.random() * 10000)
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
       let ext = filename.split('.').pop()
       if(ext === 'jpeg') {
         ext = 'jpg'
       }
 
-      const name = new Date().getTime() + '-' + Math.floor( Math.random()*10000 ) + '.' + ext
+      name = rnd + '.' + ext
       const saveTo = path.resolve(__dirname, '../../upload/avatar/', name)
       try {
         file
@@ -330,9 +333,7 @@ function register(app){
 
 
         sent = true
-        res.send({
-          file: process.env.AVATAR_URL + '/' + name
-        })
+
 
       } catch(ex) {
         if (!sent) {
@@ -346,6 +347,10 @@ function register(app){
     busboy.on('finish', () => {
       if(!sent) {
         res.status(500).send()
+      } else {
+        res.send({
+          file: process.env.AVATAR_URL + '/' + name
+        })
       }
     })
     req.pipe(busboy)

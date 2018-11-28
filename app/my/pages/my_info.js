@@ -32,7 +32,7 @@ export default @withFields() class PersonalInfo extends Component{
 
 
 
-    
+
     console.log(values)
   }
 
@@ -41,7 +41,7 @@ export default @withFields() class PersonalInfo extends Component{
     this.props.setValues({
       avatar : this.context.avatar,
       intro : this.context.intro,
-      name : this.context.name, 
+      name : this.context.name,
       nickname : this.context.nickname,
       avatar : this.context.avatar
     })
@@ -93,7 +93,7 @@ function beforeUpload(file) {
   if (!isLt2M) {
     message.error('图片不能超过1MB!');
   }
-  return isJPG && isLt2M;
+  return (isJPG || isPNG) && isLt2M;
 }
 
 class ImageUpload extends Component{
@@ -120,7 +120,7 @@ class ImageUpload extends Component{
       return <span>...</span>
     }
     if(this.state.image) {
-      return <img className='avatar' src={this.state.image} /> 
+      return <img className='avatar' src={this.state.image} />
     }
 
     return '+'
@@ -139,7 +139,7 @@ class ImageUpload extends Component{
           headers : {
             TOKEN : localStorage['XTOKEN']
           },
-          body : form 
+          body : form
         })
         .then(data => {
           return data.json()
@@ -155,7 +155,7 @@ class ImageUpload extends Component{
         .catch(ex=>{
           message.error(ex.error)
           this.setState({
-            loading: false 
+            loading: false
           })
         })
       }}
