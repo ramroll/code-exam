@@ -32,7 +32,7 @@ export default class Enroll extends Component {
       method : 'POST',
     })
       .then(data => {
-        this.props.history.reload()
+        window.location.reload()
       })
   }
 
