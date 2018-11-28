@@ -89,7 +89,7 @@ export default @withPaper() class Papers extends Component{
               <td>{item.id}</td>
               <td>{item.name}</td>
               <td>{item.title}</td>
-              <td><Link to={`/inspire/paper/${item.id}`}>编辑</Link>|<Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
+              <td><Link to={`/inspire/paper/${item.id}`}>编辑</Link>|<Popconfirm title='删除后将不能恢复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
 
             </tr>
           })}

@@ -104,7 +104,7 @@ export default @withClass() class Papers extends Component{
                   document.body.removeChild(input)
                 }}>分享</a>
                 |
-                <Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
+                <Popconfirm title='删除后将不能恢复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
             </tr>
           })}
         </tbody>

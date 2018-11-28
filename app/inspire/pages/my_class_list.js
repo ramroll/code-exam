@@ -90,21 +90,21 @@ export default @withClass() class Papers extends Component{
               <td>{item.name}</td>
               <td>{item.priv}</td>
               <td>
-                <Link to={`/inspire/my/class/${item.id}/edit`}>通过</Link>
+                <Link to={`/inspire/my/class/${item.id}/edit`}>编辑</Link>
                 |
                 <Link to={`/inspire/my/class/${item.id}/students`}>学员管理</Link>
                 |
                 <a onClick={() => {
                   const input = document.createElement('input')
                   document.body.appendChild(input)
-                  input.setAttribute('value', 'hhh')
+                  input.setAttribute('value', 'https://www.weavinghorse.com/my/enroll/' + item.id)
                   input.select()
                   document.execCommand('copy')
                   message.success('分享链接已经拷贝到剪贴板')
                   document.body.removeChild(input)
                 }}>分享</a>
                 |
-                <Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
+                <Popconfirm title='删除后将不能恢复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
             </tr>
           })}
         </tbody>
