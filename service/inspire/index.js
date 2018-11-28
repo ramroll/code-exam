@@ -317,7 +317,11 @@ function register(app){
 
 
     busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-      const ext = filename.split('.').pop()
+      let ext = filename.split('.').pop()
+      if(ext === 'jpeg') {
+        ext = 'jpg'
+      }
+
       const name = new Date().getTime() + '-' + Math.floor( Math.random()*10000 ) + '.' + ext
       const saveTo = path.resolve(__dirname, '../../upload/avatar/', name)
       try {
