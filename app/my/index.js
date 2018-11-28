@@ -8,6 +8,11 @@ import Header from '../common/component/Header'
 import { Menu, Icon } from 'antd'
 import withMe from '../common/component/withMe'
 
+import MySubmit from './pages/my_submit'
+import MyExam from './pages/my_exam'
+import MyClass from './pages/my_class'
+import Enroll from './pages/enroll'
+
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -39,21 +44,22 @@ class App extends Component {
           <div className='page'>
             <Menu
               defaultSelectedKeys={[this.state.routeKey]}
-              defaultOpenKeys={['creative', 'personal', 'school']}
+              defaultOpenKeys={['study']}
               mode='inline'
               style={{width : 300}} >
               <Menu.Item key='/my'><Link to='/my'>个人信息</Link></Menu.Item>
               <SubMenu key='study' title='学习'>
                 <Menu.Item key='/my/class'><Link to='/my/class'>我参与的班级</Link></Menu.Item>
-                <Menu.Item key='/my/submit'><Link to='/my/submit'>我的提交</Link></Menu.Item>
-                <Menu.Item key='/my/exam'><Link to='/my/submit'>我的考试</Link></Menu.Item>
+                {/* <Menu.Item key='/my/submit'><Link to='/my/submit'>我的提交</Link></Menu.Item> */}
+                {/* <Menu.Item key='/my/exam'><Link to='/my/submit'>我的考试</Link></Menu.Item> */}
               </SubMenu>
            </Menu>
             <div className='page-content'>
               <Route path='/my' exact component={MyInfo} />
-              <Route path='/my/class' exact component={MyInfo} />
-              <Route path='/my/submit' exact component={MySubmit} />
-              <Route path='/my/exam' exact component={MyExam} />
+              <Route path='/my/class' exact component={MyClass} />
+              <Route path='/my/enroll/:id' exact component={Enroll} />
+              {/* <Route path='/my/submit' exact component={MySubmit} />
+              <Route path='/my/exam' exact component={MyExam} /> */}
             </div>
           </div>
         </div>

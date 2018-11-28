@@ -17,7 +17,7 @@ function withClass() {
 
       componentDidMount(){
 
-        request('/api/school/my/class')
+        request('/api/my/class')
           .then(list => {
             this.setState({
               list
@@ -44,19 +44,16 @@ function withClass() {
 }
 
 export default @withClass() class Papers extends Component{
+  renderStatus(status) {
 
-  handleDelete = (id) => {
+    switch(status) {
+      case 'verified' :
+        return '通过'
+      case 'apply' :
+        return '等待审核'
+    }
 
-    request('/api/school/my/class', {
-      method : 'DELETE',
-      body : {
-        id
-      }
-    }).then(result => {
-      this.props.remove(id)
-    }).catch(ex => {
-      message.error(ex.error)
-    })
+
   }
   render() {
 
@@ -67,19 +64,20 @@ export default @withClass() class Papers extends Component{
     }
     if(this.props.list.length === 0) {
       return <div className='zero-status'>
-        您没有需要管理的班级
-        <div><Button type='primary' color='info'><Link to='/inspire/my/class/create'>成立一个</Link></Button></div>
+        您还没有参加任何班级
       </div>
     }
+
+
 
     return <div>
       <table className='table-with-actions'>
 
         <thead>
           <tr>
-            <td>学员</td>
-            <td></td>
-            <td>操作</td>
+            <td>班级名称</td>
+            <td>状态</td>
+            <td>学员数量</td>
           </tr>
         </thead>
 
@@ -87,24 +85,9 @@ export default @withClass() class Papers extends Component{
         <tbody>
           {this.props.list.map( (item, i) => {
             return <tr key={i}>
-              <td>{item.name}</td>
-              <td>{item.priv}</td>
-              <td>
-                <Link to={`/inspire/my/class/${item.id}/edit`}>通过</Link>
-                |
-                <Link to={`/inspire/my/class/${item.id}/students`}>学员管理</Link>
-                |
-                <a onClick={() => {
-                  const input = document.createElement('input')
-                  document.body.appendChild(input)
-                  input.setAttribute('value', 'hhh')
-                  input.select()
-                  document.execCommand('copy')
-                  message.success('分享链接已经拷贝到剪贴板')
-                  document.body.removeChild(input)
-                }}>分享</a>
-                |
-                <Popconfirm title='删除后将不能回复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
+              <td>{item.class_name}</td>
+              <td>{this.renderStatus(item.status)}</td>
+              <td><a href={`/my/enroll/${item.id}`}>{item.total}</a></td>
             </tr>
           })}
         </tbody>

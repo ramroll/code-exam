@@ -60,6 +60,15 @@ const configure = {
       "NODE_ENV": process.env.NODE_ENV,
       'EXAM_DIR': process.env.EXAM_DIR || path.resolve(__dirname, 'exams')
     }
+  },{
+    name: "my",
+    script: "./scripts/server/runner.js",
+    args: "-s my -p 8014",
+    watch: true,
+    env: {
+      ...DB_CONFIG,
+      "NODE_ENV": process.env.NODE_ENV
+    }
   }, {
     name: "executor",
     script: './service/executor/index.js',
@@ -93,12 +102,12 @@ else {
   configure.apps.push({
     name: 'my-webpack',
     script: "./node_modules/.bin/webpack-dev-server",
-    args: "--config ./app/exam/webpack.config.js",
+    args: "--config ./app/my/webpack.config.js",
     env: {
       AVATAR_URL,
       NODE_ENV: process.env.NODE_ENV,
-      APP: 'exam',
-      PORT: 8000
+      APP: 'my',
+      PORT: 8013
     }
   })
   configure.apps.push({

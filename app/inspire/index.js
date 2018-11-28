@@ -5,7 +5,6 @@ import Questions from './pages/questions'
 import Question from './pages/question'
 import Papers from './pages/papers'
 import Paper from './pages/paper'
-import MyInfo from './pages/my_info'
 import './styl/index.styl'
 
 import Header from '../common/component/Header'
@@ -13,7 +12,6 @@ import { Menu, Icon } from 'antd'
 import withMe from '../common/component/withMe'
 
 import MyClassList from './pages/my_class_list'
-import Enroll from './pages/enroll'
 import MyClass from './pages/my_class'
 import MyClassStudent from './pages/my_class_student'
 const SubMenu = Menu.SubMenu;
@@ -71,13 +69,11 @@ class App extends Component {
               <Route path='/inspire/papers' exact component={Papers} />
               <Route path='/inspire/paper/:id' exact component={Paper} />
               <Route path='/inspire/paper' exact component={Paper} />
-              <Route path='/inspire/my/info' exact component={MyInfo} />
 
               <Route path='/inspire/my/class/student' exact component={MyClassStudent} />
               <Route path='/inspire/my/class' exact component={MyClass} />
               <Route path='/inspire/my/class/:id/edit' exact component={MyClass} />
               <Route path='/inspire/my/classes' exact component={MyClassList} />
-              <Route path='/inspire/enroll/:id' exact component={Enroll} />
 
             </div>
 

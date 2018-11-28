@@ -71,8 +71,12 @@ class School {
     const sql2 = `select * from class_student
       where account_id=${account_id} and class_id=${myClass.id}
     `
-
     const apply = await this.db.queryOne(sql2)
+    const sql3 = `select B.name, B.avatar, B.nickname from class_student A
+      left join student B on A.account_id = B.account_id
+      where A.class_id=${myClass.id}
+     `
+    myClass.students = await this.db.query(sql3)
     myClass.apply = apply
     return myClass
   }

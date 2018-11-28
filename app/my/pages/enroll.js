@@ -36,6 +36,24 @@ export default class Enroll extends Component {
       })
   }
 
+  renderAvatar(student) {
+
+    if(student.avatar) {
+      return <div className='student'>
+        <img src={student.avatar} />
+        <div className='name'>{student.name}</div>
+      </div>
+    }
+    else {
+      return <div className='student'>
+        <div className='avatar'>{student.nickname[0]}</div>
+        <div className='name'>{student.name}</div>
+      </div>
+
+    }
+
+  }
+
 
   render(){
 
@@ -60,11 +78,16 @@ export default class Enroll extends Component {
 
     return <div className='flex-center full'>
 
-      <h1>你要报名参加<strong>「{this.state.cls.name}」</strong>吗？</h1>
+      <h1>{this.state.cls.name}</h1>
       <p>{this.state.cls.intro}</p>
-
-
       <Button type='primary' onClick={this.submit} disabled={disabled}>{text}</Button>
+      <hr />
+
+      <div className='student-list'>
+        {this.state.cls.students.map((student, i) => {
+          return <div key={i}>{this.renderAvatar(student)}</div>
+        })}
+      </div>
 
 
     </div>
