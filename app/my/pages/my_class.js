@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import request from '../../common/util/request'
-import { Button, Popconfirm } from 'antd'
+import { Button, Popconfirm, message } from 'antd'
 import { Link } from 'react-router-dom'
 
-function withPaper() {
+function withClass() {
   return Target => {
     class PaperProxy extends Component{
 
@@ -17,7 +17,7 @@ function withPaper() {
 
       componentDidMount(){
 
-        request('/api/inspire/my/paper')
+        request('/api/my/class')
           .then(list => {
             this.setState({
               list
@@ -43,18 +43,17 @@ function withPaper() {
 
 }
 
-export default @withPaper() class Papers extends Component{
+export default @withClass() class Papers extends Component{
+  renderStatus(status) {
 
-  handleDelete = (id) => {
+    switch(status) {
+      case 'verified' :
+        return '通过'
+      case 'apply' :
+        return '等待审核'
+    }
 
-    request('/api/inspire/my/paper', {
-      method : 'DELETE',
-      body : {
-        id
-      }
-    }).then(result => {
-      this.props.remove(id)
-    })
+
   }
   render() {
 
@@ -65,20 +64,20 @@ export default @withPaper() class Papers extends Component{
     }
     if(this.props.list.length === 0) {
       return <div className='zero-status'>
-        您还没有出过试卷
-        <div><Button type='primary' color='info'><Link to='/inspire/paper'>出试卷</Link></Button></div>
+        您还没有参加任何班级
       </div>
     }
+
+
 
     return <div>
       <table className='table-with-actions'>
 
         <thead>
           <tr>
-            <td>试卷编号</td>
-            <td>名称</td>
-            <td>标题</td>
-            <td>操作</td>
+            <td>班级名称</td>
+            <td>状态</td>
+            <td>学员数量</td>
           </tr>
         </thead>
 
@@ -86,11 +85,9 @@ export default @withPaper() class Papers extends Component{
         <tbody>
           {this.props.list.map( (item, i) => {
             return <tr key={i}>
-              <td>{item.id}</td>
-              <td>{item.name}</td>
-              <td>{item.title}</td>
-              <td><Link to={`/inspire/paper/${item.id}`}>编辑</Link>|<Popconfirm title='删除后将不能恢复？' onConfirm={this.handleDelete.bind(this, item.id)}><a style={{color : 'red'}}>删除</a></Popconfirm></td>
-
+              <td>{item.class_name}</td>
+              <td>{this.renderStatus(item.status)}</td>
+              <td><a href={`/my/enroll/${item.id}`}>{item.total}</a></td>
             </tr>
           })}
         </tbody>

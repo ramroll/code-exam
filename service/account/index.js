@@ -21,6 +21,8 @@ function register(app){
       return
     }
     res.send({
+      avatar : student.avatar,
+      intro : student.intro,
       account_id : student.account_id,
       name : student.name,
       email : student.email,
@@ -52,6 +54,26 @@ function register(app){
     const account = new Account()
     await account.activation(req.query.code)
     res.send({success : 1})
+  }))
+
+  app.post('/me', token, bodyParser.json(), api_wrapper( async (req, res) => {
+    const validator = new Validator(req.body)
+
+    validator.check('name', 'required', '请输入姓名')
+    validator.check('name', /^[\u4e00-\u9fa5]{2,4}$/, '请输入2-4个字中文姓名')
+    validator.check('nickname', 'required', '请输入昵称')
+    validator.check('nickname', /^[A-Za-z0-9\u4e00-\u9fa5]{2,20}$/, '昵称应当为2-20个字符（不包含特殊字符）')
+    validator.check('avatar', 'required', '请选择头像')
+    validator.check('avatar', /[a-z0-9-\/]{10,40}\.(jpg|jpeg|png)/, '头像格式不正确')
+    validator.check('intro', 'len', '个人介绍最多100个字符', {
+      max : 100
+    })
+
+    const account = new Account()
+    await account.update(req.body, req.student.student_id)
+    res.send({
+      success : 1
+    })
   }))
 
   app.post('/register', token, bodyParser.json(), api_wrapper( async (req, res) => {

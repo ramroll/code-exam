@@ -4,3 +4,4 @@ yarn*
 package-lock*
 dist/
 !exams/test
+upload/*

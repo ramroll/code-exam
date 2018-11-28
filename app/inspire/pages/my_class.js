@@ -1,13 +1,8 @@
 import React, {Component} from 'react'
-import 'codemirror/lib/codemirror.css'
-import 'codemirror/mode/javascript/javascript'
-import CodeMirror from 'codemirror'
 import ReactDOM from 'react-dom'
 import { Button, message, Input, InputNumber } from 'antd'
 import request from '../../common/util/request'
 import {withFields, Field} from '../../common/component/form'
-
-
 
 
 export default @withFields() class WritePaper extends Component{
@@ -24,7 +19,7 @@ export default @withFields() class WritePaper extends Component{
 
     const id = this.props.match.params.id
     if(id) {
-      request(`/api/inspire/my/paper/${id}`)
+      request(`/api/school/my/class/${id}`)
         .then(question => {
           this.props.setValues(question)
         })
@@ -38,14 +33,13 @@ export default @withFields() class WritePaper extends Component{
   submit = () => {
 
     const values = this.props.getFieldValues()
-
-    request('/api/inspire/my/paper', {
+    request('/api/school/my/class', {
       method: values.id ? 'PUT' : 'POST',
       body: values
     })
     .then(data => {
       message.success('操作成功')
-      this.props.history.push('/inspire/papers')
+      this.props.history.push('/inspire/my/classes')
     })
     .catch(ex => {
       message.error(ex.error)
@@ -61,28 +55,19 @@ export default @withFields() class WritePaper extends Component{
     return <div className='form'>
       <Field name='id' />
 
-      <h2>试卷标题</h2>
-      <Field name='title'>
-        <Input  placeholder='输入试卷标题' />
-      </Field>
-
-      <h2>试卷名称(小写英文字母开头的字母/数字和-)</h2>
+      <h2>班级名称</h2>
       <Field name='name'>
-        <Input  placeholder='输入试卷名称' />
+        <Input  placeholder='请输入班级名称' />
       </Field>
 
-
-      <h2>考试时间(秒)</h2>
-      <Field name='time'>
-        <Input placeholder='输入考试时间' />
+      <h2>班级介绍</h2>
+      <Field name='intro'>
+        <Input.TextArea  placeholder='请输入班级介绍' />
       </Field>
 
-
-      <h2>题目清单</h2>
-      <Field name='list'>
-        <QuestionList />
+      <Field name='managers'>
+        <Managers />
       </Field>
-
 
       <Button style={{ marginTop: 20 }} onClick={this.submit} type='primary'>
         保存
@@ -93,8 +78,7 @@ export default @withFields() class WritePaper extends Component{
 
 }
 
-
-class QuestionList extends Component{
+class Managers extends Component{
 
   constructor(props){
     super()
@@ -111,11 +95,9 @@ class QuestionList extends Component{
       })
     }
   }
-  addQuestion = () => {
+  addItem = () => {
     this.setState({
       list : [...this.state.list, {
-        min_score : 50,
-        weight : 20
       }]
     })
   }
@@ -137,53 +119,35 @@ class QuestionList extends Component{
       <table className='subform-list'>
         <thead>
         <tr>
-          <td>题目编号</td>
-          <td>最低分</td>
-          <td>参考时间</td>
-          <td>权重</td>
+          <td>邮箱</td>
           <td></td>
         </tr>
         </thead>
         <tbody>
         {
           this.state.list.map((question, i) => {
-            return <Question
+            return <Manager
               delete={this.deleteHandler.bind(this, i)}
               onChange={this.changeHandler.bind(this, i)}
-              defaultValues={question} 
+              defaultValues={question}
               save={this.saveQuestion} key={i} />
           })
         }
         </tbody>
       </table>
-      <a onClick={this.addQuestion}>+增加题目</a>
+      <a onClick={this.addItem}>+增加管理人员</a>
     </div>
   }
 }
 
 @withFields()
-class Question extends Component{
+class Manager extends Component{
   render(){
 
     return <tr>
       <td>
-        <Field name='question_id' >
-          <Input type='number' placeholder='题目编号' />
-        </Field>
-      </td>
-      <td>
-        <Field name='min_score'>
-          <Input type='number' min='0' max='100' placeholder='最低得分' />
-        </Field>
-      </td>
-      <td>
-        <Field name='ref_time'>
-          <Input type='number' min='0' placeholder='参考时间(纳秒)' />
-        </Field>
-      </td>
-      <td>
-        <Field name='weight'>
-          <Input type='number' min='1' max='100' placeholder='权重' />
+        <Field name='email' >
+          <Input type='email' placeholder='管理人员邮箱' />
         </Field>
       </td>
       <td>

@@ -8,7 +8,11 @@ const LoginException = require('../lib/exception/LoginException')
 
 const Inspire = require('./dao/inspire')
 const Explain = require('./dao/explain')
+const Busboy = require('busboy')
 
+
+const fs = require('fs')
+const path = require('path')
 /**
  * 服务注册函数
  * 向express中注册路由
@@ -305,6 +309,42 @@ function register(app){
       success : 1
     })
 
+  }))
+
+  app.post('/upload/avatar', token,api_wrapper(async (req, res) => {
+    const busboy = new Busboy({headers : req.headers})
+    let sent = false
+
+
+    busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+      const ext = filename.split('.').pop()
+      const name = new Date().getTime() + '-' + Math.floor( Math.random()*10000 ) + '.' + ext
+      const saveTo = path.resolve(__dirname, '../../upload/avatar/', name)
+      try {
+        file
+          .pipe(fs.createWriteStream(saveTo))
+
+
+        sent = true
+        res.send({
+          file: process.env.AVATAR_URL + '/' + name
+        })
+
+      } catch(ex) {
+        if (!sent) {
+          res.status(400).send({
+            error : '图片格式不正确'
+          })
+        }
+
+      }
+    })
+    busboy.on('finish', () => {
+      if(!sent) {
+        res.status(500).send()
+      }
+    })
+    req.pipe(busboy)
   }))
 
 

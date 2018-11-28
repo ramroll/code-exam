@@ -5,6 +5,8 @@ const DB_CONFIG = {
   "DB_USER": process.env.DB_USER || "root",
   "DB_NAME": process.env.DB_NAME || "codeexam"
 }
+
+const AVATAR_URL = process.env.AVATAR_URL || '/avatar'
 const path = require('path')
 const configure = {
   apps: [{
@@ -17,6 +19,16 @@ const configure = {
       ...DB_CONFIG,
       "NODE_ENV": process.env.NODE_ENV,
       "EMAIL_PASSWD": "XQe3s2piwR0R"
+    }
+  }, {
+    name: "school",
+    // node ./scripts/server/runner.js -s account -p 8001
+    script: "./scripts/server/runner.js",
+    args: "-s school -p 8012",
+    watch: true,
+    env: {
+      ...DB_CONFIG,
+      "NODE_ENV": process.env.NODE_ENV,
     }
   }, {
     name: "exam",
@@ -35,10 +47,10 @@ const configure = {
     watch: true,
     env: {
       ...DB_CONFIG,
+      AVATAR_URL,
       "NODE_ENV": process.env.NODE_ENV
     }
-  },
-  {
+  }, {
     name: "rank",
     script: "./scripts/server/runner.js",
     args: "-s rank -p 8004",
@@ -49,31 +61,53 @@ const configure = {
       'EXAM_DIR': process.env.EXAM_DIR || path.resolve(__dirname, 'exams')
     }
   },{
-    name : "executor",
-    script : './service/executor/index.js',
-    env : {
+    name: "my",
+    script: "./scripts/server/runner.js",
+    args: "-s my -p 8014",
+    watch: true,
+    env: {
+      ...DB_CONFIG,
+      "NODE_ENV": process.env.NODE_ENV
+    }
+  }, {
+    name: "executor",
+    script: './service/executor/index.js',
+    env: {
       ...DB_CONFIG,
       'EXAM_DIR': process.env.EXAM_DIR || path.resolve(__dirname, 'exams')
     }
   }]
 }
 
-if(process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   configure.apps.push({
     name: "server",
     script: "./scripts/server/runner.js",
     args: "-s server -p 8003"
+
   })
 }
 else {
   configure.apps.push({
-    name : 'exam-webpack',
+    name: 'exam-webpack',
     script: "./node_modules/.bin/webpack-dev-server",
-    args : "--config ./app/exam/webpack.config.js",
-    env : {
-      NODE_ENV : process.env.NODE_ENV,
-      APP : 'exam',
-      PORT : 8000
+    args: "--config ./app/exam/webpack.config.js",
+    env: {
+      AVATAR_URL,
+      NODE_ENV: process.env.NODE_ENV,
+      APP: 'exam',
+      PORT: 8000
+    }
+  })
+  configure.apps.push({
+    name: 'my-webpack',
+    script: "./node_modules/.bin/webpack-dev-server",
+    args: "--config ./app/my/webpack.config.js",
+    env: {
+      AVATAR_URL,
+      NODE_ENV: process.env.NODE_ENV,
+      APP: 'my',
+      PORT: 8013
     }
   })
   configure.apps.push({
@@ -81,19 +115,21 @@ else {
     script: "./node_modules/.bin/webpack-dev-server",
     args: "--config ./app/account/webpack.config.js",
     env: {
+      AVATAR_URL,
       NODE_ENV: process.env.NODE_ENV,
       APP: 'account',
       PORT: 8011
     }
   })
   configure.apps.push({
-    name : 'inspire-webpack',
+    name: 'inspire-webpack',
     script: "./node_modules/.bin/webpack-dev-server",
-    args : "--config ./app/inspire/webpack.config.js",
-    env : {
-      NODE_ENV : process.env.NODE_ENV,
-      APP : 'inspire',
-      PORT : 8009
+    args: "--config ./app/inspire/webpack.config.js",
+    env: {
+      AVATAR_URL,
+      NODE_ENV: process.env.NODE_ENV,
+      APP: 'inspire',
+      PORT: 8009
     }
   })
 }

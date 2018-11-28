@@ -9,7 +9,9 @@ import Logout from './Logout'
 import './styl/index.styl'
 
 import Header from '../common/component/Header'
+import withMe from '../common/component/withMe'
 
+@withMe()
 class App extends Component {
 
   render(){
