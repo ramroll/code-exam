@@ -92,8 +92,6 @@ export default @withClass() class Papers extends Component{
               <td>
                 <Link to={`/inspire/my/class/${item.id}/edit`}>编辑</Link>
                 |
-                <Link to={`/inspire/my/class/${item.id}/students`}>学员管理</Link>
-                |
                 <a onClick={() => {
                   const input = document.createElement('input')
                   document.body.appendChild(input)
