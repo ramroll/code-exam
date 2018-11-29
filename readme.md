@@ -5,6 +5,8 @@
 ├── app
 │   ├── exam 考试系统前端
 │   ├── inpire 创作平台项目
+│   ├── account 账户服务
+│   ├── my 个人中心
 │   └── lib  通用工具
 ├── dist -- 静态资源上线发布
 │   └── exam
@@ -17,6 +19,7 @@
 └── service 服务
     ├── account 账户服务
     ├── exam 考试服务
+    ├── my 个人信息服务
     ├── executor 执行器和验证器
     ├── lib 公用库
     └── server web服务
@@ -92,8 +95,6 @@ cat sql/000001.sql | mysql -uuser -p
 
 
 #### 启动任务
-- 执行4个服务
-- 执行2个前端系统的dev-server
 ```
-pm2 start process.config.js
+npm start
 ```
