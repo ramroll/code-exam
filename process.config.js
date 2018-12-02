@@ -1,7 +1,7 @@
 const DB_CONFIG = {
   "DB_HOST": process.env.DB_HOST || 'localhost',
   "DB_PORT": process.env.DB_PORT || '3306',
-  "DB_PASSWD": process.env.DB_PASSWD || "AB123456",
+  "DB_PASSWD": process.env.DB_PASSWD || "cxf",
   "DB_USER": process.env.DB_USER || "root",
   "DB_NAME": process.env.DB_NAME || "codeexam"
 }
@@ -18,7 +18,7 @@ const configure = {
     env: {
       ...DB_CONFIG,
       "NODE_ENV": process.env.NODE_ENV,
-      "EMAIL_PASSWD": "XQe3s2piwR0R"
+      "EMAIL_PASSWD": "cxf123"
     }
   }, {
     name: "school",
