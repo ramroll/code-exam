@@ -1,5 +1,12 @@
 const R = require('ramda')
 const LogicException = require('../exception/LogicException')
+
+// https://github.com/yiminghe/async-validator/blob/master/src/rule/type.js?1543916874137#L6
+const pattern = {
+  email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  url: new RegExp('^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$', 'i'),
+  hex: /^#?([a-f0-9]{6}|[a-f0-9]{3})$/i,
+}
 class Validator{
 
   constructor(query){
@@ -52,7 +59,7 @@ class Validator{
         /* 验证其他规则 */
         switch (rule.type) {
         case 'email':
-          if( !/^[a-z0-9_-]+@[a-z0-9-]+\.com$/.test(value) ) {
+          if( !pattern.email.test(value) ) {
             throw new LogicException(rule.errorMessage)
           }
           break
