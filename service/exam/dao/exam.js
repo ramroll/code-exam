@@ -141,7 +141,7 @@ class Exam{
       return []
     }
 
-    const sql3 = `select A.student_id, C.title,A.exe_time, B.nickname, B.avatar,B.name, A.code from submit A
+    const sql3 = `select A.student_id, A.question, C.title,A.exe_time, B.nickname, B.avatar,B.name, A.code from submit A
       left join student B
       on A.student_id = B.id
       left join question C
