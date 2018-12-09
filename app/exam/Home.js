@@ -27,6 +27,12 @@ export default @withMe() class Home extends Component {
       <p>
         <a href='/my/enroll/4'>算法B-01</a>
       </p>
+
+      <h3>2期训练</h3>
+      <p>
+        <a href='/exam/basic01'>第一周</a>
+      </p>
     </div>
+
   }
 }

@@ -60,7 +60,7 @@ export default class Answer extends Component{
           const submits = g[title]
           return <TabPane tab={title} key={groupsKeys[0]}>
             {submits.map( (x, j) => {
-              return <div key={j} className='answer-card'>
+              return <div key={x.title} className='answer-card'>
                 <div className='person'>
                   <img src={x.avatar} />
                   <span>{x.nickname}</span>
