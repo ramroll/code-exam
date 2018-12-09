@@ -52,7 +52,7 @@ class Rank {
       addScore = 0
     }
 
-    let score = min_score + (addScore  / 2)
+    let score = Math.min(100, min_score + (addScore  / 2))
     weight = weight / 100
     console.log('score', diff, refer_exe_time, real_exe_time, score)
     return score * weight
