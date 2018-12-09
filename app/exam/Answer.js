@@ -48,7 +48,6 @@ export default class Answer extends Component{
       }
       g[submit.title].push(submit)
     }
-    
 
     const groupsKeys = Object.keys(g)
     return <div style={{
@@ -58,9 +57,9 @@ export default class Answer extends Component{
       <Tabs defaultActiveKey={groupsKeys[0]}>
         {Object.keys(g).map( (title, i) => {
           const submits = g[title]
-          return <TabPane tab={title} key={groupsKeys[0]}>
+          return <TabPane tab={title} key={title}>
             {submits.map( (x, j) => {
-              return <div key={x.title} className='answer-card'>
+              return <div key={j} className='answer-card'>
                 <div className='person'>
                   <img src={x.avatar} />
                   <span>{x.nickname}</span>
