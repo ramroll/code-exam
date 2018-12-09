@@ -151,11 +151,12 @@ class Exam{
     const list = await this.db.query(sql3)
 
     const g = R.groupBy(submit => {
-      return submit.student_id
+      return submit.student_id + ',' + submit.question
     })(list)
 
     let groups = []
     for(let key in g) {
+      const [student_id, question_id] = key.split(',')
       let min = Number.MAX_SAFE_INTEGER
       let minItem = null
       for(let i = 0; i < g[key].length; i++) {
