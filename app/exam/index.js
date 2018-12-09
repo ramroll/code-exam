@@ -6,6 +6,8 @@ import Home from './Home'
 import ExamExplain from './ExamExplain'
 import ExamExplainEdit from './ExamExplainEdit'
 import ExamExplains from './ExamExplains'
+
+import ExamAnswer from './Answer'
 import './styl/index.styl'
 
 
@@ -27,6 +29,7 @@ class App extends Component {
           <Route path='/exam/:name/explain/:id' exact component={ExamExplain} />
           <Route path='/exam/:name/explain/:id/edit' exact component={ExamExplainEdit} />
           <Route path='/exam/:name/explain/create' exact component={ExamExplainEdit} />
+          <Route path='/exam/:name/answer' exact component={ExamAnswer} />
         </div>
       </Router>
     )

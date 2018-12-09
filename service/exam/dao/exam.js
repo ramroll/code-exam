@@ -58,10 +58,6 @@ class Exam{
     const start_time = new Date(exam.start_time).getTime()
     const diff = start_time+ exam.time * 1000 - new Date().getTime()
     const tillstart = start_time - new Date().getTime()
-    console.log( questions)
-    console.log(
-      (exam.account_id !== account_id) ? (tillstart > 0 ? [] : questions) : questions )
-
     return {
       name,
       title : exam.title,
@@ -78,7 +74,6 @@ class Exam{
    * @param {*} student_id
    */
   async submit(obj, student_id) {
-    console.log('submit')
     const exam = await this.db.queryOne('select * from exam where name=?', [obj.exam])
     const diff = new Date().getTime() - ( new Date(exam.start_time).getTime() + exam.time*1000)
     if(!(exam.time === 0) && diff > 0) {
@@ -96,7 +91,6 @@ class Exam{
 
 
     const id = await this.db.insert('submit', submit)
-    console.log('enqueue', id)
     const queue = new ExecQueue()
     queue.enqueue(id)
   }
@@ -130,6 +124,54 @@ class Exam{
     return await this.db.queryOne(sql2)
   }
 
+
+  /**
+   * 加载用户的回答
+   */
+  async answers(name){
+    const sql = `select id from exam where name='${name}'`
+    const exam = await this.db.queryOne(sql)
+    if(!exam) {
+      throw new LogicException('试卷不存在')
+    } 
+    const sql2 = `select * from exam_question where exam_id=${exam.id}`
+    const exam_question = await this.db.query(sql2)
+    const ids = exam_question.map(x => x.question_id)
+    if(ids.length === 0) {
+      return []
+    }
+
+    const sql3 = `select A.student_id, C.title,A.exe_time, B.nickname, B.avatar,B.name, A.code from submit A
+      left join student B
+      on A.student_id = B.id
+      left join question C
+      on A.question = C.id
+      where A.question in (${ids.join(',')}) and A.status=2
+    `
+    const list = await this.db.query(sql3)
+
+    const g = R.groupBy(submit => {
+      return submit.student_id
+    })(list)
+
+    let groups = []
+    for(let key in g) {
+      let min = Number.MAX_SAFE_INTEGER
+      let minItem = null
+      for(let i = 0; i < g[key].length; i++) {
+        const submit = g[key][i]
+        if(submit.exe_time < min) {
+          min = submit.exe_time
+          minItem = submit
+        }
+      }
+      groups.push(minItem)
+    }
+
+    return groups
+
+
+  }
 }
 
 
@@ -147,6 +189,8 @@ function findMin(prediction) {
     return mItem
 
   }
+
+
 }
 
 module.exports = Exam

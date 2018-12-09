@@ -103,6 +103,18 @@ function register(app){
     await exam.submit(req.body, req.student.student_id)
     res.send({success : 1})
   }))
+
+  app.get('/paper/:name/answer', token, api_wrapper(async (req, res) => {
+
+    const validator = new Validator(req.params)
+    validator.check('name', 'required', '需要传入试题名称')
+    validator.check('name', /[a-z-]{3,20}/, '试题格式不正确')
+    validator.validate()
+
+    const exam = new Exam()
+    const list = await exam.answers(req.params.name)
+    res.send(list)
+  }))
 }
 
 

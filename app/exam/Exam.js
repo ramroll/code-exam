@@ -53,8 +53,12 @@ class FloatMenu extends Component{
   render(){
     return <div className='float-menu'>
       <div className='item'>
-        <Link to={'/exam/' + this.props.name + '/explain'}>解答</Link>
+        <Link to={'/exam/' + this.props.name + '/explain'}>试卷的解读</Link>
       </div>
+       <div className='item'>
+        <Link to={'/exam/' + this.props.name + '/answer'}>大家的回答</Link>
+      </div>
+
     </div>
   }
 }
