@@ -32,6 +32,7 @@ class Rank {
    */
   score(real_exe_time, refer_exe_time, min_score, correct, weight){
     if(!correct) {return 0}
+    if(min_score === 100) {return weight}
     const lg_real = Math.log2(real_exe_time)
     const lg_refer = Math.log2(refer_exe_time)
 
