@@ -1,3 +1,0 @@
-function sum(n) {
-  /// TODO
-}
