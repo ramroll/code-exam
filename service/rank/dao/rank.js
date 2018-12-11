@@ -24,7 +24,12 @@ class Rank {
   constructor(){
     this.db = new Db()
     this.max_id = -1
-    this.exams = {}
+
+    // 根据考试的分数排名
+    this.ranks = {}
+
+    // 根据题目排名
+    this.quest_ranks = {}
   }
 
   /**
@@ -43,7 +48,7 @@ class Rank {
       addScore += diff * 10
     }
     else {
-      addScore += diff * 14 
+      addScore += diff * 14
     }
 
     if(addScore > 100) {
@@ -102,77 +107,65 @@ class Rank {
     `
     const submits = await this.db.query(sql)
 
+    /**
+     * 给submits计算分数
+     */
+    submits.forEach( submit => {
+      const conf = this.conf[submit.exam]
+      const {scores} = conf
+      const {ref_time, min_score, weight} = scores[submit.question]
+      submit.score = this.score(submit.exe_time, ref_time, min_score, submit.status === 2, weight)
+    })
 
-    for(let i = 0; i < submits.length; i++) {
-      const {id, email, exam, student_id, question , status, exe_time, nickname}= submits[i]
-      if(!email) {continue}
 
-      if(this.max_id < id) {
-        this.max_id = id
-      }
-      if(!this.conf[exam]) {
-        continue
-      }
 
-      if(!this.exams[exam]) {
-        this.exams[exam] = {
-          users : {}
-        }
-      }
-      const {scores,count} = this.conf[exam]
+    if(this.max_id) { // 计算增量
 
-      // 初始化为0分
-      if(!this.exams[exam].users[student_id]) {
-        this.exams[exam].users[student_id] = {
-          nickname,
-          email : hide(email),
-          scores : {},
-          total : 0
-        }
-      }
-      const users = this.exams[exam].users
+    } else { // 计算全量
 
-      // 对当前submit打分
-      const question_id = question
-      const score = this.score(
-        exe_time,
-        scores[question_id].ref_time,
-        scores[question_id].min_score,
-        status === 2,
-        scores[question_id].weight
-      )
-      if(!users[student_id].scores[question_id]) {
-        users[student_id].scores[question_id] = 0
-      }
-      if (users[student_id].scores[question_id] < score) {
-        users[student_id].scores[question_id] = score
-        users[student_id].total = sum(users[student_id].scores)
-      }
-    }
+      const groups_by_student_question = R.groupBy(submit => {
+        return submit.student_id + '
+      })
 
-    // 数据放到maxHeap中
-    const ranks = {}
-    for (let exam in this.exams) {
-      if(!ranks[exam]) {
-        ranks[exam] = new MaxHeap(
+      const groups_by_exam = R.groupBy(submit => {
+        return submit.exam
+      })(submits)
+
+      Object.keys(groups_by_exam).map(key => {
+        const list = groups_by_exam[key]
+
+        const groups_by_student = R.groupBy(submit => {
+          return submit.student_id
+        })(list)
+
+        const maxHeap = new MaxHeap(
           (a, key) => a.score = key,
           a => a.score
         )
-      }
 
-      const maxHeap = ranks[exam]
-      const users = this.exams[exam].users
-      Object.keys(users).forEach(student_id => {
-        const user = users[student_id]
-        maxHeap.add({
-          name: user.nickname,
-          email: user.email,
-          score: user.total
+        Object.keys(groups_by_student).map(student_id => {
+          const student_submits = groups_by_student[student_id]
+          const groups_by_question = R.groupBy(submit => submit.question)(student_submits)
+
+          let total = 0
+          let anySubmit = null
+          Object.keys(groups_by_question).map(question => {
+            const max_submit = R.reduce(R.maxBy(x => x.score), 0, groups_by_question[question])
+            total += max_submit.score
+            if(!anySubmit) anySubmit  max_submit
+          })
+
+          maxHeap.add({
+            email : anySubmit.email,
+            name : anySubmit.nickname,
+            score : total
+          })
         })
+        this.ranks[key] = maxHeap
       })
 
     }
-    return ranks
+
   }
 
 }
