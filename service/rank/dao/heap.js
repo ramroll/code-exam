@@ -56,7 +56,7 @@ class MaxHeap{
     const key = this.getter(item)
     this.setListItem(this.heapSize++, item)
     this.setter(item, -Infinity)
-    this.increase(this.heapSize -1, key)
+    this.increase(item, key)
   }
 
   getHeapItem(item) {
@@ -64,12 +64,12 @@ class MaxHeap{
     return this.list[ this.itemHash[hash] ]
   }
 
-  increse(item) {
+  increase(item, key) {
 
-    const i = this.itemHash[this.getter(item)]
+    const i = this.itemHash[this.hash_func(item)]
     let p = ~~Math.floor(i/2)
     let q = i
-    this.setter(this.list[i], this.getter(item))
+    this.setter(this.list[i], key)
     while(this.getter(this.list[p]) < this.getter(this.list[q])) {
       swap(this.list, p, q)
       q = p
@@ -77,7 +77,12 @@ class MaxHeap{
     }
   }
 
-  getSorted(k){
+  contains(item){
+    return !!this.itemHash[this.hash_func(item)]
+
+  }
+
+  getSorted(k = this.heapSize){
     const clone = this.clone()
     const list = []
     while(clone.heapSize && k--) {

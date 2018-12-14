@@ -60,7 +60,7 @@ class Rank {
 
     let score = min_score + (addScore  / 2)
     weight = weight / 100
-    console.log('score', diff, refer_exe_time, real_exe_time, score)
+    // console.log('score', diff, refer_exe_time, real_exe_time, score)
     return score * weight
   }
 
@@ -96,17 +96,16 @@ class Rank {
 
   async updateQuestionRank(){
     const exam_names = ( await this.db.query(`select distinct(exam) from submit`) ).map(x => x.exam)
-    this.conf = await this.loadExamConfs()
 
     const sql = `
-      select A.id, A.exam, A.code, A.student_id, A.status, A.question, A.exe_time,B.email, B.nickname
+      select A.id, A.exam, A.code, A.student_id, A.status, A.question, A.exe_time,B.email, B.nickname,B.avatar
       from submit A
       left join student B
       on A.student_id = B.id
-      where status>=2 and A.id > ${this.max_id}
+      where status=2 and A.id > ${this.max_id}
       order by id desc
     `
-    const submits = await this.db.query(sql)
+    let submits = await this.db.query(sql)
     if(submits.length > 0) {
       this.max_id = submits[0].id
     }
@@ -114,33 +113,39 @@ class Rank {
     /**
      * 给submits计算分数
      */
-    submits.forEach( submit => {
+    submits = submits.map( submit => {
       const conf = this.conf[submit.exam]
+      if(!conf) {return submit}
       const {scores} = conf
       const {ref_time, min_score, weight} = scores[submit.question]
       submit.score = this.score(submit.exe_time, ref_time, min_score, submit.status === 2, weight)
-    })
-
+      return submit
+    }).filter(x => x.score)
 
     const group_by_questions = R.groupBy(submit => {
       return submit.exam + '-' + submit.question
     })(submits)
 
-    group_by_questions.forEach(key => {
-      const submitsForQuestion = group_by_questions[key]
+    Object.keys(group_by_questions).forEach(k_exam_quest=> {
+      const submitsForQuestion = group_by_questions[k_exam_quest]
 
       // 根据用户分组计算最高分
       const group_by_users = R.groupBy(submit => {
         return submit.student_id
       })(submitsForQuestion)
 
-      group_by_users.forEach(key => {
+      Object.keys(group_by_users).forEach(key => {
         const userSubmits = group_by_users[key]
 
         /* 对某个用户的最高分提交 */
-        const maxSubmit = R.reduce(R.maxBy(x=>x.score), 0, userSubmits)
-        if(!this.quest_ranks[key]) {
-          this.quest_ranks[key] = new MaxHeap(
+        const maxSubmit = userSubmits.reduce((max, submit) => {
+          if(!max) {return submit}
+          return max.score < submit.score ? max : submit
+        }, null)
+
+
+        if(!this.quest_ranks[k_exam_quest]) {
+          this.quest_ranks[k_exam_quest] = new MaxHeap(
             (x, key) => x.score = key,
             x => x.score,
             x => x.question + '--' + x.student_id
@@ -148,22 +153,24 @@ class Rank {
         }
 
         // 处理全量和增量的关系
-        if(!this.quest_ranks[key].contains(userSubmits)) {
-          this.quest_ranks[key].add(maxSubmit)
+        if(!this.quest_ranks[k_exam_quest].contains(userSubmits)) {
+          this.quest_ranks[k_exam_quest].add(maxSubmit)
         } else {
-          const item = this.quest_ranks[key].getHeapItem(maxSubmit)
+          const item = this.quest_ranks[k_exam_quest].getHeapItem(maxSubmit)
           if(item.score < maxSubmit.score) {
-            this.quest_ranks[key].increse(maxSubmit)
+            this.quest_ranks[k_exam_quest].increase(maxSubmit)
           }
         }
       })
     })
 
+
   }
 
   async buildRank() {
-    await this.updateQuestionRank()
     this.conf = await this.loadExamConfs()
+    await this.updateQuestionRank()
+
   }
 
   getQuestions(name, question_id, offset, limit){
@@ -174,7 +181,7 @@ class Rank {
 
   getExam(name) {
 
-    const conf = this.conf[exam]
+    const conf = this.conf[name]
     const users = {}
     const questions = Object.keys(conf.scores).forEach(question_id => {
       const submits = this.quest_ranks[name + '-' + question_id]
@@ -183,16 +190,20 @@ class Rank {
       submits.forEach(submit => {
         if(!users[submit.student_id]) {
           users[submit.student_id] = {
-            email : submit.email,
+            email : hide(submit.email),
             avatar : submit.avatar,
-            total : 0
+            name : submit.nickname,
+            score : 0
           }
         }
-        users[submit.student_id].total += submit.score
+        console.log('score---', submit.score)
+        users[submit.student_id].score += submit.score
       })
     })
 
-    return users
+    return Object.keys(users).map(id => {
+      return users[id]
+    })
   }
 }
 
