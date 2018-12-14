@@ -94,18 +94,22 @@ class Rank {
     return conf
   }
 
-  async buildRank() {
+  async updateQuestionRank(){
     const exam_names = ( await this.db.query(`select distinct(exam) from submit`) ).map(x => x.exam)
     this.conf = await this.loadExamConfs()
 
     const sql = `
-      select A.id, A.exam, A.student_id, A.status, A.question, A.exe_time,B.email, B.nickname
+      select A.id, A.exam, A.code, A.student_id, A.status, A.question, A.exe_time,B.email, B.nickname
       from submit A
       left join student B
       on A.student_id = B.id
       where status>=2 and A.id > ${this.max_id}
+      order by id desc
     `
     const submits = await this.db.query(sql)
+    if(submits.length > 0) {
+      this.max_id = submits[0].id
+    }
 
     /**
      * 给submits计算分数
@@ -118,56 +122,78 @@ class Rank {
     })
 
 
+    const group_by_questions = R.groupBy(submit => {
+      return submit.exam + '-' + submit.question
+    })(submits)
 
-    if(this.max_id) { // 计算增量
+    group_by_questions.forEach(key => {
+      const submitsForQuestion = group_by_questions[key]
 
-    } else { // 计算全量
+      // 根据用户分组计算最高分
+      const group_by_users = R.groupBy(submit => {
+        return submit.student_id
+      })(submitsForQuestion)
 
-      const groups_by_student_question = R.groupBy(submit => {
-        return submit.student_id + '
+      group_by_users.forEach(key => {
+        const userSubmits = group_by_users[key]
+
+        /* 对某个用户的最高分提交 */
+        const maxSubmit = R.reduce(R.maxBy(x=>x.score), 0, userSubmits)
+        if(!this.quest_ranks[key]) {
+          this.quest_ranks[key] = new MaxHeap(
+            (x, key) => x.score = key,
+            x => x.score,
+            x => x.question + '--' + x.student_id
+          )
+        }
+
+        // 处理全量和增量的关系
+        if(!this.quest_ranks[key].contains(userSubmits)) {
+          this.quest_ranks[key].add(maxSubmit)
+        } else {
+          const item = this.quest_ranks[key].getHeapItem(maxSubmit)
+          if(item.score < maxSubmit.score) {
+            this.quest_ranks[key].increse(maxSubmit)
+          }
+        }
       })
-
-      const groups_by_exam = R.groupBy(submit => {
-        return submit.exam
-      })(submits)
-
-      Object.keys(groups_by_exam).map(key => {
-        const list = groups_by_exam[key]
-
-        const groups_by_student = R.groupBy(submit => {
-          return submit.student_id
-        })(list)
-
-        const maxHeap = new MaxHeap(
-          (a, key) => a.score = key,
-          a => a.score
-        )
-
-        Object.keys(groups_by_student).map(student_id => {
-          const student_submits = groups_by_student[student_id]
-          const groups_by_question = R.groupBy(submit => submit.question)(student_submits)
-
-          let total = 0
-          let anySubmit = null
-          Object.keys(groups_by_question).map(question => {
-            const max_submit = R.reduce(R.maxBy(x => x.score), 0, groups_by_question[question])
-            total += max_submit.score
-            if(!anySubmit) anySubmit  max_submit
-          })
-
-          maxHeap.add({
-            email : anySubmit.email,
-            name : anySubmit.nickname,
-            score : total
-          })
-        })
-        this.ranks[key] = maxHeap
-      })
-
-    }
+    })
 
   }
 
+  async buildRank() {
+    await this.updateQuestionRank()
+    this.conf = await this.loadExamConfs()
+  }
+
+  getQuestions(name, question_id, offset, limit){
+    const submits = this.quest_ranks[name + '-' + question_id]
+      .getSorted()
+    return submits
+  }
+
+  getExam(name) {
+
+    const conf = this.conf[exam]
+    const users = {}
+    const questions = Object.keys(conf.scores).forEach(question_id => {
+      const submits = this.quest_ranks[name + '-' + question_id]
+        .getSorted()
+
+      submits.forEach(submit => {
+        if(!users[submit.student_id]) {
+          users[submit.student_id] = {
+            email : submit.email,
+            avatar : submit.avatar,
+            total : 0
+          }
+        }
+        users[submit.student_id].total += submit.score
+      })
+    })
+
+    return users
+  }
 }
 
 module.exports = Rank

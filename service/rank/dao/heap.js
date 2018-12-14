@@ -4,21 +4,22 @@ function swap(A, i, j) {
   A[j] = t
 }
 class MaxHeap{
-  constructor(setter, getter, clone = false) {
+  constructor(setter, getter, hash_func, clone = false) {
     if (!clone) {
-      this.list = [] 
+      this.list = []
       this.heapSize = this.list.length
       this.setter = setter
       this.getter = getter
+      this.hash_func = hash_func
       this.build()
-
+      this.itemHash = []
     }
   }
 
   clone(){
     const heap = new MaxHeap()
     heap.list = [...this.list]
-    heap.heapSize = this.heapSize 
+    heap.heapSize = this.heapSize
     heap.setter = this.setter
     heap.getter = this.getter
     return heap
@@ -40,17 +41,35 @@ class MaxHeap{
     return item
   }
 
+  setListItem(i, item) {
+    this.list[i] = item
+    this.itemHash[this.hash_func(item)] = i
+  }
+
+  swapListItem(x, y) {
+    this.itemHash[this.hash_func(this.list[x])] = y
+    this.itemHash[this.hash_func(this.list[y])] = x
+    swap(this.list, x, y)
+  }
+
   add(item){
     const key = this.getter(item)
-    this.list[this.heapSize++] = item
+    this.setListItem(this.heapSize++, item)
     this.setter(item, -Infinity)
     this.increase(this.heapSize -1, key)
   }
 
-  increase(i, key) {
-    let p = ~~Math.floor(i/2)  
-    let q = i 
-    this.setter(this.list[i], key)
+  getHeapItem(item) {
+    const hash = this.hash_func(item)
+    return this.list[ this.itemHash[hash] ]
+  }
+
+  increse(item) {
+
+    const i = this.itemHash[this.getter(item)]
+    let p = ~~Math.floor(i/2)
+    let q = i
+    this.setter(this.list[i], this.getter(item))
     while(this.getter(this.list[p]) < this.getter(this.list[q])) {
       swap(this.list, p, q)
       q = p
@@ -77,13 +96,13 @@ class MaxHeap{
     ) {
       maxIndex = leftIndex
     }
-    if(rightIndex < this.heapSize && 
-      this.getter( this.list[rightIndex] ) 
+    if(rightIndex < this.heapSize &&
+      this.getter( this.list[rightIndex] )
         > this.getter(this.list[maxIndex])) {
       maxIndex = rightIndex
     }
     if(i !== maxIndex) {
-      swap(this.list, maxIndex, i)
+      this.swapListItem(maxIndex, i)
       this.max_heapify(maxIndex)
     }
   }
