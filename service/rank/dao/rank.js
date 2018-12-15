@@ -253,7 +253,7 @@ class Rank {
 
     return Object.keys(users).map(id => {
       return users[id]
-    })
+    }).sort((x, y) => y.score - x.score)
   }
 }
 
