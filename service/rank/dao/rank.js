@@ -235,7 +235,7 @@ class Rank {
     const users = {}
     const questions = Object.keys(conf.scores).forEach(question_id => {
       const submits = this.ranks[name + '-' + question_id]
-      if(!list) {
+      if(!submits) {
         return
       }
       submits.forEach(submit => {
