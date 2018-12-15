@@ -14,9 +14,12 @@ class Inspire{
   /**
    * 试题列表
    */
-  questions(account_id, offset, limit) {
+  async questions(account_id, offset, limit) {
+    const sqlc = `select count(*) as c from question`
+    const count = await this.db.queryOne(sqlc)
     const sql = `select * from question where account_id=${account_id} limit ${limit} offset ${offset} `
-    return this.db.query(sql)
+    const list = await this.db.query(sql)
+    return {list, total : count.c}
   }
 
   question(id) {

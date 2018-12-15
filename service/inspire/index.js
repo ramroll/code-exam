@@ -34,8 +34,8 @@ function register(app){
     })
     validator.validate()
     const inspire = new Inspire()
-    const questions = await inspire.questions(req.student.account_id, query.offset, query.limit)
-    res.send(questions)
+    const {list, total}= await inspire.questions(req.student.account_id, query.offset, query.limit)
+    res.send({list, total})
   }))
 
 

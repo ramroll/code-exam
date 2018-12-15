@@ -141,7 +141,7 @@ class Db{
     return new Promise((resolve, reject) => {
       function __query(connection, sql, params) {
         connection.query(sql, params, (error, results, fields) => {
-          console.log('release-a-connection')
+          // console.log('release-a-connection')
           if(!conn) {
             connection.release()
           }
@@ -155,7 +155,7 @@ class Db{
       if (conn) {
         __query(conn, sql, params)
       } else {
-        console.log('get-a-connection')
+        // console.log('get-a-connection')
         Db.pool.getConnection(function (err, connection) {
           if (err) {
             console.error(err)

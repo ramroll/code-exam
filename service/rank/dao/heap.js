@@ -4,23 +4,25 @@ function swap(A, i, j) {
   A[j] = t
 }
 class MaxHeap{
-  constructor(setter, getter, clone = false) {
+  constructor(setter, getter, hash_func, clone = false) {
     if (!clone) {
-      this.list = [] 
+      this.list = []
       this.heapSize = this.list.length
       this.setter = setter
       this.getter = getter
+      this.hash_func = hash_func
       this.build()
-
+      this.itemHash = []
     }
   }
 
   clone(){
     const heap = new MaxHeap()
     heap.list = [...this.list]
-    heap.heapSize = this.heapSize 
+    heap.heapSize = this.heapSize
     heap.setter = this.setter
     heap.getter = this.getter
+    heap.hash_func = this.hash_func
     return heap
   }
 
@@ -40,16 +42,34 @@ class MaxHeap{
     return item
   }
 
-  add(item){
-    const key = this.getter(item)
-    this.list[this.heapSize++] = item
-    this.setter(item, -Infinity)
-    this.increase(this.heapSize -1, key)
+  setListItem(i, item) {
+    this.list[i] = item
+    this.itemHash[this.hash_func(item)] = i
   }
 
-  increase(i, key) {
-    let p = ~~Math.floor(i/2)  
-    let q = i 
+  swapListItem(x, y) {
+    this.itemHash[this.hash_func(this.list[x])] = y
+    this.itemHash[this.hash_func(this.list[y])] = x
+    swap(this.list, x, y)
+  }
+
+  add(item){
+    const key = this.getter(item)
+    this.setListItem(this.heapSize++, item)
+    this.setter(item, -Infinity)
+    this.increase(item, key)
+  }
+
+  getHeapItem(item) {
+    const hash = this.hash_func(item)
+    return this.list[ this.itemHash[hash] ]
+  }
+
+  increase(item, key) {
+
+    const i = this.itemHash[this.hash_func(item)]
+    let p = ~~Math.floor(i/2)
+    let q = i
     this.setter(this.list[i], key)
     while(this.getter(this.list[p]) < this.getter(this.list[q])) {
       swap(this.list, p, q)
@@ -58,7 +78,12 @@ class MaxHeap{
     }
   }
 
-  getSorted(k){
+  contains(item){
+    return this.itemHash[this.hash_func(item)] !== undefined
+
+  }
+
+  getSorted(k = this.heapSize){
     const clone = this.clone()
     const list = []
     while(clone.heapSize && k--) {
@@ -77,13 +102,13 @@ class MaxHeap{
     ) {
       maxIndex = leftIndex
     }
-    if(rightIndex < this.heapSize && 
-      this.getter( this.list[rightIndex] ) 
+    if(rightIndex < this.heapSize &&
+      this.getter( this.list[rightIndex] )
         > this.getter(this.list[maxIndex])) {
       maxIndex = rightIndex
     }
     if(i !== maxIndex) {
-      swap(this.list, maxIndex, i)
+      this.swapListItem(maxIndex, i)
       this.max_heapify(maxIndex)
     }
   }
