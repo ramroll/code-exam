@@ -12,26 +12,39 @@ export default @withMe() class Home extends Component {
   render(){
     return <div style={{margin : '0 auto', width : '800px', padding : '40px'}}>
 
-      <h3>考试卷</h3>
+      <h2>考试卷</h2>
       <p>
         <a href='/exam/test'>算法能力自测卷</a>
       </p>
+
       <p>
         <a href='/exam/practise2'>javascript算法数据结构B模拟01</a>
       </p>
-      <p>
-        <a href='/exam/zfb00001'>第一届珠峰javascript算法与数据结构考试题目</a>
-      </p>
 
-      <h3>班级</h3>
-      <p>
-        <a href='/my/enroll/4'>算法B-01</a>
-      </p>
+      <h2 style={{marginTop : '20px'}}>
+        珠峰合作课程：javascript算法和数据结构  
+        <a href='http://www.zhufengpeixun.cn/' target="_blank">
+          <img style={{ width: '100px' }} src={require('../../static/img/zf.jpg')} />
+        </a>
+      </h2>
 
-      <h3>2期训练</h3>
-      <p>
-        <a href='/exam/basic01'>第一周</a>
-      </p>
+      <div className="block" style={{
+        border : '1px solid #eee',
+        padding : '10px'
+      }}>
+        <p>
+          <a href='https://ke.qq.com/course/323156' target="_black">视频课程链接</a>
+        </p>
+        <p>
+          <a href='/my/enroll/4'>班级：珠峰javascript算法数据结构-B01</a>
+        </p>
+        <p>
+          <a href='/exam/zfb00001'>第一届珠峰javascript算法与数据结构考试题目</a>
+        </p>
+        <p>
+          <a href='/exam/basic01'>第一周练习</a>
+        </p>
+      </div>
     </div>
 
   }

@@ -2,6 +2,9 @@ import React, {Component} from 'react'
 import request from '../../common/util/request'
 import { Button, Popconfirm } from 'antd'
 import { Link } from 'react-router-dom'
+import { Pagination } from 'antd'
+
+const PAGE_SIZE=10
 
 function withQuestion() {
   return Target => {
@@ -11,19 +14,30 @@ function withQuestion() {
       constructor(){
         super()
         this.state = {
-          list : null
+          list : null,
+          total : 0
         }
       }
 
-      componentDidMount(){
+      changePage = (page) => {
+        this.fetch(page-1)
 
-        request('/api/inspire/my/question')
-          .then(list => {
+      }
 
+      fetch(page = 0) {
+        request('/api/inspire/my/question?offset=' + page * PAGE_SIZE + '&limit=' + PAGE_SIZE)
+          .then(({ list, total }) => {
             this.setState({
-              list
+              list,
+              total
             })
           })
+
+      }
+
+      componentDidMount(){
+        this.fetch()
+
       }
 
       remove = (id) => {
@@ -34,7 +48,9 @@ function withQuestion() {
 
       render(){
         return <Target
+          changePage={this.changePage}
           remove={this.remove}
+          total={this.state.total}
           list={this.state.list} {...this.props} />
       }
     }
@@ -54,7 +70,6 @@ export default @withQuestion() class Home extends Component{
         id
       }
     }).then(result => {
-      debugger
       this.props.remove(id)
     })
   }
@@ -98,6 +113,10 @@ export default @withQuestion() class Home extends Component{
 
       </table>
 
+      <Pagination
+        onChange={this.props.changePage}
+        pageSize={PAGE_SIZE}
+        defaultCurrent={1} total={this.props.total} />
     </div>
 
   }

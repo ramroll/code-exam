@@ -22,6 +22,7 @@ class MaxHeap{
     heap.heapSize = this.heapSize
     heap.setter = this.setter
     heap.getter = this.getter
+    heap.hash_func = this.hash_func
     return heap
   }
 
@@ -78,7 +79,7 @@ class MaxHeap{
   }
 
   contains(item){
-    return !!this.itemHash[this.hash_func(item)]
+    return this.itemHash[this.hash_func(item)] !== undefined
 
   }
 

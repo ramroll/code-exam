@@ -6,6 +6,7 @@ const Exam = require('./dao/exam')
 const token = require('../lib/util/token.middleware')
 const LogicException = require('../lib/exception/LogicException')
 const LoginException = require('../lib/exception/LoginException')
+const Comment = require('./dao/comment')
 
 const request_lock = require('../lib/util/request_lock')
 /**
@@ -115,6 +116,17 @@ function register(app){
     const list = await exam.answers(req.params.name)
     res.send(list)
   }))
+
+  app.post('/submit/:id/applaud', token, api_wrapper(async (req, res) => {
+    const validator = new Validator(req.params)
+    validator.check('id', 'required', '需要传入id')
+    validator.check('id', 'integer', 'id格式不正确')
+    validator.validate()
+    const comment = new Comment()
+    const v = await comment.applaud(req.params.id, req.student.account_id) 
+    res.send({v})
+  }))
+
 }
 
 

@@ -24,12 +24,16 @@ class Rank {
   constructor(){
     this.db = new Db()
     this.max_id = -1
+    this.max_applaud_id = -1
 
     // 根据考试的分数排名
     this.ranks = {}
+    this.rank_by_weight = {}
 
     // 根据题目排名
-    this.quest_ranks = {}
+    this.quest_heaps = {}
+
+    this.submit_applauds = {} 
   }
 
   /**
@@ -144,8 +148,8 @@ class Rank {
         }, null)
 
 
-        if(!this.quest_ranks[k_exam_quest]) {
-          this.quest_ranks[k_exam_quest] = new MaxHeap(
+        if(!this.quest_heaps[k_exam_quest]) {
+          this.quest_heaps[k_exam_quest] = new MaxHeap(
             (x, key) => x.score = key,
             x => x.score,
             x => x.question + '--' + x.student_id
@@ -153,12 +157,12 @@ class Rank {
         }
 
         // 处理全量和增量的关系
-        if(!this.quest_ranks[k_exam_quest].contains(userSubmits)) {
-          this.quest_ranks[k_exam_quest].add(maxSubmit)
+        if(!this.quest_heaps[k_exam_quest].contains(maxSubmit)) {
+          this.quest_heaps[k_exam_quest].add(maxSubmit)
         } else {
-          const item = this.quest_ranks[k_exam_quest].getHeapItem(maxSubmit)
+          const item = this.quest_heaps[k_exam_quest].getHeapItem(maxSubmit)
           if(item.score < maxSubmit.score) {
-            this.quest_ranks[k_exam_quest].increase(maxSubmit)
+            this.quest_heaps[k_exam_quest].increase(maxSubmit, maxSubmit.score)
           }
         }
       })
@@ -167,16 +171,62 @@ class Rank {
 
   }
 
-  async buildRank() {
-    this.conf = await this.loadExamConfs()
-    await this.updateQuestionRank()
+  /**
+   * 更新点赞
+   */
+  async updateApplaud() {
+    const sql = `select * from submit_applaud where \`update\` > ${this.max_applaud_id} order by \`update\` desc`
+    const applauds = await this.db.query(sql)
+    if(applauds.length > 0) {
+      this.max_applaud_id = applauds[0].update
+    }
+    applauds.forEach( ({submit_id, applaud}) => {
+      if(!this.submit_applauds[submit_id]) {
+        this.submit_applauds[submit_id] = applaud
+        return
+      }
+      if(applaud) {
+        this.submit_applauds[submit_id]++
+      } else {
+        this.submit_applauds[submit_id]--
+      }
+      
+    })
+  }
 
+  async buildRank() {
+    try {
+
+      this.conf = await this.loadExamConfs()
+      await this.updateApplaud()
+      await this.updateQuestionRank()
+
+      for (let key in this.quest_heaps) {
+        this.ranks[key] = this.quest_heaps[key].getSorted()
+
+        this.rank_by_weight[key] = [...this.ranks[key]]
+          .sort((x, y) => {
+            const ay = this.submit_applauds[y.id] || 0
+            const ax = this.submit_applauds[x.id] || 0
+            return (y.score - x.score) * 10 + (ay - ax) * 10
+          })
+      }
+
+    }catch(ex) {
+      console.error(ex)
+    }
   }
 
   getQuestions(name, question_id, offset, limit){
-    const submits = this.quest_ranks[name + '-' + question_id]
-      .getSorted()
-    return submits
+    const key = name + '-' + question_id
+    if(!this.rank_by_weight[key]) {
+      return []
+    }
+    return this.rank_by_weight[key].slice(offset, offset + limit)
+      .map(x => {
+        x.applauds = this.submit_applauds[x.id] || 0
+        return x
+      })
   }
 
   getExam(name) {
@@ -184,9 +234,10 @@ class Rank {
     const conf = this.conf[name]
     const users = {}
     const questions = Object.keys(conf.scores).forEach(question_id => {
-      const submits = this.quest_ranks[name + '-' + question_id]
-        .getSorted()
-
+      const submits = this.ranks[name + '-' + question_id]
+      if(!list) {
+        return
+      }
       submits.forEach(submit => {
         if(!users[submit.student_id]) {
           users[submit.student_id] = {
@@ -196,7 +247,6 @@ class Rank {
             score : 0
           }
         }
-        console.log('score---', submit.score)
         users[submit.student_id].score += submit.score
       })
     })
