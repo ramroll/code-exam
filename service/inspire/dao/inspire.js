@@ -43,7 +43,7 @@ class Inspire{
    * 删除试题
    */
   async delete_question(id) {
-    const sql = `select * from question_exam where question_id=${id}`
+    const sql = `select * from exam_question where question_id=${id}`
     const question = await this.db.queryOne(sql)
     if(question) {
       throw new LogicException('这道题目已经在其他试卷中使用')
