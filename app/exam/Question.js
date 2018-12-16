@@ -143,5 +143,6 @@ export default class Question extends Component{
 
 function format(n){
   n = n.toString()
-  return [...[...n].reverse().join('').replace(/(\d{3})/g, '$&,')].reverse().join('')
+  const str = [...[...n].reverse().join('').replace(/(\d{3})/g, '$&,')].reverse().join('')
+  return str.replace(/^,/, '')
 }
