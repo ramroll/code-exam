@@ -22,7 +22,7 @@ async function register(app){
     const query = req.query
     const validator = new Validator(query)
     validator.check('name', 'required', '需要试卷名称')
-    validator.check('name', /[a-z-]{3,20}/, '试卷名格式不正确')
+    validator.check('name', /^[0-9a-z-]{3,20}$/, '试卷名格式不正确')
     validator.validate()
     const name = query.name
     const ranks = rank.getExam(name)
