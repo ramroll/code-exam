@@ -23,7 +23,7 @@ function register(app){
 
     const validator = new Validator(req.query)
     validator.check('name', 'required', '需要传入试题名称')
-    validator.check('name', /[a-z-]{3,20}/, '试题格式不正确')
+    validator.check('name', /^[0-9a-z-]{3,20}$/, '试题格式不正确')
     validator.validate()
 
     const exam = new Exam()
@@ -39,7 +39,7 @@ function register(app){
 
     const validator = new Validator(req.params)
     validator.check('name', 'required', '需要传入试题名称')
-    validator.check('name', /[a-z-]{3,20}/, '试题格式不正确')
+    validator.check('name',  /^[0-9a-z-]{3,20}$/, '试题格式不正确')
     validator.validate()
 
     const exam = new Exam()
@@ -54,7 +54,7 @@ function register(app){
 
     const validator = new Validator(req.params)
     validator.check('name', 'required', '需要传入试题名称')
-    validator.check('name', /[a-z-]{3,20}/, '试题格式不正确')
+    validator.check('name',  /^[0-9a-z-]{3,20}$/, '试题格式不正确')
     validator.check('id', 'required', '需要传入id')
     validator.check('id', 'integer', 'id应当是整数')
     validator.validate()
@@ -75,7 +75,7 @@ function register(app){
     request_lock(req.student.student_id + '-submit', 10000)
     const validator = new Validator(req.body)
     validator.check('exam', 'required', '需要传入试题名称')
-    validator.check('exam', /[a-z-]{3,20}/, '试题格式不正确')
+    validator.check('exam', /^[0-9a-z-]{3,20}$/, '试题格式不正确')
     validator.check('question_id', 'required', '需要题目id')
     validator.check('question_id', /\d+/, '题目id格式不正确')
     validator.check('code', 'required', '需要代码')
@@ -109,7 +109,7 @@ function register(app){
 
     const validator = new Validator(req.params)
     validator.check('name', 'required', '需要传入试题名称')
-    validator.check('name', /[a-z-]{3,20}/, '试题格式不正确')
+    validator.check('name',  /^[0-9a-z-]{3,20}$/, '试题格式不正确')
     validator.validate()
 
     const exam = new Exam()
