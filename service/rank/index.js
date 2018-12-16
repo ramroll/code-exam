@@ -42,7 +42,7 @@ async function register(app){
     const validator = new Validator(query)
     validator.check('exam', 'required', '需要试卷名称')
     validator.check('question', 'required', '需要试卷id')
-    validator.check('exam', /[a-z-]{3,20}/, '试卷名称不正确')
+    validator.check('exam', /^[0-9a-z-]{3,20}$/, '试卷名称不正确')
     validator.check('question', 'integer', '需要整数id')
     validator.check('offset', 'integer', 'offset格式不正确')
     validator.check('limit', 'integer', 'limit格式不正确', {
