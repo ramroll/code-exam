@@ -48,6 +48,19 @@ export default @withMe() class Home extends Component {
           <a href='/exam/basic02'>第二周练习</a>
         </p>
       </div>
+
+      <h2 style={{marginTop : '20px'}}>
+        函数式编程专题
+      </h2>
+      <div className="block" style={{
+        border : '1px solid #eee',
+        padding : '10px'
+      }}>
+        <p>
+          <a href='/exam/fp01'>函数式编程训练1</a>
+        </p>
+      </div>
+
     </div>
 
   }
