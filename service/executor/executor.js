@@ -3,7 +3,7 @@ const path = require('path')
 const Testutil = require('./testutil')
 const ValueNotMatchException = require('./ValueNotMatchException')
 const UndefException = require('./UndefException')
-process.on('message', submit => {
+process.on('message', async submit => {
   if(submit.type === 'exit') {process.exit(submit.code)}
   const {code, exam, question, tester_code} = submit
   console.log(code)
@@ -23,7 +23,7 @@ process.on('message', submit => {
   const testutil = new Testutil()
   testutil.hook_console_start()
   try{
-    testerFunction(testutil, code)
+    await testerFunction(testutil, code)
     console.log(testutil.exe_time())
     process.send({
       code : 2,
