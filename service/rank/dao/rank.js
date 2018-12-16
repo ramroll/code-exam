@@ -52,12 +52,10 @@ class Rank {
       addScore += diff * 10
     }
     else {
-      addScore += diff * 14
+      addScore += diff * 7 
     }
 
-    if(addScore > 100) {
-      addScore = 100
-    }
+
     if(addScore < 0) {
       addScore = 0
     }
