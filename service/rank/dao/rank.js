@@ -47,17 +47,9 @@ class Rank {
 
     let diff = lg_refer - lg_real
 
-    let addScore = 50
-    if(diff < 0) {
-      addScore += diff * 10
-    }
-    else {
-      addScore += diff * 7 
-    }
-
-
-    if(addScore < 0) {
-      addScore = 0
+    let addScore = 0
+    if(diff > 0) {
+      addScore += diff * 14 
     }
 
     let score = min_score + (addScore  / 2)
