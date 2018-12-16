@@ -128,7 +128,7 @@ export default class Question extends Component{
           <textarea ref={r => this.r = r} defaultValue={this.state.question.sample}></textarea>
           <div>{this.renderLastStatus(this.state.question.last_submit_status,
             this.state.question.message)}</div>
-          {this.state.question.correct && <div className='answer'>最优正确答案（执行时间:{this.state.question.exe_time / 1000000}ms)</div>}
+          {this.state.question.correct && <div className='answer'>最优正确答案（执行时间:{format(this.state.question.exe_time)}ns)</div>}
           <Button style={{ marginTop: 10 }} onClick={this.submit}>{this.state.loading ? '执行...' : '提交'}</Button>
         </TabPane>
         <TabPane tab='控制台' key="2">
@@ -141,3 +141,7 @@ export default class Question extends Component{
   }
 }
 
+function format(n){
+  n = n.toString()
+  return [...[...n].reverse().join('').replace(/(\d{3})/g, '$&,')].reverse().join('')
+}
