@@ -33,7 +33,7 @@ class Rank {
     // 根据题目排名
     this.quest_heaps = {}
 
-    this.submit_applauds = {} 
+    this.submit_applauds = {}
   }
 
   /**
@@ -49,7 +49,7 @@ class Rank {
 
     let addScore = 0
     if(diff > 0) {
-      addScore += diff * 14 
+      addScore += diff * 14
     }
 
     let score = min_score + (addScore  / 2)
@@ -180,7 +180,7 @@ class Rank {
       } else {
         this.submit_applauds[submit_id]--
       }
-      
+
     })
   }
 

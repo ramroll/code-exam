@@ -70,9 +70,11 @@ class MaxHeap{
     const i = this.itemHash[this.hash_func(item)]
     let p = ~~Math.floor(i/2)
     let q = i
+    /* 在提升key的同时，替换原来的对象 */
+    this.list[i] = item
     this.setter(this.list[i], key)
     while(this.getter(this.list[p]) < this.getter(this.list[q])) {
-      swap(this.list, p, q)
+      this.swapListItem(this.list, p, q)
       q = p
       p = ~~Math.floor(p / 2)
     }
