@@ -26,7 +26,6 @@ async function register(app){
     validator.validate()
     const name = query.name
     const ranks = rank.getExam(name)
-    console.log('rank', ranks)
     res.send(ranks)
   }))
 

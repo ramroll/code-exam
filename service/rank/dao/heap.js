@@ -74,7 +74,7 @@ class MaxHeap{
     this.list[i] = item
     this.setter(this.list[i], key)
     while(this.getter(this.list[p]) < this.getter(this.list[q])) {
-      this.swapListItem(this.list, p, q)
+      this.swapListItem(p, q)
       q = p
       p = ~~Math.floor(p / 2)
     }
