@@ -191,7 +191,7 @@ const AnswerCard = ({avatar, nickname, exe_time, code, applauds, toggle}) => <di
   <div className='person'>
     <img src={avatar} />
     <span>{nickname}</span>
-    <span style={{ color: 'green', marginLeft: '20px' }}>{exe_time}ns</span>
+    <span style={{ color: 'green', marginLeft: '20px' }}>{exe_time}µs</span>
   </div>
   <MarkdownViewer md={'```\n' + code + '\n```'}></MarkdownViewer>
   <span className='like' onClick={toggle}>
