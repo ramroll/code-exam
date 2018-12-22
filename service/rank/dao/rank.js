@@ -230,6 +230,9 @@ class Rank {
       }
       submits.forEach(submit => {
         if(!users[submit.student_id]) {
+          if(!submit.email) {
+            return
+          }
           users[submit.student_id] = {
             email : hide(submit.email),
             avatar : submit.avatar,
