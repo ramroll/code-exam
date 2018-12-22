@@ -23,8 +23,8 @@ export default @withMe() class Home extends Component {
 
       <h2 style={{marginTop : '20px'}}>
         珠峰合作课程：javascript算法和数据结构  
-        <a href='http://www.zhufengpeixun.cn/' target="_blank">
-          <img style={{ width: '100px' }} src={require('../../static/img/zf.jpg')} />
+        <a href='http://www.zhufengpeixun.cn/' areaLabel='weavinghorse' target="_blank">
+          <img style={{ width: '100px' }} src={require('../../static/img/zf.jpg')} alt="珠峰首页" />
         </a>
       </h2>
 

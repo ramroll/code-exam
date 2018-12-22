@@ -27,7 +27,7 @@ export default class Header extends Component {
       <div className='logo' onClick={() => {
         window.location.href = '/'
       }}>
-        <img src={require('../../../static/img/horse.png')} />
+        <img src={require('../../../static/img/horse.png')} alt='首页' />
         <h2>专注算法学习，提高编码效率</h2>
       </div>
 
