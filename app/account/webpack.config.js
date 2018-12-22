@@ -59,7 +59,7 @@ const config = {
             options: {
               javascriptEnabled: true,
               modifyVars: {
-                'primary-color': '#66b388'
+                'primary-color': '#4b715c'
               }
             }
           }
