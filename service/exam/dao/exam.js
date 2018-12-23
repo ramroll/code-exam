@@ -49,6 +49,7 @@ class Exam{
       question.console = lastSubmit ? lastSubmit.console : ''
       question.message = lastSubmit ? lastSubmit.message : ''
       question.last_submit_status = lastSubmit ? lastSubmit.status : -1
+      question.last_submit_exe_time = lastSubmit ? lastSubmit.exe_time : 0
       question.sample = lastSubmit ? lastSubmit.code : sample
       question.correct = !!fastestSubmit
       question.exe_time = fastestSubmit ? fastestSubmit.exe_time : 0

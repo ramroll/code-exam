@@ -93,7 +93,7 @@ export default class Question extends Component{
     // }, 10000)
   }
 
-  renderLastStatus = (status, message) => {
+  renderLastStatus = (status, message, question) => {
 
     if(this.state.loading) {return ''}
     // if(this.state.timeout) {
@@ -106,7 +106,7 @@ export default class Question extends Component{
     case 1 :
       return <span>上一次提交执行中...</span>
     case 2 :
-      return <span className='f-success'>上一次提交成功</span>
+      return <span className='f-success'>上一次提交成功，执行时间:{format(question.last_submit_exe_time)}µs</span>
     case 100 :
       return <span className='f-error'>执行超时</span>
     case 101 :
@@ -127,7 +127,7 @@ export default class Question extends Component{
           <div className='md' dangerouslySetInnerHTML={{ __html: md.render(this.state.question.md) }}></div>
           <textarea ref={r => this.r = r} defaultValue={this.state.question.sample}></textarea>
           <div>{this.renderLastStatus(this.state.question.last_submit_status,
-            this.state.question.message)}</div>
+            this.state.question.message, this.state.question)}</div>
           {this.state.question.correct && <div className='answer'>最优正确答案（执行时间:{format(this.state.question.exe_time)}µs)</div>}
           <Button style={{ marginTop: 10 }} onClick={this.submit}>{this.state.loading ? '执行...' : '提交'}</Button>
         </TabPane>
