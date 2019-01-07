@@ -22,7 +22,7 @@ export default @withMe() class Home extends Component {
       </p>
 
       <h2 style={{marginTop : '20px'}}>
-        珠峰合作课程：javascript算法和数据结构  
+        珠峰合作课程：javascript算法和数据结构
         <a href='http://www.zhufengpeixun.cn/' areaLabel='weavinghorse' target="_blank">
           <img style={{ width: '100px' }} src={require('../../static/img/zf.jpg')} alt="珠峰首页" />
         </a>
@@ -49,6 +49,9 @@ export default @withMe() class Home extends Component {
         </p>
         <p>
           <a href='/exam/basic03'>第三周练习</a>
+        </p>
+        <p>
+          <a href='/exam/basic04'>第四周练习</a>
         </p>
       </div>
 
