@@ -54,7 +54,7 @@ export default @withMe() class Home extends Component {
           <a href='/exam/basic04'>第四周练习</a>
         </p>
         <p>
-          <a href='/exam/basic04'>第五周练习</a>
+          <a href='/exam/basic05'>第五周练习</a>
         </p>
       </div>
 
