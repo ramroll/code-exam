@@ -1,11 +1,17 @@
 import React,{Component} from 'react'
 import request from '../../common/util/request'
 import './cls.styl'
+import * as htmlToImage from 'html-to-image'
+import debounce from 'debounce'
+
+
+
 
 export default class Class extends Component{
 
   state = {
-    data : null
+    data : null,
+    kw : ''
   }
   componentWillMount(){
     const id = this.props.match.params.id
@@ -29,6 +35,11 @@ export default class Class extends Component{
     this.props.history.push(`/honor/class/${id}/${tab}`)
   }
 
+  handleSearch = (kw) => {
+
+    this.setState({kw})
+  }
+
   render(){
     if(!this.state.data) {
       return null
@@ -39,9 +50,32 @@ export default class Class extends Component{
       <h1>{this.state.data.info.name}</h1>
       <h2 className='subtitle'>{this.state.data.info.intro}</h2>
       <Tabs tabs={this.state.data.info.exams} active={name} onClick={this.handleTabClick} />
-      <Rank exam={name} records={list} />
+      <Search onChange={this.handleSearch} />
+      <Rank exam={name} records={list} kw={this.state.kw} />
     </div>
   }
+}
+
+const Search = ({onChange}) => {
+  let _r = null
+  return <div className='search'>
+    <input ref={r => _r = r} onChange={debounce((e) => {
+      const value = _r.value
+      onChange(value)
+    }, 300)} placeholder='关键字搜索' />
+    <button onClick={() => {
+      htmlToImage.toJpeg(document.getElementById('image-export'))
+        .then(dataUrl => {
+          const link = document.createElement('a')
+          link.download = 'result'
+          link.href = dataUrl
+          link.click()
+        })
+
+
+    }}>保存为图片</button>
+  </div>
+
 }
 
 const Tabs = ({tabs, active, onClick}) => {
@@ -59,10 +93,24 @@ const Tabs = ({tabs, active, onClick}) => {
 
 }
 
-const Rank = ({exam, records}) => {
+const Rank = ({exam, records, kw}) => {
   records.sort((x, y) => x.exe_time - y.exe_time)
 
-  return <table>
+  records = records.map(x => {
+    return {...x, status : x.success ? x.exe_time + '' : '未完成'}
+  })
+
+  if(kw) {
+
+    records = records.filter(x => {
+      return x.name.indexOf(kw) !== -1 ||
+        x.nickname.indexOf(kw) !== -1 ||
+        x.status.indexOf(kw) !== -1
+    })
+
+  }
+
+  return <table id='image-export'>
     <thead>
       <tr>
         <td>头像</td>
@@ -79,7 +127,7 @@ const Rank = ({exam, records}) => {
           <td><img src={record.avatar} /></td>
           <td>{record.name}</td>
           <td>{record.nickname}</td>
-          <td>{record.success ? record.exe_time : '未完成'}</td>
+          <td>{record.status === '未完成' ? <span style={{color : 'red'}}>{record.status}</span> : record.status}</td>
         </tr>
       })}
 
