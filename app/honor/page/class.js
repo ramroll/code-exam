@@ -52,7 +52,16 @@ export default class Class extends Component{
       <h2 className='subtitle'>{this.state.data.info.intro}</h2>
       <Tabs tabs={this.state.data.info.exams} active={name} onClick={this.handleTabClick} />
       <Search onChange={this.handleSearch} />
-      <Rank exam={name} records={list} kw={this.state.kw} />
+      {list.map((item) => {
+        return <div>
+          <div style={{
+            marginTop : '10px',
+            marginBottom : '10px',
+            borderBottom : '1px solid #eee'
+          }}>题目：{item.question.title}</div>
+          <Rank exam={name} records={item.list} kw={this.state.kw} />
+        </div>
+      })}
     </div>
   }
 }

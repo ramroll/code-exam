@@ -57,6 +57,7 @@ class ClassStat {
 
     const results = []
     for(let question of questions) {
+      const question_stats = []
       for(let student of students) {
         const hash = student.id + '-' + question.id
 
@@ -71,9 +72,12 @@ class ClassStat {
           exe_time : submits.length > 0 ? submits[0].exe_time : 0
         }
 
-        results.push(basic)
-
+        question_stats.push(basic)
       }
+      results.push({
+        question,
+        list : question_stats
+      })
     }
 
     if (!this.stats[class_.id]) {
