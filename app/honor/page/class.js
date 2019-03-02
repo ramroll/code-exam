@@ -3,6 +3,7 @@ import request from '../../common/util/request'
 import './cls.styl'
 import * as htmlToImage from 'html-to-image'
 import debounce from 'debounce'
+import download from 'downloadjs'
 
 
 
@@ -66,10 +67,7 @@ const Search = ({onChange}) => {
     <button onClick={() => {
       htmlToImage.toJpeg(document.getElementById('image-export'))
         .then(dataUrl => {
-          const link = document.createElement('a')
-          link.download = 'result'
-          link.href = dataUrl
-          link.click()
+          download(dataUrl, 'result.jpg')
         })
 
 
