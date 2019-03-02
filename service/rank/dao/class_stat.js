@@ -65,6 +65,7 @@ class ClassStat {
 
         const basic = {
           name : student.name,
+          avatar : student.avatar,
           nickname : student.nickname,
           success : submits.length > 0,
           exe_time : submits.length > 0 ? submits[0].exe_time : 0
@@ -76,9 +77,12 @@ class ClassStat {
     }
 
     if (!this.stats[class_.id]) {
-      this.stats[class_.id] = {}
+      this.stats[class_.id] = {
+        info : class_,
+        exams : {}
+      }
     }
-    this.stats[class_.id][exam.name] = results
+    this.stats[class_.id].exams[exam.name] = results
   }
 
   get(id) {

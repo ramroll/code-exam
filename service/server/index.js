@@ -10,6 +10,9 @@ function register(app) {
   app.get(/\/my/, function(req, res){
     res.sendFile(path.resolve(__dirname, '../../dist/my/index.html'))
   })
+  app.get(/\/honor/, function(req, res){
+    res.sendFile(path.resolve(__dirname, '../../dist/honor/index.html'))
+  })
   app.get('*', function(req, res) {
     res.sendFile(path.resolve(__dirname, '../../dist/exam/index.html'))
   })

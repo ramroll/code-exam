@@ -72,7 +72,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: '算法训练',
+      title: '荣誉',
       template: path.resolve(__dirname, './index.html'),
       alwaysWriteToDisk : true
     }),

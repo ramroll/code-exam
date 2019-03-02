@@ -23,14 +23,16 @@ export default class Class extends Component{
       return null
     }
 
-    const list = Object.keys(this.state.data).map(key => {
-      return {exam : key, submits : this.state.data[key]}
+    const list = Object.keys(this.state.data.exams).map(key => {
+      return {exam : key, submits : this.state.data.exams[key]}
     })
     return <div>
+      <h1>{this.state.data.info.name}</h1>
+      <h2 className='subtitle'>{this.state.data.info.intro}</h2>
       {list.map( ({exam, submits}) => {
 
         return <div key={exam}>
-          <h2 className='title'>{exam}</h2>
+          <h2 className='block-title'>{exam}</h2>
           <Rank exam={exam} records={submits} />
         </div>
       })}
@@ -44,6 +46,7 @@ const Rank = ({exam, records}) => {
   return <table>
     <thead>
       <tr>
+        <td>头像</td>
         <td>姓名</td>
         <td>昵称</td>
         <td>完成情况</td>
@@ -54,6 +57,7 @@ const Rank = ({exam, records}) => {
     <tbody>
       {records.map((record, i) => {
         return <tr key={i}>
+          <td><img src={record.avatar} /></td>
           <td>{record.name}</td>
           <td>{record.nickname}</td>
           <td>{record.success ? record.exe_time : '未完成'}</td>
