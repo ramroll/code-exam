@@ -85,11 +85,26 @@ class ClassStat {
     this.stats[class_.id].exams[exam.name] = results
   }
 
-  get(id) {
+  get(id, exam = '') {
     if(!this.stats[id]) {
       return []
     }
-    return this.stats[id]
+    const {exams, info} = this.stats[id]
+
+
+    const examsList = Object.keys(exams).map(key => {
+      return {
+        name : key,
+        list : exams[key]
+      }
+    })
+
+    info.exams = examsList.map(x => x.name)
+
+
+    return {
+      info,
+      exam : exam === '' ? examsList[0] : examsList.find(x => x.name === exam)}
   }
 
 }

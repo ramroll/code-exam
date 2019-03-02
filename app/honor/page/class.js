@@ -9,7 +9,13 @@ export default class Class extends Component{
   }
   componentWillMount(){
     const id = this.props.match.params.id
-    request(`/api/rank/class/${id}/stat`)
+    const exam = this.props.match.params.exam
+
+    let url = `/api/rank/class/${id}/stat`
+    if (exam) {
+      url += '/' + exam
+    }
+    request(url)
       .then(data => {
         this.setState({
           data
@@ -18,26 +24,39 @@ export default class Class extends Component{
       })
   }
 
+  handleTabClick = tab => {
+    const id = this.props.match.params.id
+    this.props.history.push(`/honor/class/${id}/${tab}`)
+  }
+
   render(){
     if(!this.state.data) {
       return null
     }
 
-    const list = Object.keys(this.state.data.exams).map(key => {
-      return {exam : key, submits : this.state.data.exams[key]}
-    })
+    const {name, list} = this.state.data.exam
     return <div>
       <h1>{this.state.data.info.name}</h1>
       <h2 className='subtitle'>{this.state.data.info.intro}</h2>
-      {list.map( ({exam, submits}) => {
-
-        return <div key={exam}>
-          <h2 className='block-title'>{exam}</h2>
-          <Rank exam={exam} records={submits} />
-        </div>
-      })}
+      <Tabs tabs={this.state.data.info.exams} active={name} onClick={this.handleTabClick} />
+      <Rank exam={name} records={list} />
     </div>
   }
+}
+
+const Tabs = ({tabs, active, onClick}) => {
+  return <h2 className='block-title'>{
+    tabs.map( (tab, i) =>
+      <React.Fragment key={tab}>
+        <span
+          className={active === tab ? 'active' : ''}
+          onClick={() => onClick(tab)} key={tab}>{tab}</span>
+        {i !== tabs.length - 1 &&  <span>/</span>}
+      </React.Fragment>
+    )
+  }
+  </h2>
+
 }
 
 const Rank = ({exam, records}) => {

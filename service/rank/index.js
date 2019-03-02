@@ -65,9 +65,18 @@ async function register(app){
   app.get('/class/:class_id/stat', api_wrapper(async (req, res) => {
     const query = {...req.params}
     const validator = new Validator(query)
+    validator.check('exam', /^[0-9a-z-]{3,20}$/, '试卷名称不正确')
     validator.check('class_id', 'required', '需要班级id')
     validator.check('class_id', 'integer', '班级id应该是整数')
-    res.send(clsStat.get(query.class_id))
+    res.send(clsStat.get(query.class_id, query.exam || ''))
+  }))
+  app.get('/class/:class_id/stat/:exam', api_wrapper(async (req, res) => {
+    const query = {...req.params}
+    const validator = new Validator(query)
+    validator.check('exam', /^[0-9a-z-]{3,20}$/, '试卷名称不正确')
+    validator.check('class_id', 'required', '需要班级id')
+    validator.check('class_id', 'integer', '班级id应该是整数')
+    res.send(clsStat.get(query.class_id, query.exam || ''))
   }))
 }
 
