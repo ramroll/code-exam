@@ -54,7 +54,7 @@ const configure = {
     name: "rank",
     script: "./scripts/server/runner.js",
     args: "-s rank -p 8004",
-    watch: true,
+    watch: false,
     env: {
       ...DB_CONFIG,
       "NODE_ENV": process.env.NODE_ENV,
@@ -97,6 +97,17 @@ else {
       NODE_ENV: process.env.NODE_ENV,
       APP: 'exam',
       PORT: 8000
+    }
+  })
+  configure.apps.push({
+    name: 'honor-webpack',
+    script: "./node_modules/.bin/webpack-dev-server",
+    args: "--config ./app/honor/webpack.config.js",
+    env: {
+      AVATAR_URL,
+      NODE_ENV: process.env.NODE_ENV,
+      APP: 'honer',
+      PORT: 8015
     }
   })
   configure.apps.push({

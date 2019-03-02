@@ -40,6 +40,7 @@ class Rank {
    * 对一次回答进行打分
    */
   score(real_exe_time, refer_exe_time, min_score, correct, weight){
+
     if(!correct) {return 0}
     if(min_score === 100) {return weight}
     const lg_real = Math.log2(real_exe_time)
@@ -131,12 +132,8 @@ class Rank {
       Object.keys(group_by_users).forEach(key => {
         const userSubmits = group_by_users[key]
 
-        /* 对某个用户的最高分提交 */
-        const maxSubmit = userSubmits.reduce((max, submit) => {
-          if(!max) {return submit}
-          return max.score < submit.score ? max : submit
-        }, null)
-
+        // 取最后一次提交为最终成绩
+        const lastSubmit = userSubmits[0]
 
         if(!this.quest_heaps[k_exam_quest]) {
           this.quest_heaps[k_exam_quest] = new MaxHeap(
@@ -147,12 +144,16 @@ class Rank {
         }
 
         // 处理全量和增量的关系
-        if(!this.quest_heaps[k_exam_quest].contains(maxSubmit)) {
-          this.quest_heaps[k_exam_quest].add(maxSubmit)
+        if(!this.quest_heaps[k_exam_quest].contains(lastSubmit)) {
+          this.quest_heaps[k_exam_quest].add(lastSubmit)
         } else {
-          const item = this.quest_heaps[k_exam_quest].getHeapItem(maxSubmit)
-          if(item.score < maxSubmit.score) {
-            this.quest_heaps[k_exam_quest].increase(maxSubmit, maxSubmit.score)
+          const item = this.quest_heaps[k_exam_quest].getHeapItem(lastSubmit)
+          if(item.score < lastSubmit.score) {
+            this.quest_heaps[k_exam_quest].increase(lastSubmit, lastSubmit.score)
+          } else  {
+            this.quest_heaps[k_exam_quest].delete(lastSubmit)
+            this.quest_heaps[k_exam_quest].add(lastSubmit)
+
           }
         }
       })
@@ -222,6 +223,9 @@ class Rank {
   getExam(name) {
 
     const conf = this.conf[name]
+    if(!conf) {
+      return []
+    }
     const users = {}
     const questions = Object.keys(conf.scores).forEach(question_id => {
       const submits = this.ranks[name + '-' + question_id]

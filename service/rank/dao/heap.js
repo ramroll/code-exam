@@ -85,6 +85,16 @@ class MaxHeap{
 
   }
 
+  delete(item) {
+    const hash = this.hash_func(item)
+    const i = this.itemHash[hash]
+    const heapItem = this.list[i]
+    swap(this.list, i, this.list.length - 1)
+    this.heapSize--
+    delete this.itemHash[hash]
+    this.max_heapify(0)
+  }
+
   getSorted(k = this.heapSize){
     const clone = this.clone()
     const list = []
