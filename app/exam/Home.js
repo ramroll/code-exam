@@ -22,9 +22,9 @@ export default @withMe() class Home extends Component {
       </p>
 
       <h2 style={{marginTop : '20px'}}>
-        珠峰合作课程：javascript算法和数据结构
+        珠峰架构合作课程：通关今日头条算法面试
         <a href='http://www.zhufengpeixun.cn/' areaLabel='weavinghorse' target="_blank">
-          <img style={{ width: '100px' }} src={require('../../static/img/zf.jpg')} alt="珠峰首页" />
+          <img style={{ width: '100px' }} src={require('../../static/img/zf1.jpg')} alt="珠峰首页" />
         </a>
       </h2>
 
@@ -33,7 +33,7 @@ export default @withMe() class Home extends Component {
         padding : '10px'
       }}>
         <p>
-          <a href='https://ke.qq.com/course/323156' target="_black">视频课程链接</a>
+          <a href='https://ke.qq.com/course/380000' target="_black">视频课程链接</a>
         </p>
         <p>
           <a href='/my/enroll/4'>班级：珠峰javascript算法数据结构-B01</a>
